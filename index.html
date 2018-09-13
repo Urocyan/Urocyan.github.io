@@ -218,6 +218,21 @@ $(document).ready(function(){
 			return false;
 			}
 		}
+		else if(item.file_ext.indexOf("webm" > -1) && item.file_ext.indexOf("swf") == -1) {
+			$( "<div>" ).attr({
+			"class": "item",
+			}).html(
+			"<video class='carouselResults' controls style='height:auto; max-width:100%'><source src='"+item.file_url+"' type='video/webm' ></video>")
+			.appendTo( "#innerIMG");
+			$("<li>").attr({
+			"data-target": "#myCarousel",
+			"data-slide-to": amountOfResults,
+			}).appendTo("#indicators");
+			amountOfResults++;
+			if ( i === 100 ) {
+			return false;
+			}
+		}
 		});
 	}
 	});
