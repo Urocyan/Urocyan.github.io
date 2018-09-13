@@ -189,7 +189,7 @@ $(document).ready(function(){
 		$.ajax({
 			type: "GET",
 			url: e621API,
-			dataType: "jsonp",
+			dataType: "json",
 			success: function( data ) {
 		$.each( data, function( i, item ) {
 			goodResult = true;
@@ -204,7 +204,7 @@ $(document).ready(function(){
 			$( "<div>" ).attr({
 			"class": "item",
 			}).html(
-			"<img src='"+item.file_url+"' alt='"+item.artist+"' class='carouselResults'>")
+			"<img src='"+item.file_url+"' alt='"+item.artist+"' class='carouselResults' img-fluid>")
 			.appendTo( "#innerIMG");
 			$("<li>").attr({
 			"data-target": "#myCarousel",
