@@ -93,6 +93,9 @@
 	#paginationRow {
 		width: 100%;
 	}
+	.colorTheme {
+		transition: background-color 2s ease;
+	}
 </style>
 </head>
 <body>
@@ -288,6 +291,9 @@ $("#pgFwd").click( function() {
 	clearCarousel();
 	getResults();
 });
+$("#colorThemePicker").change( function() {
+	$(".colorTheme").css("background-color",$("#colorThemePicker").val());
+});
 });
 </script>
 <center>
@@ -302,7 +308,7 @@ $("#pgFwd").click( function() {
 </center>
 <div id="mainUI">
 <div class="container">
-	<div class="jumbotron" style="background-color: darkturquoise; color: white; text-align: center;">
+	<div class="jumbotron colorTheme" style="background-color: darkturquoise; color: white; text-align: center;">
 		<img src="https://i.imgur.com/afSLl34.png" style="max-height: 90%; max-width: 90%;"></img>
 	</div>
 </div>
@@ -312,6 +318,11 @@ $("#pgFwd").click( function() {
 	<label class="form-check-label">
 		<input type="checkbox" class="form-check-input" value="" id="paginationToggle">Remove Gallery Pagination
 	</label>
+	</div>
+	<div class="col-lg-6" align="right">
+	<div class="input-group">
+		<span class="input-group-addon">Color Theme: </span><input type="color" class="form-control" id="colorThemePicker" />
+	</div>
 	</div>
 </div>
 </div>
@@ -329,7 +340,7 @@ $("#pgFwd").click( function() {
 <div class="container-fluid">
 <div class="row">
 	<div class="col-lg-12">
-	<button class="btn" id="toggleButton" data-toggle="collapse" data-target="#advancedSettings">Search Settings <span class="glyphicon glyphicon-chevron-down" id="slideArrow"></span></button>
+	<button class="btn colorTheme" id="toggleButton" data-toggle="collapse" data-target="#advancedSettings">Search Settings <span class="glyphicon glyphicon-chevron-down" id="slideArrow"></span></button>
 	</div>
 </div>
 </div>
@@ -384,7 +395,7 @@ $("#pgFwd").click( function() {
 	</div>
 	<div class="row">
 		<div class="col-lg-12">
-		<button class="btn" id="blToggle" data-toggle="collapse" data-target="#blacklist">Blacklist</button>
+		<button class="btn colorTheme" id="blToggle" data-toggle="collapse" data-target="#blacklist">Blacklist</button>
 		</div>
 		<div class="col-lg-12 collapse" id="blacklist">
 		<div class="panel panel-primary">
