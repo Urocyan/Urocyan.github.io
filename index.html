@@ -189,7 +189,7 @@ $(document).ready(function(){
 		$.ajax({
 			type: "GET",
 			url: e621API,
-			dataType: "json",
+			dataType: "jsonp",
 			success: function( data ) {
 		$.each( data, function( i, item ) {
 			goodResult = true;
