@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<style>
+	body {
+		background-color: black;
+		color: white;
+		font-family: Helvetica;
+	}
+	#toggleUI {
+		background-color: DarkSlateGray;
+		opacity: 0;
+		width: 100%;
+		height: 10%;
+		border: 0px solid white;
+		position: fixed;
+		z-index: 99;
+		transition: all 1s ease;
+	}
+	#UIButton {
+		background-color: black;
+		max-width: 50%;
+		max-height: 90%;
+	}
+	#pauseSlideshow {
+		background-color: black;
+		max-width: 50%;
+		max-height: 90%;
+	}
+	#toggleUI:hover {
+		opacity: 1;
+	}
+	#sel1 {
+		color: black;
+	}
+	#scoreAmt {
+		color: black;
+	}
+	img.result {
+		height:250px;
+		width: 250px;
+		object-fit: cover;
+	}
+	img.result:hover {
+		height:500px;
+		width:500px;
+		position:absolute;
+		z-index:99;
+	}
+	.middle {
+	position: relative;
+	top: 30%;
+	left:30%;
+	}
+	.carouselResults {
+		max-width: 100%;
+		max-height: 100%;
+		object-fit: cover;
+		display: block;
+		margin-left: auto;
+		margin-right: auto;
+	}
+	#toggleButton {
+		width: 100%;
+		background-color: darkturquoise;
+	}
+	#blToggle {
+		width: 100%;
+		background-color: darkturquoise;
+	}
+	#advancedSettings {
+		display:none;
+	}
+	.row.no-gutter {
+		margin-left: 0;
+		margin-right: 0;
+	}
+	.row.no-gutter [class*='col-']:not(:first-child),
+	.row.no-gutter [class*='col-']:not(:last-child) {
+		padding-right: 0;
+		padding-left: 0;
+	}
+	#blHolder {
+		color: black;
+	}
+	#paginationRow {
+		width: 100%;
+	}
+</style>
+</head>
+<body>
+<script>
+$(document).ready(function(){
+	var curPage = 1;
+	var maxPage = 50;
+	var pageNum = function() {
+	$("#pgNum").html(curPage);
+	}
+	pageNum();
+	var clearCarousel = function() {
+	$("#indicators").empty();
+	$("<li>").attr({
+		"data-target": "#myCarousel", 
+		"data-slide-to": "0", 
+		"class":"active"
+		}).appendTo("#indicators");
+	$("#innerIMG").empty();
+	$("<div>").attr({
+		"class":"item active"
+		}).html("<img src='https://static1.e621.net/data/38/aa/38aa2733bbd3f38d0265ce0cdacd0f55.jpg' style='margin-left: auto; margin-right: auto;'></img>").appendTo("#innerIMG");
+	}
+	var blacklist = [];
+	var enumBlacklist = function() {
+	$("#blHolder").empty();
+	$.each( blacklist, function(i, item) {
+		$("<li>").html(item).attr("class","list-group-item").appendTo("#blHolder");
+	});
+	}	
+	$("#tagsToBanButton").click( function() {
+	var tagToAdd = $("#tagsToBan").val();
+	if(tagToAdd.indexOf(' ') > -1) {
+		var multiTags = tagToAdd.split(" ");
+		$.each(multiTags, function(i, item) {
+			blacklist.push(item);
+		});
+		enumBlacklist();
+	}
+	else if(blacklist.indexOf(tagToAdd) > -1) {
+		alert("This tag has already been added");
+		$("#tagsToBan").addClass("alert alert-danger");
+	}
+	else {
+		blacklist.push(tagToAdd);
+		enumBlacklist();
+	}
+	});
+	$("#tagsToBan").focusin(function () {
+	if($("#tagsToBan").hasClass("alert-danger")) {
+		$("#tagsToBan").removeClass("alert");
+		$("#tagsToBan").removeClass("alert-danger");
+	}
+	});
+	$("#clearBL").click( function() {
+	blacklist = [];
+	$("#blHolder").empty();
+	});
+	$('[data-toggle="tooltip"]').tooltip();
+	var pausedShow = false;
+	var container = $(".container");
+	var getResults = function () {
+		var flickerAPI = "https://e621.net/post/index.json?tags=";
+		var tags = $("#tagsInput").val();
+		if($("#scoreAmt").val() > 0) {
+			tags += " score:" + $("#scoreAmt").val();
+		}
+		if($("#ratioParam1").val() != 0 && $("#ratioParam2").val() != 0) {
+			var ratio = $("#ratioParam1").val() / $("#ratioParam2").val();
+			if (ratio < 1) {
+				ratio = ratio.toPrecision(2);
+			}
+			else {
+				ratio = ratio.toPrecision(3);
+			}
+			tags += " ratio:" + ratio;
+		}
+		if($("#sortBy").val() == "Score Descending") {
+			tags += " order:score";
+		}
+		else if($("#sortBy").val() == "Score Ascending") {
+			tags += " order:score_asc";
+		}
+		if($("#postDate").val() != "null") {
+			tags += " date:" + $("#postDate").val();
+		}
+		tags += "&page=" + curPage;
+		tags = tags.replace(/\ /g, '%20');
+		tags += "&limit=" + $("#limitNum").val();
+		flickerAPI += tags;
+		var amountOfResults = 1;
+		var goodResult = true;
+		console.log(flickerAPI);
+		$.ajax({
+			type: "GET",
+			url: flickerAPI,
+			dataType: "jsonp",
+			success: function( data ) {
+		$.each( data, function( i, item ) {
+			goodResult = true;
+			if(blacklist.length > 0) {
+			$.each( blacklist, function(j, bltag) {
+			if(item.tags.indexOf(bltag) > -1) {
+				goodResult = false;
+				}
+			});
+			}
+		if((item.file_ext.indexOf("swf") == -1 && item.file_ext.indexOf("webm") == -1) && goodResult) {
+			$( "<div>" ).attr({
+			"class": "item",
+			}).html(
+			"<img src='"+item.file_url+"' alt='"+item.artist+"' class='carouselResults'>")
+			.appendTo( "#innerIMG");
+			$("<li>").attr({
+			"data-target": "#myCarousel",
+			"data-slide-to": amountOfResults,
+			}).appendTo("#indicators");
+			amountOfResults++;
+			if ( i === 100 ) {
+			return false;
+			}
+		}
+		});
+	}
+	});
+	}
+	$("#tagsInput").focusout(function() {
+		getResults();
+	});
+	$("#tagsInput").focusin(function() {
+		clearCarousel();
+	});
+	$("#limitNum").focusin(function() {
+		clearCarousel();
+	});
+	$("#limitNum").focusout(function() {
+		getResults();
+	});
+$("#toggleButton").click(function() {
+	$("#advancedSettings").slideToggle(400);
+});
+$("#advancedSettings").on("hide.bs.collapse", function() {
+		$("#slideArrow").attr("class", "glyphicon glyphicon-chevron-down");
+});
+$("#advancedSettings").on("show.bs.collapse", function() {
+		$("#slideArrow").attr("class", "glyphicon glyphicon-chevron-up");
+});
+$("#UIButton").click( function() {
+		$("#mainUI").slideToggle();
+});
+$("#paginationToggle").click( function() {
+	if(this.checked) {
+		$(".carousel-indicators").css("visibility","hidden");
+	}
+	else {
+		$(".carousel-indicators").css("visibility","visible");
+	}
+});
+$("#pauseSlideshow").click( function() {
+	if(pausedShow == false) {
+		$('#myCarousel').carousel('pause');
+		pausedShow = true;
+		$("#ssPause").attr("class","glyphicon glyphicon-play");
+	}
+	else if(pausedShow == true) {
+		$('#myCarousel').carousel('cycle');
+		pausedShow = false;
+		$("#ssPause").attr("class","glyphicon glyphicon-pause");
+	}
+});
+$("#blToggle").click(function() {
+	$("#blacklist").slideToggle(400);
+});
+$("#pgBwd").click( function() {
+	if(curPage > 1) {
+		curPage -= 1;
+	}
+	else if(curPage == 1) {
+		curPage = maxPage;
+	}
+	pageNum();
+	clearCarousel();
+	getResults();
+});
+$("#pgFwd").click( function() {
+	if(curPage < maxPage) {
+		curPage += 1;
+	}
+	else if(curPage == maxPage) {
+		curPage = 1;
+	}
+	pageNum();
+	clearCarousel();
+	getResults();
+});
+});
+</script>
+<center>
+<div class="container-fluid">
+<div class="row" id="toggleUI">
+<div class="col-lg-12">
+			<button id="UIButton" class="btn btn-primary">Toggle UI</button>
+			<button id="pauseSlideshow" class="btn btn-primary">Pause Slideshow <span class="glyphicon glyphicon-pause" id="ssPause"></span></button>
+</div>
+</div>
+</div>
+</center>
+<div id="mainUI">
+<div class="container">
+	<div class="jumbotron" style="background-color: darkturquoise; color: white; text-align: center;">
+		<img src="http://i67.tinypic.com/x4ptaq.png" style="max-height: 90%; max-width: 90%;"></img>
+	</div>
+</div>
+<div class="container-fluid">
+<div class="row">
+	<div class="form-check col-lg-6">
+	<label class="form-check-label">
+		<input type="checkbox" class="form-check-input" value="" id="paginationToggle">Remove Gallery Pagination
+	</label>
+	</div>
+</div>
+</div>
+<div class="container-fluid">
+<div class="row">
+	<div class="col-lg-12" ng-app="">
+		<div class="input-group">
+			<span class="input-group-addon">Tags</span>
+			<input id="tagsInput" type="text" class="form-control" name="msg" placeholder="Enter Tags Here." ng-model="name">
+		</div>
+		<p ng-bind="name"></p>
+	</div>
+</div>
+</div>
+<div class="container-fluid">
+<div class="row">
+	<div class="col-lg-12">
+	<button class="btn" id="toggleButton" data-toggle="collapse" data-target="#advancedSettings">Search Settings <span class="glyphicon glyphicon-chevron-down" id="slideArrow"></span></button>
+	</div>
+</div>
+</div>
+<div class="container-fluid collapse" id="advancedSettings">
+	<div class="row no-gutter">
+		<div class="col-lg-6 padding-0">
+		<div class="input-group">
+				<span class="input-group-addon">Max Results Per Page</span>
+				<input id="limitNum" type="number" class="form-control" name="msg" placeholder="Max results per page." value="75">
+		</div>
+		</div>
+		<div class="col-lg-6 padding-0">
+		<div class="input-group">
+				<span class="input-group-addon">Sort By</span>
+				<select class="form-control" id="sortBy">
+					<option>Score Descending</option>
+					<option>Score Ascending</option>
+				</select>
+		</div>
+		</div>
+		<div class="col-lg-6">
+		<div class="input-group">
+			<span class="input-group-addon">Score</span>
+			<select class="form-control" id="sel1" >
+				<option>></option>
+				<option><</option>
+				<option>>=</option>
+				<option><=</option>
+				<option>=</option>
+			</select>
+		<input class="form-control" type="number" id = "scoreAmt" min="0" max="100000" value="0" />
+		</div>
+		</div>
+		<div class="col-lg-6">
+		<div class="input-group">
+			<span class="input-group-addon">Date Posted</span>
+			<select class="form-control" id="postDate">
+				<option>null</option>
+				<option>today</option>
+				<option>yesterday</option>
+				<option>week</option>
+				<option>month</option>
+				<option>year</option>
+			</select>
+		</div>
+		</div>
+		<div class="col-lg-6">
+		<div class="input-group">
+			<span class="input-group-addon">Ratio</span><input type="number" class="form-control" id="ratioParam1" /><span class="input-group-addon">:</span><input type="number" id="ratioParam2" class="form-control" />
+		</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-lg-12">
+		<button class="btn" id="blToggle" data-toggle="collapse" data-target="#blacklist">Blacklist</button>
+		</div>
+		<div class="col-lg-12 collapse" id="blacklist">
+		<div class="panel panel-primary">
+		<div class="input-group">
+		<span class="input-group-addon">Tags</span><input class="form-control" id="tagsToBan" /><div class="input-group-btn"><button class="btn btn-primary" id="tagsToBanButton">Add To List</button></div>
+		<div class="input-group-btn">
+		<button class="btn btn-danger" id="clearBL">Clear List</button>
+		</div>
+		</div>
+		<div class="panel-body">
+		<ul id="blHolder" class="list-group">
+		</ul>
+		</div>
+		</div>
+		</div>
+	</div>
+</div>
+</div>
+<div class="row">
+<div class = "col-md-12">
+<div class="IMGcontainer container">
+</div>
+</div>
+</div>
+<div class="row">
+	<div class = "col-lg-12">
+		<div id="myCarousel" class="carousel slide" data-ride="carousel">
+		  <!-- Indicators -->
+		  <ol class="carousel-indicators" id="indicators">
+			<li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+		  </ol>
+
+		  <!-- Wrapper for slides -->
+		  <div class="carousel-inner" id="innerIMG">
+			<div class="item active">
+				<img src="https://static1.e621.net/data/38/aa/38aa2733bbd3f38d0265ce0cdacd0f55.jpg" style="margin-left: auto; margin-right: auto;"></img>
+			</div>
+		  </div>
+
+		  <!-- Left and right controls -->
+		  <a class="left carousel-control" href="#myCarousel" data-slide="prev">
+			<span class="glyphicon glyphicon-chevron-left"></span>
+			<span class="sr-only">Previous</span>
+		  </a>
+		  <a class="right carousel-control" href="#myCarousel" data-slide="next">
+			<span class="glyphicon glyphicon-chevron-right"></span>
+			<span class="sr-only">Next</span>
+		  </a>
+		</div>
+	</div>
+</div>
+<div class="row" align="center">
+	<div class="input-group">
+	<div class="col-lg-12" >
+	<div class="input-group-btn">
+	<button class="btn btn-primary" id="pgBwd"><span class="glyphicon glyphicon-chevron-left"></span></button>
+	</div>
+	<div class="input-group-addon">Page <span id="pgNum"></span></div>
+	<div class="input-group-btn">
+	<button class="btn btn-primary" id="pgFwd"><span class="glyphicon glyphicon-chevron-right"></span></button>
+	</div>
+	</div>
+	</div>
+</div>
+<script>
+$(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip();
+	$('[data-toggle="popover"]').popover();   
+});
+</script>
+</body>
+</html>
