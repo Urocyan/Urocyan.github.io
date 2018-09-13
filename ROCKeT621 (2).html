@@ -155,7 +155,7 @@ $(document).ready(function(){
 	var pausedShow = false;
 	var container = $(".container");
 	var getResults = function () {
-		var flickerAPI = "https://e621.net/post/index.json?tags=";
+		var e621API = "https://e621.net/post/index.json?tags=";
 		var tags = $("#tagsInput").val();
 		if($("#scoreAmt").val() > 0) {
 			tags += " score:" + $("#scoreAmt").val();
@@ -182,13 +182,13 @@ $(document).ready(function(){
 		tags += "&page=" + curPage;
 		tags = tags.replace(/\ /g, '%20');
 		tags += "&limit=" + $("#limitNum").val();
-		flickerAPI += tags;
+		e621API += tags;
 		var amountOfResults = 1;
 		var goodResult = true;
-		console.log(flickerAPI);
+		console.log(e621API);
 		$.ajax({
 			type: "GET",
-			url: flickerAPI,
+			url: e621API,
 			dataType: "jsonp",
 			success: function( data ) {
 		$.each( data, function( i, item ) {
