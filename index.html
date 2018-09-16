@@ -309,6 +309,10 @@ $("#pgFwd").click( function() {
 $("#colorThemePicker").change( function() {
 	$(".colorTheme").css("background-color",$("#colorThemePicker").val());
 });
+$("#detectScreenSize").click( function() {
+	$("#ratioParam1").val(screen.width);
+	$("#ratioParam2").val(screen.height);
+});
 });
 </script>
 <center>
@@ -405,6 +409,9 @@ $("#colorThemePicker").change( function() {
 		<div class="col-lg-6">
 		<div class="input-group">
 			<span class="input-group-addon">Ratio</span><input type="number" class="form-control" id="ratioParam1" /><span class="input-group-addon">:</span><input type="number" id="ratioParam2" class="form-control" />
+			<div class="input-group-btn">
+			<button class="btn btn-primary" id="detectScreenSize">Wallpaper</button>
+			</div>
 		</div>
 		</div>
 	</div>
