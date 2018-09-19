@@ -257,17 +257,12 @@ $(document).ready(function(){
 	}
 	});
 	}
-	$("#tagsInput").focusout(function() {
+	$("#resultButton").click(function() {
+		clearCarousel();
 		getResults();
 	});
-	$("#tagsInput").focusin(function() {
+	$("#clearButton").click(function() {
 		clearCarousel();
-	});
-	$("#limitNum").focusin(function() {
-		clearCarousel();
-	});
-	$("#limitNum").focusout(function() {
-		getResults();
 	});
 $("#toggleButton").click(function() {
 	$("#advancedSettings").slideToggle(400);
@@ -371,6 +366,10 @@ $("#detectScreenSize").click( function() {
 		<div class="input-group">
 			<span class="input-group-addon">Tags</span>
 			<input id="tagsInput" type="text" class="form-control" name="msg" placeholder="Enter Tags Here." ng-model="name">
+			<div class="input-group-btn">
+			<button class="btn btn-primary"><span id="resultButton" class="glyphicon glyphicon-refresh"></span></button>
+			<button class="btn btn-danger"><span id="clearButton" class="glyphicon glyphicon-remove"></span></button>
+			</div>
 		</div>
 		<p ng-bind="name"></p>
 	</div>
