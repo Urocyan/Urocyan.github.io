@@ -102,6 +102,17 @@
 		position: absolute;
 		z-index: 99;
 	}
+	.panel {
+		color:black;
+	}
+	.carousel-indicators {
+		top:0px;
+		color: turquoise;
+		visibility: hidden;
+	}
+	.carousel-indicators .active{
+    background-color: darkturquoise;
+	}
 </style>
 </head>
 <body>
@@ -213,7 +224,7 @@ $(document).ready(function(){
 			$( "<div>" ).attr({
 			"class": "item",
 			}).html(
-			"<a href='"+item.source+"' target='_blank'><img src='"+item.file_url+"' alt='"+item.artist+"' title='"+item.artist+"' data-toggle='tooltip' data-placement='top' class='carouselResults img-fluid'></a>")
+			"<div class='panel panel-default'><div class='panel-heading' align='center'><h3>"+item.artist+"</h3></div><div class='panel-body'><img src='"+item.file_url+"' alt='"+item.artist+"' class='carouselResults img-fluid'></div><div class='panel-footer' align='center'><div class='btn-group'><button class='btn btn-default'><a href='"+item.source+"' target='_blank'>Source</a></button><button class='btn btn-default'>"+item.fav_count+"<span class='glyphicon glyphicon-heart'></span></button><button class='btn btn-default'>"+item.score+"<span class='glyphicon glyphicon-arrow-up'></span></button></div></div></div></div>")
 			.appendTo( "#innerIMG");
 			$("<li>").attr({
 			"data-target": "#myCarousel",
@@ -230,7 +241,7 @@ $(document).ready(function(){
 			$( "<div>" ).attr({
 			"class": "item",
 			}).html(
-			"<video class='carouselResults' controls style='height:auto; max-width:100%'><source src='"+item.file_url+"' type='video/webm' ></video>")
+			"<div class='panel panel-default'><div class='panel-heading' align='center'><h3>"+item.artist+"</h3></div><div class='panel-body'><video class='carouselResults' controls style='height:auto; max-width:100%'><source src='"+item.file_url+"' type='video/webm' /></video></div><div class='panel-footer' align='center'><div class='btn-group'><button class='btn btn-default'><a href='"+item.source+"' target='_blank'>Source</a></button><button class='btn btn-default'>"+item.fav_count+"<span class='glyphicon glyphicon-heart'></span></button><button class='btn btn-default'>"+item.score+"<span class='glyphicon glyphicon-arrow-up'></span></button></div></div></div>")
 			.appendTo( "#innerIMG");
 			$("<li>").attr({
 			"data-target": "#myCarousel",
@@ -241,6 +252,7 @@ $(document).ready(function(){
 			return false;
 			}
 		}
+		$(".carouselResults").css("max-height", (screen.height - (screen.height * 0.25)));
 		});
 	}
 	});
@@ -271,10 +283,10 @@ $("#UIButton").click( function() {
 });
 $("#paginationToggle").click( function() {
 	if(this.checked) {
-		$(".carousel-indicators").css("visibility","hidden");
+		$(".carousel-indicators").css("visibility","visible");
 	}
 	else {
-		$(".carousel-indicators").css("visibility","visible");
+		$(".carousel-indicators").css("visibility","hidden");
 	}
 });
 $("#pauseSlideshow").click( function() {
@@ -343,7 +355,7 @@ $("#detectScreenSize").click( function() {
 <div class="row">
 	<div class="form-check col-lg-6">
 	<label class="form-check-label">
-		<input type="checkbox" class="form-check-input" value="" id="paginationToggle">Remove Gallery Pagination
+		<input type="checkbox" class="form-check-input" value="" id="paginationToggle">Show Gallery Pagination
 	</label>
 	</div>
 	<div class="col-lg-6" align="right">
