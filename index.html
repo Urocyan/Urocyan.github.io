@@ -253,6 +253,9 @@ $(document).ready(function(){
 			}
 		}
 		$(".carouselResults").css("max-height", (screen.height - (screen.height * 0.25)));
+		if(amountOfResults > 0) {
+			$("#resultButton").removeClass("btn-primary").addClass("btn-success");
+		}
 		});
 	}
 	});
@@ -260,9 +263,11 @@ $(document).ready(function(){
 	$("#resultButton").click(function() {
 		clearCarousel();
 		getResults();
+		
 	});
 	$("#clearButton").click(function() {
 		clearCarousel();
+		$("#resultButton").removeClass("btn-success").addClass("btn-primary");
 	});
 $("#toggleButton").click(function() {
 	$("#advancedSettings").slideToggle(400);
@@ -367,7 +372,7 @@ $("#detectScreenSize").click( function() {
 			<span class="input-group-addon">Tags</span>
 			<input id="tagsInput" type="text" class="form-control" name="msg" placeholder="Enter Tags Here." ng-model="name">
 			<div class="input-group-btn">
-			<button class="btn btn-primary"><span id="resultButton" class="glyphicon glyphicon-refresh"></span></button>
+			<button class="btn btn-primary" id="resultButton"><span class="glyphicon glyphicon-refresh"></span></button>
 			<button class="btn btn-danger"><span id="clearButton" class="glyphicon glyphicon-remove"></span></button>
 			</div>
 		</div>
