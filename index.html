@@ -9,10 +9,6 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <style>
-	* {
-		margin: 0;
-		padding: 0;
-	}
 	body {
 		background-color: black;
 		color: white;
@@ -66,7 +62,7 @@
 	.carouselResults {
 		max-width: 50%;
 		max-height: 50%;
-		object-fit: scale-down;
+		object-fit: cover;
 		display: block;
 		margin-left: auto;
 		margin-right: auto;
@@ -119,17 +115,22 @@
 	}
 	.fullScreen {
 		position: fixed;
+		display: block;
 		z-index: 99;
 		top: 0px;
 		bottom: 0px;
-		left: 0px;
+		left: -15px;
 		right: 0px;
 		background-color: black;
+		margin-left: 0;
+		margin-right: 0;
 	}
 	#fScreenButton {
-		width: 10%;
-		left: 45%;
-		position: absolute;
+		max-width: 10%;
+		margin-left: auto;
+		margin-right: auto;
+		position: fixed;
+		display: block;
 		z-index: 99;
 		visibility: hidden;
 		opacity: 0.5;
@@ -244,36 +245,72 @@ $(document).ready(function(){
 				}
 			});
 			}
-		if((item.file_ext.indexOf("swf") == -1 && item.file_ext.indexOf("webm") == -1) && goodResult) {
-			$( "<div>" ).attr({
-			"class": "item",
-			}).html(
-			"<div class='panel panel-default'><div class='panel-heading' align='center'><h3>"+item.artist+"</h3></div><div class='panel-body'><img style='max-height:"+(window.innerHeight-(window.innerHeight*0.25))+"px;' src='"+item.file_url+"' alt='"+item.artist+"' class='carouselResults'></div><div class='panel-footer' align='center'><div class='btn-group'><button class='btn btn-default'><a href='"+item.source+"' target='_blank'>Source</a></button><button class='btn btn-default'>"+item.fav_count+"<span class='glyphicon glyphicon-heart'></span></button><button class='btn btn-default'>"+item.score+"<span class='glyphicon glyphicon-arrow-up'></span></button></div></div></div></div>")
-			.appendTo( "#innerIMG");
-			$("<li>").attr({
-			"data-target": "#myCarousel",
-			"data-slide-to": amountOfResults,
-			}).appendTo("#indicators");
-			amountOfResults++;
-			$('[data-toggle="tooltip"]').tooltip();
-			$('[data-toggle="popover"]').popover();
-			if ( i === 100 ) {
-			return false;
+		if(screen.width >= 992) {
+			if((item.file_ext.indexOf("swf") == -1 && item.file_ext.indexOf("webm") == -1) && goodResult) {
+				$( "<div>" ).attr({
+				"class": "item",
+				}).html(
+				"<div class='panel panel-default'><div class='panel-heading' align='center'><h3>"+item.artist+"</h3></div><div class='panel-body'><img style='max-height:"+(window.innerHeight-(window.innerHeight*0.25))+"px;' src='"+item.file_url+"' alt='"+item.artist+"' class='carouselResults'></div><div class='panel-footer' align='center'><div class='btn-group'><button class='btn btn-default'><a href='"+item.source+"' target='_blank'>Source</a></button><button class='btn btn-default'>"+item.fav_count+"<span class='glyphicon glyphicon-heart'></span></button><button class='btn btn-default'>"+item.score+"<span class='glyphicon glyphicon-arrow-up'></span></button></div></div></div></div>")
+				.appendTo( "#innerIMG");
+				$("<li>").attr({
+				"data-target": "#myCarousel",
+				"data-slide-to": amountOfResults,
+				}).appendTo("#indicators");
+				amountOfResults++;
+				$('[data-toggle="tooltip"]').tooltip();
+				$('[data-toggle="popover"]').popover();
+				if ( i === 100 ) {
+				return false;
+				}
+			}
+			else if(item.file_ext.indexOf("webm" > -1) && item.file_ext.indexOf("swf") == -1) {
+				$( "<div>" ).attr({
+				"class": "item",
+				}).html(
+				"<div class='panel panel-default'><div class='panel-heading' align='center'><h3>"+item.artist+"</h3></div><div class='panel-body'><video class='carouselResults' controls style='max-height:"+(window.innerHeight-(window.innerHeight*0.25))+"px;'><source src='"+item.file_url+"' type='video/webm' /></video></div><div class='panel-footer' align='center'><div class='btn-group'><button class='btn btn-default'><a href='"+item.source+"' target='_blank'>Source</a></button><button class='btn btn-default'>"+item.fav_count+"<span class='glyphicon glyphicon-heart'></span></button><button class='btn btn-default'>"+item.score+"<span class='glyphicon glyphicon-arrow-up'></span></button></div></div></div>")
+				.appendTo( "#innerIMG");
+				$("<li>").attr({
+				"data-target": "#myCarousel",
+				"data-slide-to": amountOfResults,
+				}).appendTo("#indicators");
+				amountOfResults++;
+				if ( i === 100 ) {
+				return false;
+				}
 			}
 		}
-		else if(item.file_ext.indexOf("webm" > -1) && item.file_ext.indexOf("swf") == -1) {
-			$( "<div>" ).attr({
-			"class": "item",
-			}).html(
-			"<div class='panel panel-default'><div class='panel-heading' align='center'><h3>"+item.artist+"</h3></div><div class='panel-body'><video class='carouselResults' controls style='max-height:"+(window.innerHeight-(window.innerHeight*0.25))+"px;'><source src='"+item.file_url+"' type='video/webm' /></video></div><div class='panel-footer' align='center'><div class='btn-group'><button class='btn btn-default'><a href='"+item.source+"' target='_blank'>Source</a></button><button class='btn btn-default'>"+item.fav_count+"<span class='glyphicon glyphicon-heart'></span></button><button class='btn btn-default'>"+item.score+"<span class='glyphicon glyphicon-arrow-up'></span></button></div></div></div>")
-			.appendTo( "#innerIMG");
-			$("<li>").attr({
-			"data-target": "#myCarousel",
-			"data-slide-to": amountOfResults,
-			}).appendTo("#indicators");
-			amountOfResults++;
-			if ( i === 100 ) {
-			return false;
+		else {
+			if((item.file_ext.indexOf("swf") == -1 && item.file_ext.indexOf("webm") == -1) && goodResult) {
+				$( "<div>" ).attr({
+				"class": "item",
+				}).html(
+				"<img style='max-height:"+(window.innerHeight-(window.innerHeight*0.25))+"px;' src='"+item.file_url+"' alt='"+item.artist+"' class='carouselResults' />")
+				.appendTo( "#innerIMG");
+				$("<li>").attr({
+				"data-target": "#myCarousel",
+				"data-slide-to": amountOfResults,
+				}).appendTo("#indicators");
+				amountOfResults++;
+				$('[data-toggle="tooltip"]').tooltip();
+				$('[data-toggle="popover"]').popover();
+				if ( i === 100 ) {
+				return false;
+				}
+			}
+			else if(item.file_ext.indexOf("webm" > -1) && item.file_ext.indexOf("swf") == -1) {
+				$( "<div>" ).attr({
+				"class": "item",
+				}).html(
+				"<video class='carouselResults' controls style='max-height:"+(window.innerHeight-(window.innerHeight*0.25))+"px;'><source src='"+item.file_url+"' type='video/webm' /></video>")
+				.appendTo( "#innerIMG");
+				$("<li>").attr({
+				"data-target": "#myCarousel",
+				"data-slide-to": amountOfResults,
+				}).appendTo("#indicators");
+				amountOfResults++;
+				if ( i === 100 ) {
+				return false;
+				}
 			}
 		}
 		if(amountOfResults > 0) {
@@ -358,7 +395,7 @@ $("#detectScreenSize").click( function() {
 });
 $("#fullScreen").click( function() {
 	$("#fScreen").addClass("fullScreen");
-	$("#fScreenButton").css("visibility","visible");
+	$("#fScreenButton").css({"visibility":"visible","width":(screen.width / 10),"left":((screen.width / 2)-((screen.width / 10) / 2))+"px"});
 });
 $("#fScreenButton").click( function() {
 	$("#fScreen").removeClass("fullScreen");
@@ -497,13 +534,13 @@ $("#fScreenButton").click( function() {
 </div>
 </div>
 </div>
-	<div class = "container-fluid" id="fScreen" >
+	<div class = "container-fluid" align="center" id="fScreen" >
 		<div id="myCarousel" class="carousel slide" data-ride="carousel">
 		  <!-- Indicators -->
 		  <ol class="carousel-indicators" id="indicators">
 			<li data-target="#myCarousel" data-slide-to="0" class="active"></li>
 		  </ol>
-		<button id="fScreenButton" class="btn btn-default"><span class="glyphicon glyphicon-remove"></span></button>
+		<button id="fScreenButton" class="btn btn-default"><span style="margin-left: auto; margin-right: auto;" class="glyphicon glyphicon-remove"></span></button>
 		  <!-- Wrapper for slides -->
 		  <div class="carousel-inner" id="innerIMG">
 			<div class="item active">
