@@ -17,22 +17,14 @@
 	#toggleUI {
 		background-color: DarkSlateGray;
 		opacity: 0;
-		width: 100%;
-		height: 10%;
+		width: 5%;
+		height: 100%;
 		border: 0px solid white;
 		position: fixed;
 		z-index: 99;
 		transition: all 1s ease;
-	}
-	#UIButton {
-		background-color: black;
-		max-width: 50%;
-		max-height: 90%;
-	}
-	#pauseSlideshow {
-		background-color: black;
-		max-width: 50%;
-		max-height: 90%;
+		border-radius: 0px 5px 5px 0px;
+		
 	}
 	#toggleUI:hover {
 		opacity: 1;
@@ -401,24 +393,20 @@ $("#fScreenButton").click( function() {
 	$("#fScreen").removeClass("fullScreen");
 	$("#fScreenButton").css("visibility","hidden");
 });
+$(".tagAdd").click( function() {
+	var currentTags = $("#tagsInput").val();
+	if($("#tagsInput").val().indexOf($(this).text()) == -1) {
+		$("#tagsInput").val(""+ currentTags + $(this).text());
+	}
+});
 });
 </script>
-<center>
-<div class="container-fluid">
-<div class="row" id="toggleUI">
-<div class="col-lg-12">
-			<button id="UIButton" class="btn btn-primary">Toggle UI</button>
-			<button id="pauseSlideshow" class="btn btn-primary">Pause Slideshow <span class="glyphicon glyphicon-pause" id="ssPause"></span></button>
-</div>
-</div>
-</div>
-</center>
 <div id="mainUI">
-<div class="container">
+<!--<div class="container">
 	<div class="jumbotron colorTheme" style="background-color: darkturquoise; color: white; text-align: center;">
 		<img src="https://i.imgur.com/afSLl34.png" style="max-height: 90%; max-width: 90%;"></img>
 	</div>
-</div>
+</div>-->
 <div class="container-fluid">
 <div class="row">
 	<div class="form-check col-lg-6">
@@ -561,7 +549,11 @@ $("#fScreenButton").click( function() {
 		</div>
 	</div>
 <div class="row" align="center">
+<div class="btn-group">
+<button id="UIButton" class="btn btn-primary barButton">Toggle UI</button>
 <button class="btn btn-primary" id="fullScreen"><span class="glyphicon glyphicon-fullscreen"></span></button>
+<button id="pauseSlideshow" class="btn btn-primary barButton">Pause Slideshow <span class="tagAdd">gay</span><span class="glyphicon glyphicon-pause" id="ssPause"></span></button>
+</div>
 </div>
 <div class="row" align="center">
 	<div class="input-group">
