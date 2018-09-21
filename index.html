@@ -124,6 +124,7 @@
 		position: fixed;
 		display: block;
 		z-index: 99;
+		bottom: 0;
 		visibility: hidden;
 		opacity: 0.5;
 	}
@@ -263,7 +264,7 @@ $(document).ready(function(){
 				$( "<div>" ).attr({
 				"class": "item",
 				}).html(
-				"<div class='panel panel-default'><div class='panel-heading' align='center'><div class='well'><h3>"+artist+"</h3></div></div><div class='panel-body'><img style='max-height:"+(window.innerHeight-(window.innerHeight*0.25))+"px;' src='"+item.file_url+"' alt='"+item.artist+"' class='carouselResults'></div><div class='panel-footer' align='center'><div class='btn-group'><button class='btn btn-default'><a href='"+item.source+"' target='_blank'>Source</a></button><button class='btn btn-default'>"+item.fav_count+"<span class='glyphicon glyphicon-heart'></span></button><button class='btn btn-default'>"+item.score+"<span class='glyphicon glyphicon-arrow-up'></span></button></div><br /><div class='container-fluid' style='max-width: 75%;'><div class='well alert-info'><div class='btn-group' id='resultNum"+i+"'></div></div></div></div></div>")
+				"<div class='panel panel-default'><div class='panel-heading' align='center'><div class='well'><h3>"+artist+"</h3></div></div><div class='panel-body'><img style='max-height:"+(screen.height * 0.75)+"px;' src='"+item.file_url+"' alt='"+item.artist+"' class='carouselResults'></div><div class='panel-footer' align='center'><div class='btn-group'><button class='btn btn-default'><a href='"+item.source+"' target='_blank'>Source</a></button><button class='btn btn-default'>"+item.fav_count+"<span class='glyphicon glyphicon-heart'></span></button><button class='btn btn-default'>"+item.score+"<span class='glyphicon glyphicon-arrow-up'></span></button></div><br /><div class='container-fluid' style='max-width: 75%;'><div class='well alert-info'><div class='btn-group tagButtons' id='resultNum"+i+"'></div></div></div></div></div>")
 				.appendTo( "#innerIMG");
 				var currentIteration = i;
 				var tagArray = item.tags.split(" ");
@@ -305,7 +306,7 @@ $(document).ready(function(){
 				$( "<div>" ).attr({
 				"class": "item",
 				}).html(
-				"<div class='panel panel-default'><div class='panel-heading' align='center'><div class='well'><h3>"+artist+"</h3></div></div><div class='panel-body'><video class='carouselResults' controls style='max-height:"+(window.innerHeight-(window.innerHeight*0.25))+"px;'><source src='"+item.file_url+"' type='video/webm' /></video></div><div class='panel-footer' align='center'><div class='btn-group'><button class='btn btn-default'><a href='"+item.source+"' target='_blank'>Source</a></button><button class='btn btn-default'>"+item.fav_count+"<span class='glyphicon glyphicon-heart'></span></button><button class='btn btn-default'>"+item.score+"<span class='glyphicon glyphicon-arrow-up'></span></button></div><br /><div class='container-fluid' style='max-width: 75%;'><div class='well alert-info'><div class='btn-group' id='resultNum"+i+"'></div></div></div></div></div>")
+				"<div class='panel panel-default'><div class='panel-heading' align='center'><div class='well'><h3>"+artist+"</h3></div></div><div class='panel-body'><video class='carouselResults' controls style='max-height:"+(screen.height * 0.75)+"px;'><source src='"+item.file_url+"' type='video/webm' /></video></div><div class='panel-footer' align='center'><div class='btn-group'><button class='btn btn-default'><a href='"+item.source+"' target='_blank'>Source</a></button><button class='btn btn-default'>"+item.fav_count+"<span class='glyphicon glyphicon-heart'></span></button><button class='btn btn-default'>"+item.score+"<span class='glyphicon glyphicon-arrow-up'></span></button></div><br /><div class='container-fluid' style='max-width: 75%;'><div class='well alert-info'><div class='btn-group tagButtons' id='resultNum"+i+"'></div></div></div></div></div>")
 				.appendTo( "#innerIMG");
 				var currentIteration = i;
 				var tagArray = item.tags.split(" ");
@@ -443,13 +444,43 @@ $("#detectScreenSize").click( function() {
 	$("#ratioParam1").val(screen.width);
 	$("#ratioParam2").val(screen.height);
 });
+var el = $("#myCarousel");
+var doc = window.document;
 $("#fullScreen").click( function() {
-	alert("not yet supported!");
+	var buttonPlacement = (screen.width / 2)-(screen.width * 0.05);
+	console.log(buttonPlacement);
+	$(".item").css({"height":screen.height,"width":screen.width,"margin-top":"auto","margin-bottom":"auto"});
+	$(".panel-footer").hide();
+	if (document.getElementById("myCarousel").requestFullscreen) {
+		document.getElementById("myCarousel").requestFullscreen();
+	} else if (document.getElementById("myCarousel").webkitRequestFullscreen) {
+		document.getElementById("myCarousel").webkitRequestFullscreen();
+	} else if (document.getElementById("myCarousel").mozRequestFullScreen) {
+		document.getElementById("myCarousel").mozRequestFullScreen();
+	} else if (document.getElementById("myCarousel").msRequestFullscreen) {
+		document.getElementById("myCarousel").msRequestFullscreen();
+	}
+	else {
+		alert("fullscreen not supported!");
+	}
 });
-$("#fScreenButton").click( function() {
-	$("#fScreen").removeClass("fullScreen");
-	$("#fScreenButton").css("visibility","hidden");
-});
+if (document.addEventListener)
+{
+    document.addEventListener('webkitfullscreenchange', exitHandler, false);
+    document.addEventListener('mozfullscreenchange', exitHandler, false);
+    document.addEventListener('fullscreenchange', exitHandler, false);
+    document.addEventListener('MSFullscreenChange', exitHandler, false);
+}
+
+function exitHandler()
+{
+    if (!document.webkitIsFullScreen)
+    {
+        $(".item").css({"height":"auto","width":"auto"});
+		$(".panel-footer").show();
+		console.log("exit");
+    }
+}
 });
 </script>
 <div id="mainUI">
@@ -602,7 +633,7 @@ $("#fScreenButton").click( function() {
 <div class="row" align="center">
 <div class="btn-group">
 <button id="UIButton" class="btn btn-primary barButton">Toggle UI</button>
-<button class="btn btn-primary" id="fullScreen"><span class="glyphicon glyphicon-fullscreen"></span></button>
+<button class="btn btn-primary" id="fullScreen" title="only works for Chrome!" data-toggle="tooltip"><span class="glyphicon glyphicon-fullscreen"></span></button>
 <button id="pauseSlideshow" class="btn btn-primary barButton">Pause Slideshow<span class="glyphicon glyphicon-pause"></span></button>
 </div>
 </div>
