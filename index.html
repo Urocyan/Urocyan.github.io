@@ -449,7 +449,8 @@ var doc = window.document;
 $("#fullScreen").click( function() {
 	var buttonPlacement = (screen.width / 2)-(screen.width * 0.05);
 	console.log(buttonPlacement);
-	$(".carouselResults").css({"height":"auto","width":screen.width,"margin-top":"auto","margin-bottom":"auto"});
+	$(".carouselResults").css({"height":"auto","width":screen.width});
+	$("#myCarousel").css({"margin-top":"auto","margin-bottom":"auto"});
 	$(".panel-footer").hide();
 	if (document.getElementById("myCarousel").requestFullscreen) {
 		document.getElementById("myCarousel").requestFullscreen();
