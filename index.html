@@ -452,11 +452,18 @@ $("#myCarousel").bind('slide.bs.carousel', function (e) {
 		if(screen.width < 992) {
 			setTimeout(function() {
 			var thisHeight = $(".item.next.left > img").height();
+			var thisWidth = $(".item.next.left > img").width();
 			if(thisHeight == null) {
 				thisHeight = $(".item.next.left > video").height();
 			}
+			if(thisWidth == null) {
+				thisWidth = $(".item.next.left > video").width();
+			}
 			console.log(thisHeight);
 			$(".next").css({"position":"fixed","top":((screen.height - thisHeight)/2)});
+			if(thisWidth < screen.width) {
+				$(".next").css({"position":"fixed","left":((screen.width - thisWidth)/2)});
+			}
 			}, 100);
 		}
 	}
@@ -467,9 +474,6 @@ $("#fullScreen").click( function() {
 	$(".carouselResults").css({"max-height":(screen.height * 0.75),"max-width":screen.width});
 	$("#myCarousel").css({"height":screen.height,"width":screen.width});
 	$(".panel-footer").hide();
-	if(screen.width < 992) {
-	$(".carousel-control").hide();
-	}
 	isFscreen = true;
 	if (document.getElementById("myCarousel").requestFullscreen) {
 		document.getElementById("myCarousel").requestFullscreen();
@@ -500,7 +504,6 @@ function exitHandler()
 			$("#myCarousel").css({"height":"auto","width":"auto"});
 			$(".panel-footer").show();
 			if(screen.width < 992) {
-			$(".carousel-control").show();
 			$(".item").css({"position":"relative","top":"0"});
 			$(".next").css("position","relative");
 			}
@@ -513,7 +516,6 @@ function exitHandler()
 			$("#myCarousel").css({"height":"auto","width":"auto"});
 			$(".panel-footer").show();
 			if(screen.width < 992) {
-			$(".carousel-control").show();
 			$(".item").css({"position":"relative","top":"0"});
 			$(".next").css("position","relative");
 			}
@@ -526,7 +528,6 @@ function exitHandler()
 			$("#myCarousel").css({"height":"auto","width":"auto"});
 			$(".panel-footer").show();
 			if(screen.width < 992) {
-			$(".carousel-control").show();
 			$(".item").css({"position":"relative","top":"0"});
 			$(".next").css("position","relative");
 			}
@@ -539,7 +540,6 @@ function exitHandler()
 			$("#myCarousel").css({"height":"auto","width":"auto"});
 			$(".panel-footer").show();
 			if(screen.width < 992) {
-			$(".carousel-control").show();
 			$(".item").css({"position":"relative","top":"0"});
 			$(".next").css("position","relative");
 			}
