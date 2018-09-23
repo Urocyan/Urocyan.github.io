@@ -53,8 +53,7 @@
 	left:30%;
 	}
 	.carouselResults {
-		max-width: 50%;
-		max-height: 50%;
+		max-width: 100%;
 		object-fit: cover;
 		display: block;
 		margin-left: auto;
@@ -451,8 +450,9 @@ var doc = window.document;
 $("#fullScreen").click( function() {
 	var buttonPlacement = (screen.width / 2)-(screen.width * 0.05);
 	console.log(buttonPlacement);
-	$(".carouselResults").css({"max-height":(screen.height * 0.75),"max-width":screen.width});
-	$(".item").css({"height":screen.height,"width":screen.width});
+		$(".carouselResults").css({"max-height":(screen.height * 0.75),"max-width":screen.width});
+	$(".item").css({"height":screen.height,"width":screen.width,});
+	$(".item").addClass("fSMobileCarousel");
 	$(".panel-footer").hide();
 	if (document.getElementById("myCarousel").requestFullscreen) {
 		document.getElementById("myCarousel").requestFullscreen();
