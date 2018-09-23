@@ -8,6 +8,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
 <style>
 	body {
 		background-color: black;
@@ -482,6 +483,12 @@ function exitHandler()
 		console.log("exit");
     }
 }
+$("#myCarousel").swiperight( function() {
+	$("#myCarousel").carousel('prev');
+});
+$("#myCarousel").swipeleft( function() {
+	$("#myCarousel").carousel('next');
+});
 });
 </script>
 <div id="mainUI">
