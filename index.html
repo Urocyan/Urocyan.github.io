@@ -457,7 +457,7 @@ $("#myCarousel").bind('slide.bs.carousel', function (e) {
 			}
 			console.log(thisHeight);
 			$(".next").css({"position":"fixed","top":((screen.height - thisHeight)/2)});
-			}, 500);
+			}, 100);
 		}
 	}
 	});
@@ -501,6 +501,7 @@ function exitHandler()
 		if(screen.width < 992) {
 		$(".carousel-control").show();
 		$(".item").css("position","relative");
+		$(".next").css("position","relative");
 		}
 		console.log("exit");
 		isFscreen = false;
