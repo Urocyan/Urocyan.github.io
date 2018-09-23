@@ -494,18 +494,59 @@ if (document.addEventListener)
 
 function exitHandler()
 {
-    if (!document.webkitIsFullScreen)
-    {
-        $("#myCarousel").css({"height":"auto","width":"auto"});
-		$(".panel-footer").show();
-		if(screen.width < 992) {
-		$(".carousel-control").show();
-		$(".item").css("position","relative");
-		$(".next").css("position","relative");
+    if (document.webkitFullscreenEnabled) {
+		if(!document.webkitIsFullScreen)
+		{
+			$("#myCarousel").css({"height":"auto","width":"auto"});
+			$(".panel-footer").show();
+			if(screen.width < 992) {
+			$(".carousel-control").show();
+			$(".item").css({"position":"relative","top":"0"});
+			$(".next").css("position","relative");
+			}
+			console.log("exit");
+			isFscreen = false;
 		}
-		console.log("exit");
-		isFscreen = false;
-    }
+	}
+	else if(document.mozFullScreenEnabled) {
+		if(!document.mozFullScreen) {
+			$("#myCarousel").css({"height":"auto","width":"auto"});
+			$(".panel-footer").show();
+			if(screen.width < 992) {
+			$(".carousel-control").show();
+			$(".item").css({"position":"relative","top":"0"});
+			$(".next").css("position","relative");
+			}
+			console.log("exit");
+			isFscreen = false;
+		}
+	}
+	else if(document.msFullscreenEnabled) {
+		if(!document.fullscreen) {
+			$("#myCarousel").css({"height":"auto","width":"auto"});
+			$(".panel-footer").show();
+			if(screen.width < 992) {
+			$(".carousel-control").show();
+			$(".item").css({"position":"relative","top":"0"});
+			$(".next").css("position","relative");
+			}
+			console.log("exit");
+			isFscreen = false;
+		}
+	}
+	else if(Document.fullscreenEnabled) {
+		if(!document.fullscreen) {
+			$("#myCarousel").css({"height":"auto","width":"auto"});
+			$(".panel-footer").show();
+			if(screen.width < 992) {
+			$(".carousel-control").show();
+			$(".item").css({"position":"relative","top":"0"});
+			$(".next").css("position","relative");
+			}
+			console.log("exit");
+			isFscreen = false;
+		}
+	}
 }
 $("#myCarousel").swiperight( function() {
 	$("#myCarousel").carousel('prev');
