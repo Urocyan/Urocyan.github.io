@@ -8,7 +8,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+<script src="jquery.mobile.custom.js"></script>
 <style>
 	body {
 		background-color: black;
@@ -137,6 +137,8 @@
 <body>
 <script>
 $(document).ready(function(){
+	//window.addEventListener ("touchmove", function (event) { event.preventDefault (); }, {passive: false});
+	touch-action: manipulation;
 	var curPage = 1;
 	var maxPage = 50;
 	function tagButton(tagButton) {
