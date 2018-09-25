@@ -59,12 +59,17 @@
 		margin-left: auto;
 		margin-right: auto;
 	}
+	.btn-block {
+		border: 1px solid white;
+	}
 	#toggleButton {
 		width: 100%;
 		background-color: darkturquoise;
 	}
 	#blToggle {
-		width: 100%;
+		background-color: darkturquoise;
+	}
+	#alToggle {
 		background-color: darkturquoise;
 	}
 	#advancedSettings {
@@ -189,6 +194,50 @@ $(document).ready(function(){
 		"class":"item active"
 		}).html("<img src='https://static1.e621.net/data/38/aa/38aa2733bbd3f38d0265ce0cdacd0f55.jpg' class='img-fluid' style='margin-left: auto; margin-right: auto;'></img>").appendTo("#innerIMG");
 	}
+	//start of artist list
+	var artList = [];
+	var enumArtList = function() {
+	$("#alHolder").empty();
+	$.each( artList, function(i, item) {
+		$("<li>").html(item).attr("class","list-group-item").appendTo("#alHolder");
+	});
+	}
+	var startArtList = getCookie('artlist');
+	if(startArtList != "") {
+	artList = JSON.parse(startArtList);
+	enumArtList();
+	}	
+	$("#artistAddButton").click( function() {
+	//Adding tags to artist list
+	var artistToAdd = $("#artistToAdd").val();
+	if(artistToAdd.indexOf(' ') > -1) {
+		alert("Please enter one at a time.");
+		$("#artistToAdd").addClass("alert alert-danger");
+	}
+	else if(artList.indexOf(artistToAdd) > -1) {
+		alert("Artist has already been added.");
+		$("#artistToAdd").addClass("alert alert-danger");
+	}
+	else {
+		artList.push(artistToAdd);
+		var alString = JSON.stringify(artList);
+		createCookie('artlist',alString);
+		enumArtList();
+	}
+	});
+	$("#artistToAdd").focusin(function () {
+	if($("#artistToAdd").hasClass("alert-danger")) {
+		$("#artistToAdd").removeClass("alert");
+		$("#artistToAdd").removeClass("alert-danger");
+	}
+	});
+	$("#clearAL").click( function() {
+	artList = [];
+	$("#alHolder").empty();
+	createCookie('artlist',"");
+	});
+	//end of artist list
+	//start of blacklist
 	var blacklist = [];
 	var enumBlacklist = function() {
 	$("#blHolder").empty();
@@ -235,6 +284,7 @@ $(document).ready(function(){
 	$("#blHolder").empty();
 	createCookie('blacklist',"");
 	});
+	//end of blacklist
 	$('[data-toggle="tooltip"]').tooltip();
 	var pausedShow = false;
 	var container = $(".container");
@@ -542,8 +592,8 @@ function exitHandler()
 			$("#myCarousel").css({"height":"auto","width":"auto"});
 			$(".panel-footer").show();
 			if(screen.width < 992) {
-			$(".item").css({"position":"relative","top":"0"});
-			$(".next").css("position","relative");
+			$(".item").removeAttr("style");
+			$(".next").removeAttr("style");
 			}
 			console.log("exit");
 			isFscreen = false;
@@ -554,8 +604,8 @@ function exitHandler()
 			$("#myCarousel").css({"height":"auto","width":"auto"});
 			$(".panel-footer").show();
 			if(screen.width < 992) {
-			$(".item").css({"position":"relative","top":"0"});
-			$(".next").css("position","relative");
+			$(".item").removeAttr("style");
+			$(".next").removeAttr("style");
 			}
 			console.log("exit");
 			isFscreen = false;
@@ -566,8 +616,8 @@ function exitHandler()
 			$("#myCarousel").css({"height":"auto","width":"auto"});
 			$(".panel-footer").show();
 			if(screen.width < 992) {
-			$(".item").css({"position":"relative","top":"0"});
-			$(".next").css("position","relative");
+			$(".item").removeAttr("style");
+			$(".next").removeAttr("style");
 			}
 			console.log("exit");
 			isFscreen = false;
@@ -578,8 +628,8 @@ function exitHandler()
 			$("#myCarousel").css({"height":"auto","width":"auto"});
 			$(".panel-footer").show();
 			if(screen.width < 992) {
-			$(".item").css({"position":"relative","top":"0"});
-			$(".next").css("position","relative");
+			$(".item").removeAttr("style");
+			$(".next").removeAttr("style");
 			}
 			console.log("exit");
 			isFscreen = false;
@@ -632,7 +682,7 @@ $("#myCarousel").swipeleft( function() {
 <div class="container-fluid">
 <div class="row">
 	<div class="col-lg-12">
-	<button class="btn colorTheme" id="toggleButton" data-toggle="collapse" data-target="#advancedSettings">Search Settings <span class="glyphicon glyphicon-chevron-down" id="slideArrow"></span></button>
+	<button class="btn colorTheme btn-block" id="toggleButton" data-toggle="collapse" data-target="#advancedSettings">Search Settings <span class="glyphicon glyphicon-chevron-down" id="slideArrow"></span></button>
 	</div>
 </div>
 </div>
@@ -690,7 +740,7 @@ $("#myCarousel").swipeleft( function() {
 	</div>
 	<div class="row">
 		<div class="col-lg-12">
-		<button class="btn colorTheme" id="blToggle" data-toggle="collapse" data-target="#blacklist">Blacklist</button>
+		<button class="btn colorTheme btn-block" id="blToggle" data-toggle="collapse" data-target="#blacklist">Blacklist</button>
 		</div>
 		<div class="col-lg-12 collapse" id="blacklist">
 		<div class="panel panel-primary">
@@ -706,6 +756,26 @@ $("#myCarousel").swipeleft( function() {
 		</div>
 		</div>
 		</div>
+	</div>
+	<div class="row">
+	<div class="col-lg-12">
+	<button class="btn btn-block colorTheme" data-toggle="collapse" id="alToggle" data-target="#artistList">Watched Artists</button>
+	</div>
+	<div class="col-lg-12 collapse" id="artistList">
+		<div class="panel panel-primary" style="width:100%;">
+		<div class="input-group">
+		<span class="input-group-addon">Artist</span><input class="form-control" id="artistToAdd" /><div class="input-group-btn"><button class="btn btn-primary" id="artistAddButton">Add To List</button></div>
+		<div class="input-group-btn">
+		<button class="btn btn-danger" id="clearAL">Clear List</button>
+		</div>
+		</div>
+		<div class="panel-body">
+		<ul id="alHolder" class="list-group">
+		</ul>
+		</div>
+		</div>
+	</div>
+	</div>
 	</div>
 </div>
 </div>
