@@ -223,6 +223,7 @@ $(document).ready(function(){
 								if(newArt > 0) {
 									$(".artListItem").eq(i).html(item + "<span class='badge searchItem'>"+newArt+"</span>");
 									$(".searchItem").click( function() {
+											clearCarousel();
 											var artSearch = $(this).parent().html();
 											console.log(artSearch);
 											artSearch = artSearch.substring(0,(artSearch.indexOf("<")));
