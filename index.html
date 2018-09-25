@@ -217,7 +217,15 @@ $(document).ready(function(){
 						success: function( data ) {
 								var newArt = data.length;
 								if(newArt > 0) {
-									$(".artListItem").eq(i).html(item + "<span class='badge searchItem'>"+newArt+"</span>");	
+									$(".artListItem").eq(i).html(item + "<span class='badge searchItem'>"+newArt+"</span>");
+									$(".searchItem").click( function() {
+											var artSearch = $(this).parent().html();
+											console.log(artSearch);
+											artSearch = artSearch.substring(0,(artSearch.indexOf("<")));
+											$("#tagsInput").val(artSearch + "%20date:week");
+											getResults();
+											$("#tagsInput").val("");
+									});
 								}
 						}	
 					});
@@ -660,16 +668,8 @@ $("#myCarousel").swiperight( function() {
 $("#myCarousel").swipeleft( function() {
 	$("#myCarousel").carousel('next');
 });
-//Search new art items
-$(".searchItem").click( function() {
-		var artSearch = $(this).parent().html();
-		console.log(artSearch);
-		artSearch = artSearch.substring(0,(artSearch.indexOf("<")));
-		$("#tagsInput").val(artSearch + "%20date:week");
-		getResults();
-		$("#tagsInput").val("");
-	});
 });
+//Search new art items
 </script>
 <div id="mainUI">
 <!--<div class="container">
