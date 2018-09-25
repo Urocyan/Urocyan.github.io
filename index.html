@@ -196,6 +196,12 @@ $(document).ready(function(){
 	}
 	//start of artist list
 	var artList = [];
+	var enumArtList = function() {
+	$("#alHolder").empty();
+	$.each( artList, function(i, item) {
+		$("<li>").html(item).attr("class","list-group-item artListItem").appendTo("#alHolder");
+	});
+	}
 	var startArtList = getCookie('artlist');
 	function checkNewArt() {
 		var e621API = "https://e621.net/post/index.json?tags=";
@@ -219,12 +225,6 @@ $(document).ready(function(){
 		}
 	}
 	checkNewArt();
-	var enumArtList = function() {
-	$("#alHolder").empty();
-	$.each( artList, function(i, item) {
-		$("<li>").html(item).attr("class","list-group-item artListItem").appendTo("#alHolder");
-	});
-	}
 	$("#artistAddButton").click( function() {
 	//Adding tags to artist list
 	var artistToAdd = $("#artistToAdd").val();
