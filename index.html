@@ -233,6 +233,7 @@ $(document).ready(function(){
 	$("#clearBL").click( function() {
 	blacklist = [];
 	$("#blHolder").empty();
+	createCookie('blacklist',"");
 	});
 	$('[data-toggle="tooltip"]').tooltip();
 	var pausedShow = false;
