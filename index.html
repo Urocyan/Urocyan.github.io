@@ -197,7 +197,7 @@ $(document).ready(function(){
 	});
 	}
 	var startBlist = getCookie('blacklist');
-	if(startBlist != null) {
+	if(startBlist != "") {
 	blacklist = JSON.parse(startBlist);
 	enumBlacklist();
 	}	
