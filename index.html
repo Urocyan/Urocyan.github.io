@@ -140,6 +140,9 @@
 	.searchItem:hover {
 		box-shadow: 0 0 15px cyan;
 	}
+	.carousel-control {
+		visibility: hidden;
+	}
 </style>
 </head>
 <body>
@@ -196,8 +199,10 @@ $(document).ready(function(){
 	$("#innerIMG").empty();
 	$("<div>").attr({
 		"class":"item active"
-		}).html("<img src='https://static1.e621.net/data/38/aa/38aa2733bbd3f38d0265ce0cdacd0f55.jpg' class='img-fluid' style='margin-left: auto; margin-right: auto;'></img>").appendTo("#innerIMG");
+		}).html("<div class='panel panel-default' style='width:100%; height:"+(screen.height * 0.6)+"px;'><div class='panel-heading'><h3>Quick Start Guide</h3></div><div align='center' class='panel-body' style='overflow:scroll;'><ul class='list-group'><li class='list-group-item-success list-group-item'>Updates <span class='glyphicon glyphicon-chevron-right'></span> Blacklist and Artist Watch List more persistent; Quickstart guide added. </li><li class='list-group-item' >Type your favorite tags into the \"tags\" box, then click <span class='glyphicon glyphicon-refresh'></span> to search.</li><li class='list-group-item'>Blacklist unwanted tags under \"Blacklist\" in Search Settings.</li><li class='list-group-item'>To get updates when an artist has posted recently, add names to the 'Watched Artists' list under Search Settings.</ul></div></div>").appendTo("#innerIMG");
+		$(".carousel-control").css("visibility","hidden");
 	}
+	clearCarousel();
 	//start of artist list
 	var artList = [];
 	var enumArtList = function() {
@@ -252,7 +257,7 @@ $(document).ready(function(){
 	else {
 		artList.push(artistToAdd);
 		var alString = JSON.stringify(artList);
-		createCookie('artlist',alString);
+		createCookie('artlist',alString,365);
 		enumArtList();
 	}
 	});
@@ -265,7 +270,7 @@ $(document).ready(function(){
 	$("#clearAL").click( function() {
 	artList = [];
 	$("#alHolder").empty();
-	createCookie('artlist',"");
+	createCookie('artlist',"",365);
 	});
 	//end of artist list
 	//start of blacklist
@@ -290,7 +295,7 @@ $(document).ready(function(){
 			blacklist.push(item);
 		});
 		var blString = JSON.stringify(blacklist);
-		createCookie('blacklist',blString);
+		createCookie('blacklist',blString,365);
 		enumBlacklist();
 	}
 	else if(blacklist.indexOf(tagToAdd) > -1) {
@@ -300,7 +305,7 @@ $(document).ready(function(){
 	else {
 		blacklist.push(tagToAdd);
 		var blString = JSON.stringify(blacklist);
-		createCookie('blacklist',blString);
+		createCookie('blacklist',blString,365);
 		enumBlacklist();
 	}
 	});
@@ -313,11 +318,11 @@ $(document).ready(function(){
 	$("#clearBL").click( function() {
 	blacklist = [];
 	$("#blHolder").empty();
-	createCookie('blacklist',"");
+	createCookie('blacklist',"",365);
 	});
 	//end of blacklist
 	$('[data-toggle="tooltip"]').tooltip();
-	var pausedShow = false;
+	var pausedShow = true;
 	var container = $(".container");
 	var getResults = function () {
 		var e621API = "https://e621.net/post/index.json?tags=";
@@ -348,7 +353,7 @@ $(document).ready(function(){
 		tags = tags.replace(/\ /g, '%20');
 		tags += "&limit=" + $("#limitNum").val();
 		e621API += tags;
-		var amountOfResults = 1;
+		var amountOfResults = 0;
 		var goodResult = true;
 		console.log(e621API);
 		$.ajax({
@@ -381,6 +386,15 @@ $(document).ready(function(){
 				else {
 					artist = artist.charAt(0).toUpperCase() + artist.slice(1);
 				}
+				if(amountOfResults == 0) {
+					$(".item.active").html("<div class='item'><div class='panel panel-default'><div class='panel-heading' align='center'><div class='well'><h3>"+artist+"</h3></div></div><div class='panel-body'><img style='max-height:"+(screen.height * 0.75)+"px;' src='"+item.file_url+"' alt='"+item.artist+"' class='carouselResults'></div><div class='panel-footer' align='center'><div class='btn-group'><button class='btn btn-default'><a href='"+item.source+"' target='_blank'>Source</a></button><button class='btn btn-default'>"+item.fav_count+"<span class='glyphicon glyphicon-heart'></span></button><button class='btn btn-default'>"+item.score+"<span class='glyphicon glyphicon-arrow-up'></span></button></div><br /><div class='container-fluid' style='max-width: 75%;'><div class='well alert-info'><div class='btn-group tagButtons' id='resultNum"+i+"'></div></div></div></div></div></div>");
+					$("<li>").attr({
+					"data-target": "#myCarousel",
+					"data-slide-to": amountOfResults + 1,
+					}).appendTo("#indicators");
+					amountOfResults++;
+				}
+				else {
 				$( "<div>" ).attr({
 				"class": "item",
 				}).html(
@@ -399,13 +413,14 @@ $(document).ready(function(){
 				});
 				$("<li>").attr({
 				"data-target": "#myCarousel",
-				"data-slide-to": amountOfResults,
+				"data-slide-to": amountOfResults + 1,
 				}).appendTo("#indicators");
 				amountOfResults++;
 				$('[data-toggle="tooltip"]').tooltip();
 				$('[data-toggle="popover"]').popover();
 				if ( i === 100 ) {
 				return false;
+				}
 				}
 			}
 			else if(item.file_ext.indexOf("webm" > -1) && item.file_ext.indexOf("swf") == -1) {
@@ -489,6 +504,8 @@ $(document).ready(function(){
 		});
 	}
 	});
+	$("#myCarousel").carousel('pause');
+	$(".carousel-control").css("visibility","visible");
 	}
 	$("#resultButton").click(function() {
 		clearCarousel();
@@ -698,16 +715,15 @@ $("#myCarousel").swipeleft( function() {
 </div>
 <div class="container-fluid">
 <div class="row">
-	<div class="col-lg-12" ng-app="">
+	<div class="col-lg-12">
 		<div class="input-group">
 			<span class="input-group-addon">Tags</span>
-			<input id="tagsInput" type="text" class="form-control" name="msg" placeholder="Enter Tags Here." ng-model="name">
+			<input id="tagsInput" type="text" class="form-control" name="msg" placeholder="Enter Tags Here.">
 			<div class="input-group-btn">
 			<button class="btn btn-primary" id="resultButton"><span class="glyphicon glyphicon-refresh"></span></button>
 			<button class="btn btn-danger"><span id="clearButton" class="glyphicon glyphicon-remove"></span></button>
 			</div>
 		</div>
-		<p ng-bind="name"></p>
 	</div>
 </div>
 </div>
@@ -796,7 +812,7 @@ $("#myCarousel").swipeleft( function() {
 	<div class="col-lg-12 collapse" id="artistList">
 		<div class="panel panel-primary" style="width:100%;">
 		<div class="input-group">
-		<span class="input-group-addon">Artist</span><input title="Not yet functional." data-toggle="tooltip" class="form-control" id="artistToAdd" /><div class="input-group-btn"><button class="btn btn-primary" id="artistAddButton">Add To List</button></div>
+		<span class="input-group-addon">Artist</span><input data-toggle="tooltip" class="form-control" id="artistToAdd" /><div class="input-group-btn"><button class="btn btn-primary" id="artistAddButton">Add To List</button></div>
 		<div class="input-group-btn">
 		<button class="btn btn-danger" id="clearAL">Clear List</button>
 		</div>
@@ -827,7 +843,6 @@ $("#myCarousel").swipeleft( function() {
 		  <!-- Wrapper for slides -->
 		  <div class="carousel-inner" id="innerIMG">
 			<div class="item active">
-				<img src="https://static1.e621.net/data/38/aa/38aa2733bbd3f38d0265ce0cdacd0f55.jpg" class="img-fluid" style="margin-left: auto; margin-right: auto;"></img>
 			</div>
 		  </div>
 
@@ -846,8 +861,8 @@ $("#myCarousel").swipeleft( function() {
 <div class="row" align="center">
 <div class="btn-group">
 <button id="UIButton" class="btn btn-primary barButton">Toggle UI</button>
-<button class="btn btn-primary" id="fullScreen" title="only works for Chrome!" data-toggle="tooltip"><span class="glyphicon glyphicon-fullscreen"></span></button>
-<button id="pauseSlideshow" class="btn btn-primary barButton">Pause Slideshow<span class="glyphicon glyphicon-pause"></span></button>
+<button class="btn btn-primary" id="fullScreen" data-toggle="tooltip"><span class="glyphicon glyphicon-fullscreen"></span></button>
+<button id="pauseSlideshow" class="btn btn-primary barButton">Play Slideshow<span class="glyphicon glyphicon-play"></span></button>
 </div>
 </div>
 <div class="row" align="center">
