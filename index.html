@@ -14,6 +14,7 @@
 		background-color: black;
 		color: white;
 		font-family: Helvetica;
+		overflow-x: hidden;
 	}
 	#toggleUI {
 		background-color: DarkSlateGray;
@@ -71,9 +72,6 @@
 	}
 	#alToggle {
 		background-color: darkturquoise;
-	}
-	#advancedSettings {
-		display:none;
 	}
 	.row.no-gutter {
 		margin-left: 0;
@@ -143,11 +141,21 @@
 	.carousel-control {
 		visibility: hidden;
 	}
+	.nav-tabs > li {
+    float:none;
+    display:inline-block;
+    zoom:1;
+	}
+
+	.nav-tabs {
+    text-align:center;
+	}
 </style>
 </head>
 <body>
 <script>
 $(document).ready(function(){
+	$("#homePage").css("max-width",window.width);
 	var createCookie = function(name, value, days) {
     var expires;
     if (days) {
@@ -690,10 +698,10 @@ $("#myCarousel").swipeleft( function() {
   <li class="active"><a data-toggle="tab" href="#homePage">Home</a></li>
   <li><a data-toggle="tab" href="#menu1">Artist List</a></li>
   <li><a data-toggle="tab" href="#menu2">Blacklist</a></li>
+  <li><a data-toggle="tab" href="#menu3">Search</a></li>
 </ul>
 <div class="tab-content">
 <div id="homePage" class="tab-pane fade in active">
-<div id="mainUI">
 
 <!--<div class="container">
 	<div class="jumbotron colorTheme" style="background-color: darkturquoise; color: white; text-align: center;">
@@ -728,74 +736,14 @@ $("#myCarousel").swipeleft( function() {
 	</div>
 </div>
 </div>
-<div class="container-fluid">
-<div class="row">
-	<div class="col-lg-12">
-	<button class="btn colorTheme btn-block" id="toggleButton" data-toggle="collapse" data-target="#advancedSettings">Search Settings <span class="glyphicon glyphicon-chevron-down" id="slideArrow"></span></button>
-	</div>
-</div>
-</div>
-<div class="container-fluid collapse" id="advancedSettings">
-	<div class="row no-gutter">
-		<div class="col-lg-6 padding-0">
-		<div class="input-group">
-				<span class="input-group-addon">Max Results Per Page</span>
-				<input id="limitNum" type="number" class="form-control" name="msg" placeholder="Max results per page." value="75">
-		</div>
-		</div>
-		<div class="col-lg-6 padding-0">
-		<div class="input-group">
-				<span class="input-group-addon">Sort By</span>
-				<select class="form-control" id="sortBy">
-					<option>Score Descending</option>
-					<option>Score Ascending</option>
-				</select>
-		</div>
-		</div>
-		<div class="col-lg-6">
-		<div class="input-group">
-			<span class="input-group-addon">Score</span>
-			<select class="form-control" id="sel1" >
-				<option>></option>
-				<option><</option>
-				<option>>=</option>
-				<option><=</option>
-				<option>=</option>
-			</select>
-		<input class="form-control" type="number" id = "scoreAmt" min="0" max="100000" value="0" />
-		</div>
-		</div>
-		<div class="col-lg-6">
-		<div class="input-group">
-			<span class="input-group-addon">Date Posted</span>
-			<select class="form-control" id="postDate">
-				<option>null</option>
-				<option>today</option>
-				<option>yesterday</option>
-				<option>week</option>
-				<option>month</option>
-				<option>year</option>
-			</select>
-		</div>
-		</div>
-		<div class="col-lg-6">
-		<div class="input-group">
-			<span class="input-group-addon">Ratio</span><input type="number" class="form-control" id="ratioParam1" /><span class="input-group-addon">:</span><input type="number" id="ratioParam2" class="form-control" />
-			<div class="input-group-btn">
-			<button class="btn btn-primary" id="detectScreenSize">Wallpaper</button>
-			</div>
-		</div>
-		</div>
-	</div>
-</div>
-</div>
 <div class="row">
 <div class = "col-md-12">
 <div class="IMGcontainer container">
 </div>
 </div>
 </div>
-	<div class = "container-fluid" align="center" id="fScreen" >
+	<div class="row">
+	<div class = "col-lg-12" align="center" id="fScreen" >
 		<div id="myCarousel" class="carousel slide" data-ride="carousel">
 		  <!-- Indicators -->
 		  <ol class="carousel-indicators" id="indicators">
@@ -819,6 +767,7 @@ $("#myCarousel").swipeleft( function() {
 			<span class="sr-only">Next</span>
 		  </a>
 		</div>
+	</div>
 	</div>
 <div class="row" align="center">
 <div class="btn-group">
@@ -875,7 +824,70 @@ $("#myCarousel").swipeleft( function() {
 		</div>
 		</div>
 		</div>
+</div>
+</div>
+<div class="tab-pane fade" id="menu3">
+<div class="row">
+<div class="col-lg-12" id="advancedSettings">
+	<div class="panel panel-default" style="width:100%; padding: 0px;">
+	<div class="panel-heading" align="center"><h3>Search Settings</h3>
 	</div>
+	<div class="panel-body">
+	<div class="row no-gutter">
+		<div class="col-lg-6 padding-0">
+		<div class="input-group">
+				<span class="input-group-addon">Max Results Per Page</span>
+				<input id="limitNum" type="number" class="form-control" name="msg" placeholder="Max results per page." value="75">
+		</div>
+		</div>
+		<div class="col-lg-6 padding-0">
+		<div class="input-group">
+				<span class="input-group-addon">Sort By</span>
+				<select class="form-control" id="sortBy">
+					<option>Score Descending</option>
+					<option>Score Ascending</option>
+				</select>
+		</div>
+		</div>
+		<div class="col-lg-6">
+		<div class="input-group">
+			<span class="input-group-addon">Score</span>
+			<select class="form-control" id="sel1" >
+				<option>></option>
+				<option><</option>
+				<option>>=</option>
+				<option><=</option>
+				<option>=</option>
+			</select>
+		<input class="form-control" type="number" id = "scoreAmt" min="0" max="100000" value="0" />
+		</div>
+		</div>
+		<div class="col-lg-6">
+		<div class="input-group">
+			<span class="input-group-addon">Date Posted</span>
+			<select class="form-control" id="postDate">
+				<option>null</option>
+				<option>today</option>
+				<option>yesterday</option>
+				<option>week</option>
+				<option>month</option>
+				<option>year</option>
+			</select>
+		</div>
+		</div>
+		<div class="col-lg-6">
+		<div class="input-group">
+			<span class="input-group-addon">Ratio</span><input type="number" class="form-control" id="ratioParam1" /><span class="input-group-addon">:</span><input type="number" id="ratioParam2" class="form-control" />
+			<div class="input-group-btn">
+			<button class="btn btn-primary" id="detectScreenSize">Wallpaper</button>
+			</div>
+		</div>
+		</div>
+	</div>
+	</div>
+	</div>
+</div>
+</div>
 </div>
 </div>
 </body>
