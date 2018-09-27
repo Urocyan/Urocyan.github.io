@@ -230,7 +230,7 @@ $(document).ready(function(){
 									$(".searchItem").click( function() {
 											$('.nav-tabs a:first').tab('show');
 											clearCarousel();
-											var artSearch = $(this).parent().html();
+											var artSearch = $(this).html();
 											artSearch = artSearch.substring(0,(artSearch.indexOf("<")));
 											console.log(artSearch);
 											$("#tagsInput").val(artSearch + " date:week");
