@@ -218,7 +218,7 @@ $(document).ready(function(){
 				artList = JSON.parse(startArtList);
 				enumArtList();
 				$(".artListItem").click( function() {
-					if($(this).indexOf("badge") > -1) {
+					if($(this).html().indexOf("badge") > -1) {
 					$('.nav-tabs a:first').tab('show');
 					clearCarousel();
 					var artSearch = $(this).html();
