@@ -217,6 +217,18 @@ $(document).ready(function(){
 		if(startArtList != "") {
 				artList = JSON.parse(startArtList);
 				enumArtList();
+				$(".artListItem").click( function() {
+					if($(this).indexOf("badge") > -1) {
+					$('.nav-tabs a:first').tab('show');
+					clearCarousel();
+					var artSearch = $(this).html();
+					artSearch = artSearch.substring(0,(artSearch.indexOf("<")));
+					console.log(artSearch);
+					$("#tagsInput").val(artSearch + " date:week");
+					getResults();
+					$("#tagsInput").val("");
+					}
+				});
 				$.each(artList, function(i, item) {
 					e621API = "https://e621.net/post/index.json?tags=" + item + "%20date:week";
 					$.ajax({
@@ -227,16 +239,6 @@ $(document).ready(function(){
 								var newArt = data.length;
 								if(newArt > 0) {
 									$(".artListItem").eq(i).addClass("searchItem").html(item + "<span class='badge'>"+newArt+"</span>");
-									$(this).click( function() {
-											$('.nav-tabs a:first').tab('show');
-											clearCarousel();
-											var artSearch = $(this).html();
-											artSearch = artSearch.substring(0,(artSearch.indexOf("<")));
-											console.log(artSearch);
-											$("#tagsInput").val(artSearch + " date:week");
-											getResults();
-											$("#tagsInput").val("");
-									});
 								}
 						}	
 					});
