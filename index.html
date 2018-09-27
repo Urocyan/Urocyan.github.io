@@ -199,7 +199,7 @@ $(document).ready(function(){
 	$("#innerIMG").empty();
 	$("<div>").attr({
 		"class":"item active"
-		}).html("<div class='panel panel-default' style='width:100%; max-height:"+(screen.height * 0.6)+"px;'><div class='panel-heading'><h3>Quick Start Guide</h3></div><div align='center' class='panel-body' style='overflow:scroll;'><ul class='list-group'><li class='list-group-item-success list-group-item'>Updates <span class='glyphicon glyphicon-chevron-right'></span> Blacklist and Artist Watch List more persistent; Quickstart guide added. </li><li class='list-group-item' >Type your favorite tags into the \"tags\" box, then click <span class='glyphicon glyphicon-refresh'></span> to search.</li><li class='list-group-item'>Blacklist unwanted tags under \"Blacklist\" in Search Settings.</li><li class='list-group-item'>To get updates when an artist has posted recently, add names to the 'Watched Artists' list under Search Settings.</ul></div></div>").appendTo("#innerIMG");
+		}).html("<div class='panel panel-default' style='width:100%; max-height:"+(screen.height * 0.6)+"px;'><div class='panel-heading'><h3>Quick Start Guide</h3></div><div align='center' class='panel-body' style='overflow:scroll;'><ul class='list-group'><li class='list-group-item-success list-group-item'>Updates <span class='glyphicon glyphicon-chevron-right'></span> tabs added for more organization. Artist list improved. </li><li class='list-group-item' >Type your favorite tags into the \"tags\" box, then click <span class='glyphicon glyphicon-refresh'></span> to search.</li><li class='list-group-item'>Blacklist unwanted tags under \"Blacklist\" in Search Settings.</li><li class='list-group-item'>To get updates when an artist has posted recently, add names to the 'Watched Artists' list under Search Settings.</ul></div></div>").appendTo("#innerIMG");
 		$(".carousel-control").css("visibility","hidden");
 	}
 	clearCarousel();
@@ -233,7 +233,7 @@ $(document).ready(function(){
 											var artSearch = $(this).parent().html();
 											console.log(artSearch);
 											artSearch = artSearch.substring(0,(artSearch.indexOf("<")));
-											$("#tagsInput").val(artSearch + "%20date:week");
+											$("#tagsInput").val(artSearch + " date:week");
 											getResults();
 											$("#tagsInput").val("");
 									});
@@ -354,7 +354,7 @@ $(document).ready(function(){
 		tags = tags.replace(/\ /g, '%20');
 		tags += "&limit=" + $("#limitNum").val();
 		e621API += tags;
-		var amountOfResults = 0;
+		var amountOfResults = 1;
 		var goodResult = true;
 		console.log(e621API);
 		$.ajax({
@@ -405,7 +405,7 @@ $(document).ready(function(){
 				});
 				$("<li>").attr({
 				"data-target": "#myCarousel",
-				"data-slide-to": amountOfResults,
+				"data-slide-to": amountOfResults + 1,
 				}).appendTo("#indicators");
 				amountOfResults++;
 				$('[data-toggle="tooltip"]').tooltip();
@@ -447,7 +447,7 @@ $(document).ready(function(){
 				});
 				$("<li>").attr({
 				"data-target": "#myCarousel",
-				"data-slide-to": amountOfResults,
+				"data-slide-to": amountOfResults + 1,
 				}).appendTo("#indicators");
 				amountOfResults++;
 				if ( i === 100 ) {
@@ -464,7 +464,7 @@ $(document).ready(function(){
 				.appendTo( "#innerIMG");
 				$("<li>").attr({
 				"data-target": "#myCarousel",
-				"data-slide-to": amountOfResults,
+				"data-slide-to": amountOfResults + 1,
 				}).appendTo("#indicators");
 				amountOfResults++;
 				$('[data-toggle="tooltip"]').tooltip();
@@ -481,7 +481,7 @@ $(document).ready(function(){
 				.appendTo( "#innerIMG");
 				$("<li>").attr({
 				"data-target": "#myCarousel",
-				"data-slide-to": amountOfResults,
+				"data-slide-to": amountOfResults + 1,
 				}).appendTo("#indicators");
 				amountOfResults++;
 				if ( i === 100 ) {
