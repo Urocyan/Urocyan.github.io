@@ -227,13 +227,14 @@ $(document).ready(function(){
 								var newArt = data.length;
 								if(newArt > 0) {
 									$(".artListItem").eq(i).addClass("searchItem").html(item + "<span class='badge'>"+newArt+"</span>");
-									$(".searchItem").click( function() {
+									$(this).click( function() {
 											$('.nav-tabs a:first').tab('show');
 											clearCarousel();
 											var artSearch = $(this).html();
 											artSearch = artSearch.substring(0,(artSearch.indexOf("<")));
 											console.log(artSearch);
 											$("#tagsInput").val(artSearch + " date:week");
+											getResults();
 											$("#tagsInput").val("");
 									});
 								}
