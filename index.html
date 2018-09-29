@@ -260,7 +260,7 @@ $(document).ready(function(){
 	//start of favList retrieval
 	var favListStart = getCookie("favlist");
 	if(favListStart != "") {
-		favList = favListStart;
+		favList = JSON.parse(favListStart);
 		enumFavList();
 	}
 	//start of artist list
