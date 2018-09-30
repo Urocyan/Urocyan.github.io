@@ -311,7 +311,10 @@ $(document).ready(function(){
 				$(".artListItem").click( function() {
 					if($(this).html().indexOf("badge") > -1) {
 					$('.nav-tabs a:first').tab('show');
+					$("#myCarousel").css("display","block");
+					$("#IFScrollBox").css("display","none");
 					clearCarousel();
+					clearIFBox();
 					var artSearch = $(this).html();
 					artSearch = artSearch.substring(0,(artSearch.indexOf("<")));
 					console.log(artSearch);
