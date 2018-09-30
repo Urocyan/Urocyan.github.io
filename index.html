@@ -610,6 +610,7 @@ $(document).ready(function(){
 	var ISResultNum = 0;
 	var scrollMetric = 0;
 	var getResultsIS = function () {
+		ISResultNum = 0;
 		var e621API = "https://e621.net/post/index.json?tags=";
 		var tags = $("#tagsInput").val();
 		if($("#scoreAmt").val() > 0) {
@@ -746,6 +747,7 @@ $(document).ready(function(){
 				amountOfResults++;
 				ISResultNum++;
 				scrollMetric++;
+				console.log(scrollMetric);
 				if ( i === 100 ) {
 				return false;
 				}
@@ -759,6 +761,7 @@ $(document).ready(function(){
 				amountOfResults++;
 				ISResultNum++;
 				scrollMetric++;
+				console.log(scrollMetric);
 				if ( i === 100 ) {
 				return false;
 				}
@@ -791,6 +794,20 @@ $(document).ready(function(){
 		clearIFBox();
 		$("#tagsInput").val("");
 		$("#resultButton").removeClass("btn-success").addClass("btn-primary");
+		if(displayMode == "Gallery Mode") {
+			$("#gModeButton").attr("class","btn btn-info disabled");
+			$("#ifScrollButton").attr("class","btn btn-info active");
+			if($("#myCarousel").css("display") == "none") {
+			$("#myCarousel").css("display","block");
+			}
+		}
+		else if(displayMode == "Infinite Scroll") {
+			$("#gModeButton").attr("class","btn btn-info active");
+			$("#ifScrollButton").attr("class","btn btn-info disabled");
+			if($("#myCarousel").css("display") == "block") {
+			$("#myCarousel").css("display","none");
+			}
+		}
 	});
 $("#toggleButton").click(function() {
 	$("#advancedSettings").slideToggle(400);
