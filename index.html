@@ -311,10 +311,15 @@ $(document).ready(function(){
 				$(".artListItem").click( function() {
 					if($(this).html().indexOf("badge") > -1) {
 					$('.nav-tabs a:first').tab('show');
+					displayMode = "Gallery Mode";
+					$("#gModeButton").attr("class","btn disabled");
+					$("#ifScrollButton").attr("class","btn btn-info active");
+					if($("#myCarousel").css("display") == "none") {
 					$("#myCarousel").css("display","block");
+					}
+					clearIFBox();
 					$("#IFScrollBox").css("display","none");
 					clearCarousel();
-					clearIFBox();
 					var artSearch = $(this).html();
 					artSearch = artSearch.substring(0,(artSearch.indexOf("<")));
 					console.log(artSearch);
