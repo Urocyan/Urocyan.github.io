@@ -674,7 +674,7 @@ $(document).ready(function(){
 				$( "<div>" ).attr({
 				"class": "row",
 				}).html(
-				"<div class='col-lg-12 ifResult' style=' left:0;'><div class='panel panel-default' style='width:"+screen.width+"px;'><div class='panel-heading' align='center'><div class='well'><h3>"+artist+"</h3></div></div><div class='panel-body'><img style='max-width:100%; max-height:"+window.innerHeight+"px;' src='"+item.file_url+"' alt='"+item.artist+"' class='carouselResults'></div><div class='panel-footer' align='center'><div class='btn-group'><button class='btn btn-default'><a href='"+item.source+"' target='_blank'>Source</a></button><button class='btn btn-default favButton' onclick='heartButtonClick(this);' id='favButton_"+item.id+"'>"+item.fav_count+"<span class='glyphicon glyphicon-heart' ></span></button><button class='btn btn-default'>"+item.score+"<span class='glyphicon glyphicon-arrow-up'></span></button><button class='btn btn-info'><a href='#top' style='text-decoration: none;color:white;'>Top</a></button></div><br /><div class='container-fluid' style='max-width: 100%;'><div class='well alert-info'><div class='btn-group tagButtons' id='resultNum"+i+"'></div></div></div></div></div></div>")
+				"<div class='col-lg-12 ifResult' style=' left:0;'><div class='panel panel-default' style='width:"+screen.width+"px;'><div class='panel-heading' align='center'><div class='well'><h3>"+artist+"</h3></div></div><div class='panel-body'><img style='max-width:100%; max-height:"+window.innerHeight+"px;' src='"+item.file_url+"' alt='"+item.artist+"' class='carouselResults'></div><div class='panel-footer' align='center'><div class='btn-group'><button class='btn btn-default'><a href='"+item.source+"' target='_blank'>Source</a></button><button class='btn btn-default favButton' onclick='heartButtonClick(this);' id='favButton_"+item.id+"'>"+item.fav_count+"<span class='glyphicon glyphicon-heart' ></span></button><button class='btn btn-default'>"+item.score+"<span class='glyphicon glyphicon-arrow-up'></span></button><button class='btn btn-info'><a href='#top' style='text-decoration: none;color:white;'>Top</a></button></div><br /><div class='container-fluid' style='max-width: 100%;'><div class='well alert-info'><div class='btn-group tagButtons' id='resultNum"+scrollMetric+"'></div></div></div></div></div></div>")
 				.appendTo( "#IFScrollBox");
 				if(favList.indexOf(item.id) > -1) {
 				console.log($("#favButton_"+item.id+"> .glyphicon-heart").css("color"));
@@ -685,7 +685,7 @@ $(document).ready(function(){
 					console.log(tag);
 					$("<button>").attr({
 					"class": "btn btn-default tagAdd"
-					}).html(tag).appendTo("#resultNum"+currentIteration+"");
+					}).html(tag).appendTo("#resultNum"+scrollMetric+"");
 				});
 				$(".tagAdd").click( function() {
 					tagButton(this);
@@ -693,8 +693,6 @@ $(document).ready(function(){
 				amountOfResults++;
 				ISResultNum++;
 				scrollMetric++;
-				$('[data-toggle="tooltip"]').tooltip();
-				$('[data-toggle="popover"]').popover();
 				if ( i === 100 ) {
 				return false;
 				}
@@ -717,7 +715,7 @@ $(document).ready(function(){
 				$( "<div>" ).attr({
 				"class": "row",
 				}).html(
-				"<div class='col-lg-12 ifResult' style=' left:0;'><div class='panel panel-default' style='width:"+screen.width+"px;'><div class='panel-heading' align='center'><div class='well'><h3>"+artist+"</h3></div></div><div class='panel-body'><video class='carouselResults' controls style='max-width:100%; max-height:"+screen.innerHeight+"px;'><source src='"+item.file_url+"' type='video/webm' /></video></div><div class='panel-footer' align='center'><div class='btn-group'><button class='btn btn-default'><a href='"+item.source+"' target='_blank'>Source</a></button><button class='btn btn-default favButton' onclick='heartButtonClick(this);' id='favButton_"+item.id+"'>"+item.fav_count+"<span class='glyphicon glyphicon-heart heartButton'></span></button><button class='btn btn-default'>"+item.score+"<span class='glyphicon glyphicon-arrow-up'></span></button><button class='btn btn-info'><a href='#top' style=' text-decoration: none;color:white;'>Top</a></button></div><br /><div class='container-fluid' style='max-width: 75%;'><div class='well alert-info'><div class='btn-group tagButtons' id='resultNum"+i+"'></div></div></div></div></div></div>")
+				"<div class='col-lg-12 ifResult' style=' left:0;'><div class='panel panel-default' style='width:"+screen.width+"px;'><div class='panel-heading' align='center'><div class='well'><h3>"+artist+"</h3></div></div><div class='panel-body'><video class='carouselResults' controls style='max-width:100%; max-height:"+screen.innerHeight+"px;'><source src='"+item.file_url+"' type='video/webm' /></video></div><div class='panel-footer' align='center'><div class='btn-group'><button class='btn btn-default'><a href='"+item.source+"' target='_blank'>Source</a></button><button class='btn btn-default favButton' onclick='heartButtonClick(this);' id='favButton_"+item.id+"'>"+item.fav_count+"<span class='glyphicon glyphicon-heart heartButton'></span></button><button class='btn btn-default'>"+item.score+"<span class='glyphicon glyphicon-arrow-up'></span></button><button class='btn btn-info'><a href='#top' style=' text-decoration: none;color:white;'>Top</a></button></div><br /><div class='container-fluid' style='max-width: 75%;'><div class='well alert-info'><div class='btn-group tagButtons' id='resultNum"+scrollMetric+"'></div></div></div></div></div></div>")
 				.appendTo( "#IFScrollBox");
 				var currentIteration = i;
 				var tagArray = item.tags.split(" ");
@@ -725,7 +723,7 @@ $(document).ready(function(){
 					console.log(tag);
 					$("<button>").attr({
 					"class": "btn btn-default tagAdd"
-					}).html(tag).appendTo("#resultNum"+currentIteration+"");
+					}).html(tag).appendTo("#resultNum"+scrollMetric+"");
 				});
 				$(".tagAdd").click( function() {
 					tagButton(this);
@@ -965,14 +963,6 @@ $("#myCarousel").swipeleft( function() {
 	$("#myCarousel").carousel('next');
 });
 $("#myCarousel").on("taphold", function() {
-	$("#favModal").modal();
-	$("#favModal > .modal-dialog").css({"width":(screen.width),"top":"30%"});
-});
-$(".ifResult").on("taphold", function() {
-	$("#favModal").modal();
-	$("#favModal > .modal-dialog").css({"width":(screen.width),"top":"30%"});
-});
-$("#IFScrollBox > .ifResult").on("taphold", function() {
 	$("#favModal").modal();
 	$("#favModal > .modal-dialog").css({"width":(screen.width),"top":"30%"});
 });
