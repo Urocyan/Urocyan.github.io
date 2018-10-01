@@ -356,7 +356,7 @@ $(document).ready(function(){
 					clearIFBox();
 					clearCarousel();
 					var artSearch = $(this).html();
-					artSearch = artistToRemove.substring((artistToRemove.lastIndexOf(";") + 1));
+					artSearch = artSearch.substring((artSearch.lastIndexOf(";") + 1));
 					artSearch = artSearch.substring(0,(artSearch.indexOf("<")));
 					console.log(artSearch);
 					$("#tagsInput").val(artSearch + " date:week");
