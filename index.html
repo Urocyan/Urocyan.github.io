@@ -262,6 +262,7 @@ $(document).ready(function(){
 	$("#favHolder").empty();
 	$.each(favList, function(i, item) {
 		var e621API = "https://e621.net/post/index.json?tags=" + "id:" + item;
+		if(favList[i] != null) {
 		$.ajax({
 			type: "GET",
 			url: e621API,
@@ -290,6 +291,7 @@ $(document).ready(function(){
 				}
 			}
 		});
+		}
 	});
 	favListReady = true;
 	}
