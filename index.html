@@ -818,11 +818,12 @@ $(document).ready(function(){
 	}
 	//end infinite scroll
 	$("#resultButton").click(function() {
-		clearCarousel();
 		if(displayMode == "Gallery Mode") {
+		clearCarousel();
 		getResults();
 		}
 		else if(displayMode == "Infinite Scroll") {
+		clearIFBox();
 		getResultsIS();
 		}
 	});
