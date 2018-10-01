@@ -160,6 +160,20 @@
 		color: black;
 		position: fixed;
 	}
+	.loader {
+    border: 16px solid darkturquoise; /* Light grey */
+    border-top: 16px solid turquoise;
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    animation: spin 2s linear infinite;
+	display: none;
+	}
+
+	@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+	}
 </style>
 </head>
 <body>
@@ -224,6 +238,7 @@ $(document).ready(function(){
 	//window.addEventListener ("touchmove", function (event) { event.preventDefault (); }, {passive: false});
 	var curPage = 1;
 	var maxPage = 50;
+	var scrollMetric = 0;
 	function tagButton(tagButton) {
 	var currentTags = $("#tagsInput").val();
 	var text = $(tagButton).text();
@@ -283,7 +298,7 @@ $(document).ready(function(){
 	$("#innerIMG").empty();
 	$("<div>").attr({
 		"class":"item active"
-		}).html("<div class='panel panel-default' style='width:100%; max-height:"+(screen.height * 0.6)+"px;'><div class='panel-heading'><h3>Quick Start Guide</h3></div><div align='center' class='panel-body' style='overflow:scroll;'><ul class='list-group'><li class='list-group-item-success list-group-item'>Updates <span class='glyphicon glyphicon-chevron-right'></span> tabs added for more organization. Artist list improved. </li><li class='list-group-item' >Type your favorite tags into the \"tags\" box, then click <span class='glyphicon glyphicon-refresh'></span> to search.</li><li class='list-group-item'>Blacklist unwanted tags under \"Blacklist\" in Search Settings.</li><li class='list-group-item'>To get updates when an artist has posted recently, add names to the 'Watched Artists' list under Search Settings.</ul></div></div>").appendTo("#innerIMG");
+		}).html("<div class='panel panel-default' style='width:100%; max-height:"+(screen.height * 0.6)+"px;'><div class='panel-heading'><h3>Quick Start Guide</h3></div><div align='center' class='panel-body' style='overflow:scroll;'><ul class='list-group'><li class='list-group-item-success list-group-item'>Updates <span class='glyphicon glyphicon-chevron-right'></span> Loader added; Infinite Scrolling available; tap hold to favorite on mobile. </li><li class='list-group-item' >Type your favorite tags into the \"tags\" box, then click <span class='glyphicon glyphicon-refresh'></span> to search.</li><li class='list-group-item'>Blacklist unwanted tags under \"Blacklist\" in Search Settings.</li><li class='list-group-item'>To get updates when an artist has posted recently, add names to the 'Watched Artists' list under Search Settings.</ul></div></div>").appendTo("#innerIMG");
 		$(".carousel-control").css("visibility","hidden");
 		
 	}
@@ -457,6 +472,7 @@ $(document).ready(function(){
 		var amountOfResults = 1;
 		var goodResult = true;
 		console.log(e621API);
+		$("#loader").css({"display":"block","position":"fixed","top":((window.innerHeight/2)-60)+"px","left":((window.innerWidth/2)-60)+"px","z-index":"99"});
 		$.ajax({
 			type: "GET",
 			url: e621API,
@@ -601,6 +617,16 @@ $(document).ready(function(){
 			}
 		});
 		});
+	},
+	complete: function() {
+		$(".favButton").each(function(j, heart) {
+			var currentID = $(heart).attr("id").split("_");
+			currentID = currentID[1];
+			if(favList.indexOf(currentID) > -1) {
+			$(heart).children().first().css("color","red");
+			}
+		});
+		$("#loader").css("display","none");
 	}
 	});
 	$("#myCarousel").carousel('pause');
@@ -608,7 +634,6 @@ $(document).ready(function(){
 	}
 	//infinite scroll
 	var ISResultNum = 0;
-	var scrollMetric = 0;
 	var getResultsIS = function () {
 		ISResultNum = 0;
 		var e621API = "https://e621.net/post/index.json?tags=";
@@ -642,6 +667,7 @@ $(document).ready(function(){
 		var amountOfResults = 1;
 		var goodResult = true;
 		console.log(e621API);
+		$("#loader").css({"display":"block","position":"fixed","top":((window.innerHeight/2)-60)+"px","left":((window.innerWidth/2)-60)+"px","z-index":"99"});
 		$.ajax({
 			type: "GET",
 			url: e621API,
@@ -776,6 +802,16 @@ $(document).ready(function(){
 			}
 		});
 		});
+	},
+	complete: function() {
+		$(".favButton").each(function(j, heart) {
+			var currentID = $(heart).attr("id").split("_");
+			currentID = currentID[1];
+			if(favList.indexOf(currentID) > -1) {
+			$(heart).children().first().css("color","red");
+			}
+		});
+		$("#loader").css("display","none");
 	}
 	});
 	}
@@ -790,6 +826,7 @@ $(document).ready(function(){
 		}
 	});
 	$("#clearButton").click(function() {
+		scrollMetric = 0;
 		clearCarousel();
 		clearIFBox();
 		$("#tagsInput").val("");
@@ -983,12 +1020,17 @@ $("#myCarousel").on("taphold", function() {
 	$("#favModal").modal();
 	$("#favModal > .modal-dialog").css({"width":(screen.width),"top":"30%"});
 });
+var mobileISFav = "";
 $("#mobileFavButton").click( function() {
 	if($(".item.active > .carouselResults").attr("alt")) {
 	var itemID = $(".item.active > .carouselResults").attr("alt");
 	}
 	else if($(".item.active > .carouselResults").attr("id")) {
 	var itemID = $(".item.active > .carouselResults").attr("id");
+	}
+	else if(mobileISFav != "") {
+	var itemID = mobileISFav;
+	mobileISFav = "";
 	}
 	console.log(itemID);
 	if(favList.indexOf(itemID) > -1) {
@@ -1030,7 +1072,8 @@ $("#ifScrollButton").click( function() {
 });
 
 $(window).scroll(function(){
-    // This is then function used to detect if the element is scrolled into view
+    if(displayMode == "Infinite Scroll") {
+	// This is then function used to detect if the element is scrolled into view
     function elementScrolled(elem)
     {
         var docViewTop = $(window).scrollTop();
@@ -1047,6 +1090,17 @@ $(window).scroll(function(){
 			getResultsIS();
 		}    
     }
+	}
+});
+$(document).on('taphold','.ifResult',function(){
+	var itemID = $(this).children().first().attr("alt");
+	mobileISFav = itemID;
+	$("#favModal").modal();
+	$("#favModal > .modal-dialog").css({"width":(screen.width),"top":"30%"});
+});
+$(".favModalClose").click( function() {
+	mobileISFav = "";
+	console.log(mobileISFav);
 });
 });
 //Search new art items
@@ -1057,6 +1111,7 @@ $(window).scroll(function(){
   <li><a data-toggle="tab" href="#menu2">Blacklist</a></li>
   <li><a data-toggle="tab" href="#menu3">Settings</a></li>
 </ul>
+<div class="loader" id="loader"></div>
 <div class="tab-content">
 <div id="homePage" class="tab-pane fade in active">
 
@@ -1281,14 +1336,14 @@ $(window).scroll(function(){
     <!-- Modal content-->
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <button type="button" class="close favModalClose" data-dismiss="modal">&times;</button>
         <h4 class="modal-title" id="favModalTitle">Favorite this result?</h4>
       </div>
       <div class="modal-body">
         <p>Add this result to your favorites? It'll be viewable under the "artist list" tab.</p>
 		<div class="btn-group" style="width:100%;">
 			<button class="btn btn-success" data-dismiss="modal" id="mobileFavButton" style="width:50%;">Yes</button>
-			<button class="btn btn-danger" data-dismiss="modal" style="width:50%;">No</button>
+			<button class="btn btn-danger favModalClose" data-dismiss="modal" style="width:50%;">No</button>
 		</div>
       </div>
     </div>
