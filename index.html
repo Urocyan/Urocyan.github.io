@@ -174,6 +174,9 @@
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 	}
+	#galleryPeripherals {
+		display: block;
+	}
 </style>
 </head>
 <body>
@@ -286,7 +289,6 @@ $(document).ready(function(){
 	var clearIFBox = function() {
 		curPage = 1;
 		$("#IFScrollBox").empty();
-		$("#myCarousel").css("display","block");
 	}
 	var clearCarousel = function() {
 	$("#indicators").empty();
@@ -331,6 +333,9 @@ $(document).ready(function(){
 					$("#ifScrollButton").attr("class","btn btn-info active");
 					if($("#myCarousel").css("display") == "none") {
 					$("#myCarousel").css("display","block");
+					}
+					if($("#carouselPeripherals").css("display") == "none") {
+					$("#carouselPeripherals").css("display","block");
 					}
 					clearIFBox();
 					clearCarousel();
@@ -1052,6 +1057,9 @@ $("#gModeButton").click( function() {
 	if($("#myCarousel").css("display") == "none") {
 		$("#myCarousel").css("display","block");
 	}
+	if($("#carouselPeripherals").css("display") == "none") {
+		$("#carouselPeripherals").css("display","block");
+	}
 	clearIFBox();
 });
 $("#ifScrollButton").click( function() {
@@ -1061,6 +1069,9 @@ $("#ifScrollButton").click( function() {
 	$("#gModeButton").attr("class","btn btn-info active");
 	if($("#myCarousel").css("display") == "block") {
 		$("#myCarousel").css("display","none");
+	}
+	if($("#carouselPeripherals").css("display") == "block") {
+		$("#carouselPeripherals").css("display","none");
 	}
 	clearCarousel();
 });
@@ -1169,9 +1180,9 @@ $('.nav-tabs > li').eq(1).click( function() {
 	
 	</div>
 	</div>
+<div id="carouselPeripherals">
 <div class="row" align="center">
 <div class="btn-group">
-<button id="UIButton" class="btn btn-primary barButton">Toggle UI</button>
 <button class="btn btn-primary" id="fullScreen" data-toggle="tooltip"><span class="glyphicon glyphicon-fullscreen"></span></button>
 <button id="pauseSlideshow" class="btn btn-primary barButton">Play Slideshow<span class="glyphicon glyphicon-play"></span></button>
 </div>
@@ -1188,6 +1199,7 @@ $('.nav-tabs > li').eq(1).click( function() {
 	</div>
 	</div>
 	</div>
+</div>
 </div>
 </div>
 <div class="tab-pane fade" id="menu1">
