@@ -332,7 +332,7 @@ $(document).ready(function(){
 	var enumArtList = function() {
 	$("#alHolder").empty();
 	$.each( artList, function(i, item) {
-		$("<li>").html(item).attr("class","list-group-item artListItem").appendTo("#alHolder");
+		$("<li>").html("<button class='btn btn-danger removeArtist'><span class='glyphicon glyphicon-remove'></span></button>&nbsp;&nbsp;"+item).attr("class","list-group-item artListItem").appendTo("#alHolder");
 	});
 	}
 	var startArtList = getCookie('artlist');
@@ -356,6 +356,7 @@ $(document).ready(function(){
 					clearIFBox();
 					clearCarousel();
 					var artSearch = $(this).html();
+					artSearch = artistToRemove.substring((artistToRemove.lastIndexOf(";") + 1));
 					artSearch = artSearch.substring(0,(artSearch.indexOf("<")));
 					console.log(artSearch);
 					$("#tagsInput").val(artSearch + " date:week");
@@ -384,12 +385,25 @@ $(document).ready(function(){
 	//Adding tags to artist list
 	var artistToAdd = $("#artistToAdd").val();
 	if(artistToAdd.indexOf(' ') > -1) {
-		alert("Please enter one at a time.");
-		$("#artistToAdd").addClass("alert alert-danger");
+		artistToAdd = artistToAdd.split(" ");
+		$.each(artistToAdd, function(i, item) {
+			if(artList.indexOf(item) == -1) {
+				artList.push(item);
+			}
+			else {
+				console.log(item+" was not added to art list, as it already exists.");
+			}
+		});
+		var alString = JSON.stringify(artList);
+		createCookie('artlist',alString,365);
+		enumArtList();
 	}
 	else if(artList.indexOf(artistToAdd) > -1) {
 		alert("Artist has already been added.");
 		$("#artistToAdd").addClass("alert alert-danger");
+	}
+	else if(artistToAdd == "") {
+		alert("Please enter something first.");
 	}
 	else {
 		artList.push(artistToAdd);
@@ -1154,6 +1168,17 @@ $("#tagsInput").keyup( function(event) {
 		clearIFBox();
 		getResultsIS();
 		}
+	}
+});
+$(document).on("click",".removeArtist", function() {
+	var artistToRemove = $(this).parent().html();
+	var artistToRemove = artistToRemove.substring((artistToRemove.lastIndexOf(";") + 1));
+	console.log(artistToRemove);
+	if(artList.indexOf(artistToRemove) > -1) {
+		artList.splice((artList.indexOf(artistToRemove)),1);
+		var artListString = JSON.stringify(artList);
+		console.log(artListString);
+		enumArtList();
 	}
 });
 });
