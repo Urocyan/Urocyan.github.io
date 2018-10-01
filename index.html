@@ -249,8 +249,9 @@ $(document).ready(function(){
 		$("#tagsInput").val(""+ currentTags + " " + text);
 	}
 	}
+	var favListReady = true;
 	var enumFavList = function() {
-	if(favList != []) {
+	if(favList != [] && (favListReady)) {
 	$("#favHolder").empty();
 	$.each(favList, function(i, item) {
 		var e621API = "https://e621.net/post/index.json?tags=" + "id:" + item;
@@ -259,6 +260,7 @@ $(document).ready(function(){
 			url: e621API,
 			dataType: "jsonp",
 			success: function( data ) {
+					favListReady = false;
 					if(data[0].file_ext.indexOf("webm") == -1) {
 					$("<li>").attr({
 					"align": "center",
@@ -274,9 +276,15 @@ $(document).ready(function(){
 					$(".removeFavorite").click( function() {
 						$(this).parent().parent().get(0).remove();
 					});
+			},
+			done: function() {
+				if(i == favList.length - 1) {
+				favListReady = true;
+				}
 			}
 		});
 	});
+	favListReady = true;
 	}
 	}
 	$("#favButtonRefresh").click( function() {
