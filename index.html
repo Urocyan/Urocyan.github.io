@@ -1179,7 +1179,8 @@ $(document).on("click",".removeArtist", function() {
 	if(artList.indexOf(artistToRemove) > -1) {
 		artList.splice((artList.indexOf(artistToRemove)),1);
 		var artListString = JSON.stringify(artList);
-		console.log(artListString);
+		creatCookie('artlist',artListString,365);
+		console.log(getCookie(artlist));
 		enumArtList();
 	}
 });
