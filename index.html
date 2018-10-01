@@ -177,6 +177,13 @@
 	#galleryPeripherals {
 		display: block;
 	}
+	.nav-tabs > li > a {
+		border-left: 2px solid white;
+		border-right: 2px solid white;
+	}
+	.tab-content {
+		overflow-x: hidden;
+	}
 </style>
 </head>
 <body>
@@ -525,7 +532,7 @@ $(document).ready(function(){
 				$( "<div>" ).attr({
 				"class": "item",
 				}).html(
-				"<div class='panel panel-default'><div class='panel-heading' align='center'><div class='well'><h3>"+artist+"</h3></div></div><div class='panel-body'><img style='max-height:"+(screen.height * 0.75)+"px;' src='"+item.file_url+"' alt='"+item.artist+"' class='carouselResults'></div><div class='panel-footer' align='center'><div class='btn-group'><button class='btn btn-default'><a href='"+item.source+"' target='_blank'>Source</a></button><button class='btn btn-default favButton' onclick='heartButtonClick(this);' id='favButton_"+item.id+"'>"+item.fav_count+"<span class='glyphicon glyphicon-heart' ></span></button><button class='btn btn-default'>"+item.score+"<span class='glyphicon glyphicon-arrow-up'></span></button></div><br /><div class='container-fluid' style='max-width: 75%;'><div class='well alert-info'><div class='btn-group tagButtons' id='resultNum"+i+"'></div></div></div></div></div>")
+				"<div class='panel panel-default'><div class='panel-heading' align='center'><div class='well'><h3>"+artist+"</h3></div></div><div class='panel-body'><img style='max-height:"+(screen.height * 0.75)+"px;' src='"+item.file_url+"' alt='"+item.artist+"' class='carouselResults'></div><div class='panel-footer' align='center'><div class='btn-group'><button class='btn btn-default'><a href='"+item.source+"' target='_blank'>Source</a></button><button class='btn btn-default favButton' onclick='heartButtonClick(this);' id='favButton_"+item.id+"'>"+item.fav_count+"<span class='glyphicon glyphicon-heart' ></span></button><button class='btn btn-default'>"+item.score+"<span class='glyphicon glyphicon-arrow-up'></span></button></div><button class='btn btn-block' data-toggle='collapse' data-target='#tagsFor_"+item.id+"'>Tags</button><br /><div class='container-fluid collapse' style='max-width: 75%;' id='tagsFor_"+item.id+"'><div class='well alert-info'><div class='btn-group tagButtons' id='resultNum"+i+"'></div></div></div></div></div>")
 				.appendTo( "#innerIMG");
 
 				var currentIteration = i;
@@ -568,7 +575,7 @@ $(document).ready(function(){
 				$( "<div>" ).attr({
 				"class": "item",
 				}).html(
-				"<div class='panel panel-default'><div class='panel-heading' align='center'><div class='well'><h3>"+artist+"</h3></div></div><div class='panel-body'><video class='carouselResults' controls style='max-height:"+(screen.height * 0.75)+"px;'><source src='"+item.file_url+"' type='video/webm' /></video></div><div class='panel-footer' align='center'><div class='btn-group'><button class='btn btn-default'><a href='"+item.source+"' target='_blank'>Source</a></button><button class='btn btn-default favButton' onclick='heartButtonClick(this);' id='favButton_"+item.id+"'>"+item.fav_count+"<span class='glyphicon glyphicon-heart heartButton'></span></button><button class='btn btn-default'>"+item.score+"<span class='glyphicon glyphicon-arrow-up'></span></button></div><br /><div class='container-fluid' style='max-width: 75%;'><div class='well alert-info'><div class='btn-group tagButtons' id='resultNum"+i+"'></div></div></div></div></div>")
+				"<div class='panel panel-default'><div class='panel-heading' align='center'><div class='well'><h3>"+artist+"</h3></div></div><div class='panel-body'><video class='carouselResults' controls style='max-height:"+(screen.height * 0.75)+"px;'><source src='"+item.file_url+"' type='video/webm' /></video></div><div class='panel-footer' align='center'><div class='btn-group'><button class='btn btn-default'><a href='"+item.source+"' target='_blank'>Source</a></button><button class='btn btn-default favButton' onclick='heartButtonClick(this);' id='favButton_"+item.id+"'>"+item.fav_count+"<span class='glyphicon glyphicon-heart heartButton'></span></button><button class='btn btn-default'>"+item.score+"<span class='glyphicon glyphicon-arrow-up'></span></button></div><button class='btn btn-block' data-toggle='collapse' data-target='#tagsFor_"+item.id+"'>Tags</button><br /><div class='container-fluid collapse' style='max-width: 75%;' id='tagsFor_"+item.id+"'><div class='well alert-info'><div class='btn-group tagButtons' id='resultNum"+i+"'></div></div></div></div></div>")
 				.appendTo( "#innerIMG");
 				var currentIteration = i;
 				var tagArray = item.tags.split(" ");
@@ -718,7 +725,7 @@ $(document).ready(function(){
 				$( "<div>" ).attr({
 				"class": "row",
 				}).html(
-				"<div class='col-lg-12 ifResult' style=' left:0;'><div class='panel panel-default' style='width:"+screen.width+"px;'><div class='panel-heading' align='center'><div class='well'><h3>"+artist+"</h3></div></div><div class='panel-body'><img style='max-width:100%; max-height:"+window.innerHeight+"px;' src='"+item.file_url+"' alt='"+item.artist+"' class='carouselResults'></div><div class='panel-footer' align='center'><div class='btn-group'><button class='btn btn-default'><a href='"+item.source+"' target='_blank'>Source</a></button><button class='btn btn-default favButton' onclick='heartButtonClick(this);' id='favButton_"+item.id+"'>"+item.fav_count+"<span class='glyphicon glyphicon-heart' ></span></button><button class='btn btn-default'>"+item.score+"<span class='glyphicon glyphicon-arrow-up'></span></button><button class='btn btn-info'><a href='#top' style='text-decoration: none;color:white;'>Top</a></button></div><br /><div class='container-fluid' style='max-width: 100%;'><div class='well alert-info'><div class='btn-group tagButtons' id='resultNum"+scrollMetric+"'></div></div></div></div></div></div>")
+				"<div class='col-lg-12 ifResult' style=' left:0;'><div class='panel panel-default' style='width:"+screen.width+"px;'><div class='panel-heading' align='center'><div class='well'><h3>"+artist+"</h3></div></div><div class='panel-body'><img style='max-width:100%; max-height:"+window.innerHeight+"px;' src='"+item.file_url+"' alt='"+item.artist+"' class='carouselResults'></div><div class='panel-footer' align='center'><div class='btn-group'><button class='btn btn-default'><a href='"+item.source+"' target='_blank'>Source</a></button><button class='btn btn-default favButton' onclick='heartButtonClick(this);' id='favButton_"+item.id+"'>"+item.fav_count+"<span class='glyphicon glyphicon-heart' ></span></button><button class='btn btn-default'>"+item.score+"<span class='glyphicon glyphicon-arrow-up'></span></button><button class='btn btn-info'><a href='#top' style='text-decoration: none;color:white;'>Top</a></button></div><button class='btn btn-block' data-toggle='collapse' data-target='#tagsFor_"+item.id+"'>Tags</button><br /><div class='container-fluid collapse' style='max-width: 100%;' id='tagsFor_"+item.id+"'><div class='well alert-info'><div class='btn-group tagButtons' id='resultNum"+scrollMetric+"'></div></div></div></div></div></div>")
 				.appendTo( "#IFScrollBox");
 				var currentIteration = i;
 				var tagArray = item.tags.split(" ");
@@ -756,7 +763,7 @@ $(document).ready(function(){
 				$( "<div>" ).attr({
 				"class": "row",
 				}).html(
-				"<div class='col-lg-12 ifResult' style=' left:0;'><div class='panel panel-default' style='width:"+screen.width+"px;'><div class='panel-heading' align='center'><div class='well'><h3>"+artist+"</h3></div></div><div class='panel-body'><video class='carouselResults' controls style='max-width:100%; max-height:"+screen.innerHeight+"px;'><source src='"+item.file_url+"' type='video/webm' /></video></div><div class='panel-footer' align='center'><div class='btn-group'><button class='btn btn-default'><a href='"+item.source+"' target='_blank'>Source</a></button><button class='btn btn-default favButton' onclick='heartButtonClick(this);' id='favButton_"+item.id+"'>"+item.fav_count+"<span class='glyphicon glyphicon-heart heartButton'></span></button><button class='btn btn-default'>"+item.score+"<span class='glyphicon glyphicon-arrow-up'></span></button><button class='btn btn-info'><a href='#top' style=' text-decoration: none;color:white;'>Top</a></button></div><br /><div class='container-fluid' style='max-width: 75%;'><div class='well alert-info'><div class='btn-group tagButtons' id='resultNum"+scrollMetric+"'></div></div></div></div></div></div>")
+				"<div class='col-lg-12 ifResult' style=' left:0;'><div class='panel panel-default' style='width:"+screen.width+"px;'><div class='panel-heading' align='center'><div class='well'><h3>"+artist+"</h3></div></div><div class='panel-body'><video class='carouselResults' controls style='max-width:100%; max-height:"+screen.innerHeight+"px;'><source src='"+item.file_url+"' type='video/webm' /></video></div><div class='panel-footer' align='center'><div class='btn-group'><button class='btn btn-default'><a href='"+item.source+"' target='_blank'>Source</a></button><button class='btn btn-default favButton' onclick='heartButtonClick(this);' id='favButton_"+item.id+"'>"+item.fav_count+"<span class='glyphicon glyphicon-heart heartButton'></span></button><button class='btn btn-default'>"+item.score+"<span class='glyphicon glyphicon-arrow-up'></span></button><button class='btn btn-info'><a href='#top' style=' text-decoration: none;color:white;'>Top</a></button></div><button class='btn btn-block' data-toggle='collapse' data-target='#tagsFor_"+item.id+"'>Tags</button><br /><div class='container-fluid collapse' style='max-width: 100%;' id='tagsFor_"+item.id+"'><div class='well alert-info'><div class='btn-group tagButtons' id='resultNum"+scrollMetric+"'></div></div></div></div></div></div>")
 				.appendTo( "#IFScrollBox");
 				var currentIteration = i;
 				var tagArray = item.tags.split(" ");
@@ -949,6 +956,7 @@ var el = $("#myCarousel");
 var doc = window.document;
 $("#fullScreen").click( function() {
 	$(".carouselResults").css({"max-height":(screen.height * 0.75),"max-width":screen.width});
+	$(".panel").css("height",(screen.height)+"px");
 	$("#myCarousel").css({"height":screen.height,"width":screen.width});
 	$(".panel-footer").hide();
 	isFscreen = true;
@@ -980,6 +988,7 @@ function exitHandler()
 		{
 			$("#myCarousel").css({"height":"auto","width":"auto"});
 			$(".panel-footer").show();
+			$(".panel").removeAttr("style");
 			if(screen.width < 992) {
 			$(".item").removeAttr("style");
 			$(".next").removeAttr("style");
@@ -992,6 +1001,7 @@ function exitHandler()
 		if(!document.mozFullScreen) {
 			$("#myCarousel").css({"height":"auto","width":"auto"});
 			$(".panel-footer").show();
+			$(".panel").removeAttr("style");
 			if(screen.width < 992) {
 			$(".item").removeAttr("style");
 			$(".next").removeAttr("style");
@@ -1004,6 +1014,7 @@ function exitHandler()
 		if(!document.fullscreen) {
 			$("#myCarousel").css({"height":"auto","width":"auto"});
 			$(".panel-footer").show();
+			$(".panel").removeAttr("style");
 			if(screen.width < 992) {
 			$(".item").removeAttr("style");
 			$(".next").removeAttr("style");
@@ -1016,6 +1027,7 @@ function exitHandler()
 		if(!document.fullscreen) {
 			$("#myCarousel").css({"height":"auto","width":"auto"});
 			$(".panel-footer").show();
+			$(".panel").removeAttr("style");
 			if(screen.width < 992) {
 			$(".item").removeAttr("style");
 			$(".next").removeAttr("style");
@@ -1127,14 +1139,31 @@ $('.nav-tabs > li').eq(1).click( function() {
 	clearCarousel();
 	enumFavList();
 });
+if(screen.width < 992) {
+	$('.nav-tabs > li').eq(1).children().eq(0).html("<span class='glyphicon glyphicon-eye-open'></span> / <span class='glyphicon glyphicon-heart'></span>");
+	$('.nav-tabs > li').eq(3).children().eq(0).html("<span class='glyphicon glyphicon-cog'></span>");
+	$('.nav-tabs > li').eq(2).children().eq(0).html("<span class='glyphicon glyphicon-remove'></span>");
+}
+$("#tagsInput").keyup( function(event) {
+	if(event.which === 13) {
+		if(displayMode == "Gallery Mode") {
+		clearCarousel();
+		getResults();
+		}
+		else if(displayMode == "Infinite Scroll") {
+		clearIFBox();
+		getResultsIS();
+		}
+	}
+});
 });
 //Search new art items
 </script>
 <ul class="nav nav-tabs">
-  <li class="active"><a data-toggle="tab" href="#homePage">Home</a></li>
-  <li><a data-toggle="tab" href="#menu1">Artist List</a></li>
-  <li><a data-toggle="tab" href="#menu2">Blacklist</a></li>
-  <li><a data-toggle="tab" href="#menu3">Settings</a></li>
+  <li class="active"><a data-toggle="tab" class='topTab' href="#homePage">Home</a></li>
+  <li><a data-toggle="tab" class='topTab' href="#menu1">Watches / Favorites</a></li>
+  <li><a data-toggle="tab" class='topTab' href="#menu2">Blacklist</a></li>
+  <li><a data-toggle="tab" class='topTab' href="#menu3">Settings</a></li>
 </ul>
 <div class="loader" id="loader"></div>
 <div class="tab-content">
