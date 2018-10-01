@@ -497,6 +497,7 @@ $(document).ready(function(){
 			if(!(item.file_ext.indexOf("swf") > -1) && !(item.file_ext.indexOf("webm") > -1) && goodResult) {
 				var artist = item.artist[0];
 				var artistFormat = [];
+				if(artist) {
 				if(artist.indexOf('_') != -1) {
 					artistFormat = artist.split("_");
 					artist = "";
@@ -508,6 +509,10 @@ $(document).ready(function(){
 				}
 				else {
 					artist = artist.charAt(0).toUpperCase() + artist.slice(1);
+				}
+				}
+				else {
+					artist = "unknown";
 				}
 				$( "<div>" ).attr({
 				"class": "item",
