@@ -373,7 +373,7 @@ $(document).ready(function(){
 						success: function( data ) {
 								var newArt = data.length;
 								if(newArt > 0) {
-									$(".artListItem").eq(i).addClass("searchItem").html($(this).html + $(".artListItem").eq(i).html("<span class='badge'>"+newArt+"</span>"));
+									$(".artListItem").eq(i).addClass("searchItem").html($(".artListItem").eq(i).html() + "<span class='badge'>"+newArt+"</span>");
 								}
 						}	
 					});
