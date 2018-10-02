@@ -340,12 +340,14 @@ $(document).ready(function(){
 	var startArtList = getCookie('artlist');
 	var artWatchReady = true;
 	function checkNewArt() {
-		if(artWatchReady) {
+		if(artWatchReady == true) {
 		var numChecked = 0;
 		var e621API = "https://e621.net/post/index.json?tags=";
 		if((startArtList != "" || artList != "")) {
-				if(startArtList) {
-				artList = JSON.parse(startArtList);
+				if(artList == "") {
+					if(startArtList) {
+					artList = JSON.parse(startArtList);
+					}
 				}
 				enumArtList();
 				artWatchReady = false;
