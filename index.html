@@ -367,7 +367,11 @@ $(document).ready(function(){
 					}
 				});
 				$.each(artList, function(i, item) {
-					e621API = "https://e621.net/post/index.json?tags=" + item + "%20date:week";
+					var searchTag = item;
+					if(item.indexOf(" ") > -1) {
+						searchTag = item.replace(" ","%20");
+					}
+					e621API = "https://e621.net/post/index.json?tags=" + searchTag + "%20date:week";
 					$.ajax({
 						type: "GET",
 						url: e621API,
@@ -387,15 +391,12 @@ $(document).ready(function(){
 	//Adding tags to artist list
 	var artistToAdd = $("#artistToAdd").val();
 	if(artistToAdd.indexOf(' ') > -1) {
-		artistToAdd = artistToAdd.split(" ");
-		$.each(artistToAdd, function(i, item) {
-			if(artList.indexOf(item) == -1) {
-				artList.push(item);
+		if(artList.indexOf(artistToAdd) == -1) {
+			artList.push(artistToAdd);
 			}
-			else {
-				console.log(item+" was not added to art list, as it already exists.");
+		else {
+			console.log(artistToAdd+" was not added to art list, as it already exists.");
 			}
-		});
 		var alString = JSON.stringify(artList);
 		createCookie('artlist',alString,365);
 		enumArtList();
@@ -1179,8 +1180,8 @@ $(document).on("click",".removeArtist", function() {
 	if(artList.indexOf(artistToRemove) > -1) {
 		artList.splice((artList.indexOf(artistToRemove)),1);
 		var artListString = JSON.stringify(artList);
-		creatCookie('artlist',artListString,365);
-		console.log(getCookie(artlist));
+		createCookie('artlist',artListString,365);
+		console.log(getCookie('artlist'));
 		enumArtList();
 	}
 });
@@ -1279,8 +1280,7 @@ $(document).on("click",".removeArtist", function() {
 	<div class="col-lg-12" id="artistList">
 		<div class="panel panel-primary" style="width:100%;">
 		<div class="input-group">
-		<span class="input-group-addon">Artist</span><input data-toggle="tooltip" class="form-control" id="artistToAdd" /><div class="input-group-btn"><button class="btn btn-primary" id="artistAddButton">Add To List</button></div>
-		<div class="input-group-btn">
+		<span class="input-group-addon">Tag/Artist</span><input data-toggle="tooltip" class="form-control" id="artistToAdd" /><div class="input-group-btn"><button class="btn btn-primary" id="artistAddButton">Add To List</button>
 		<button class="btn btn-danger" id="clearAL">Clear List</button>
 		</div>
 		</div>
