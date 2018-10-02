@@ -364,7 +364,7 @@ $(document).ready(function(){
 									$("#alHolder > li").eq(i).html($("#alHolder > li").eq(i).html() + "<span class='badge searchItem artListItem'>"+newArt+"</span>");
 								}
 						},
-						complete: {
+						complete: function() {
 							artWatchReady = true;
 						}
 					});
