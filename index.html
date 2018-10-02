@@ -357,7 +357,7 @@ $(document).ready(function(){
 						success: function( data ) {
 								var newArt = data.length;
 								if(newArt > 0) {
-									$("$alHolder > li").eq(i).addClass("searchItem").html($(".artListItem").eq(i).html() + "<span class='badge searchItem artListItem'>"+newArt+"</span>");
+									$("#alHolder > li").eq(i).addClass("searchItem").html($(".artListItem").eq(i).html() + "<span class='badge searchItem artListItem'>"+newArt+"</span>");
 								}
 						}	
 					});
