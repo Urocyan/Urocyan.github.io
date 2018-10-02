@@ -341,6 +341,7 @@ $(document).ready(function(){
 	var artWatchReady = true;
 	function checkNewArt() {
 		if(artWatchReady) {
+		var numChecked = 0;
 		var e621API = "https://e621.net/post/index.json?tags=";
 		if((startArtList != "" || artList != "")) {
 				if(startArtList) {
@@ -365,7 +366,10 @@ $(document).ready(function(){
 								}
 						},
 						complete: function() {
+							numChecked++;
+							if(numChecked == artList.length) {
 							artWatchReady = true;
+							}
 						}
 					});
 				});
