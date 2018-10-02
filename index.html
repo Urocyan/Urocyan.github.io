@@ -334,7 +334,7 @@ $(document).ready(function(){
 	var enumArtList = function() {
 	$("#alHolder").empty();
 	$.each( artList, function(i, item) {
-		$("<li>").html("<button class='btn btn-danger removeArtist'><span class='glyphicon glyphicon-remove'></span></button>&nbsp;&nbsp;"+item).attr("class","list-group-item").appendTo("#alHolder");
+		$("<li>").html("<button class='btn btn-danger removeArtist'><span class='glyphicon glyphicon-remove'></span></button>&nbsp;&nbsp;<span class='searchThis'>"+item+"</span>").attr("class","list-group-item").appendTo("#alHolder");
 	});
 	}
 	var startArtList = getCookie('artlist');
@@ -1133,6 +1133,7 @@ $('.nav-tabs > li').eq(1).click( function() {
 	clearIFBox();
 	clearCarousel();
 	enumFavList();
+	checkNewArt();
 });
 if(screen.width < 992) {
 	$('.nav-tabs > li').eq(1).children().eq(0).html("<span class='glyphicon glyphicon-eye-open'></span> / <span class='glyphicon glyphicon-heart'></span>");
@@ -1177,8 +1178,7 @@ $(document).on("click", ".artListItem", function() {
 		}
 		clearIFBox();
 		clearCarousel();
-		var artSearch = $(this).parent().html();
-		artSearch = artSearch.substring((artSearch.lastIndexOf("nbsp;")+1),(artSearch.lastIndexOf("<span>")));
+		var artSearch = $(this).siblings(".searchThis").html();
 		console.log(artSearch);
 		$("#tagsInput").val(artSearch + " date:week");
 		getResults();
