@@ -338,7 +338,9 @@ $(document).ready(function(){
 	});
 	}
 	var startArtList = getCookie('artlist');
+	var artWatchReady = true;
 	function checkNewArt() {
+		if(artWatchReady) {
 		var e621API = "https://e621.net/post/index.json?tags=";
 		if((startArtList != "" || artList != "")) {
 				if(startArtList) {
@@ -356,13 +358,18 @@ $(document).ready(function(){
 						url: e621API,
 						dataType: "jsonp",
 						success: function( data ) {
+								artWatchReady = false;
 								var newArt = data.length;
 								if(newArt > 0) {
 									$("#alHolder > li").eq(i).html($("#alHolder > li").eq(i).html() + "<span class='badge searchItem artListItem'>"+newArt+"</span>");
 								}
-						}	
+						},
+						complete: {
+							artWatchReady = true;
+						}
 					});
 				});
+		}
 		}
 	}
 	checkNewArt();
