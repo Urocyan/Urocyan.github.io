@@ -290,7 +290,7 @@ $(document).ready(function(){
 			},
 			done: function() {
 				loaderCount++;
-				if(loaderCount == totalToLoad || favList[totalToLoad] == null) {
+				if((loaderCount == totalToLoad) || (favList[totalToLoad-1] == null)) {
 					$("#loader").css({"display":"none"});
 				}
 				if(i == favList.length - 1) {
