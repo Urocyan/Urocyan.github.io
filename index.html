@@ -334,7 +334,7 @@ $(document).ready(function(){
 	var enumArtList = function() {
 	$("#alHolder").empty();
 	$.each( artList, function(i, item) {
-		$("<li>").html("<button class='btn btn-danger removeArtist'><span class='glyphicon glyphicon-remove'></span></button>&nbsp;&nbsp;"+item).attr("class","list-group-item artListItem").appendTo("#alHolder");
+		$("<li>").html("<button class='btn btn-danger removeArtist'><span class='glyphicon glyphicon-remove'></span></button>&nbsp;&nbsp;"+item).attr("class","list-group-item").appendTo("#alHolder");
 	});
 	}
 	var startArtList = getCookie('artlist');
@@ -343,29 +343,7 @@ $(document).ready(function(){
 		if(startArtList != "") {
 				artList = JSON.parse(startArtList);
 				enumArtList();
-				$(".artListItem").click( function() {
-					if($(this).html().indexOf("badge") > -1) {
-					$('.nav-tabs a:first').tab('show');
-					displayMode = "Gallery Mode";
-					$("#gModeButton").attr("class","btn disabled");
-					$("#ifScrollButton").attr("class","btn btn-info active");
-					if($("#myCarousel").css("display") == "none") {
-					$("#myCarousel").css("display","block");
-					}
-					if($("#carouselPeripherals").css("display") == "none") {
-					$("#carouselPeripherals").css("display","block");
-					}
-					clearIFBox();
-					clearCarousel();
-					var artSearch = $(this).html();
-					artSearch = artSearch.substring((artSearch.lastIndexOf(";") + 1));
-					artSearch = artSearch.substring(0,(artSearch.indexOf("<")));
-					console.log(artSearch);
-					$("#tagsInput").val(artSearch + " date:week");
-					getResults();
-					$("#tagsInput").val("");
-					}
-				});
+				
 				$.each(artList, function(i, item) {
 					var searchTag = item;
 					if(item.indexOf(" ") > -1) {
@@ -379,7 +357,7 @@ $(document).ready(function(){
 						success: function( data ) {
 								var newArt = data.length;
 								if(newArt > 0) {
-									$(".artListItem").eq(i).addClass("searchItem").html($(".artListItem").eq(i).html() + "<span class='badge'>"+newArt+"</span>");
+									$("$alHolder > li").eq(i).addClass("searchItem").html($(".artListItem").eq(i).html() + "<span class='badge searchItem artListItem'>"+newArt+"</span>");
 								}
 						}	
 					});
@@ -1185,6 +1163,28 @@ $(document).on("click",".removeArtist", function() {
 		enumArtList();
 	}
 });
+$(document).on("click", ".artListItem", function() {
+		if($(this).attr("class").indexOf("badge") > -1) {
+		$('.nav-tabs a:first').tab('show');
+		displayMode = "Gallery Mode";
+		$("#gModeButton").attr("class","btn disabled");
+		$("#ifScrollButton").attr("class","btn btn-info active");
+		if($("#myCarousel").css("display") == "none") {
+		$("#myCarousel").css("display","block");
+		}
+		if($("#carouselPeripherals").css("display") == "none") {
+		$("#carouselPeripherals").css("display","block");
+		}
+		clearIFBox();
+		clearCarousel();
+		var artSearch = $(this).parent().html();
+		artSearch = artSearch.substring((artSearch.lastIndexOf("nbsp;")+1),(artSearch.lastIndexOf("<span>")));
+		console.log(artSearch);
+		$("#tagsInput").val(artSearch + " date:week");
+		getResults();
+		$("#tagsInput").val("");
+		}
+	});
 });
 //Search new art items
 </script>
