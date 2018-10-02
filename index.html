@@ -340,10 +340,11 @@ $(document).ready(function(){
 	var startArtList = getCookie('artlist');
 	function checkNewArt() {
 		var e621API = "https://e621.net/post/index.json?tags=";
-		if(startArtList != "") {
+		if((startArtList != "" || artList != "")) {
+				if(startArtList) {
 				artList = JSON.parse(startArtList);
+				}
 				enumArtList();
-				
 				$.each(artList, function(i, item) {
 					var searchTag = item;
 					if(item.indexOf(" ") > -1) {
@@ -357,7 +358,7 @@ $(document).ready(function(){
 						success: function( data ) {
 								var newArt = data.length;
 								if(newArt > 0) {
-									$("#alHolder > li").eq(i).addClass("searchItem").html($("#alHolder > li").eq(i).html() + "<span class='badge searchItem artListItem'>"+newArt+"</span>");
+									$("#alHolder > li").eq(i).html($("#alHolder > li").eq(i).html() + "<span class='badge searchItem artListItem'>"+newArt+"</span>");
 								}
 						}	
 					});
@@ -1153,8 +1154,7 @@ $("#tagsInput").keyup( function(event) {
 	}
 });
 $(document).on("click",".removeArtist", function() {
-	var artistToRemove = $(this).parent().html();
-	var artistToRemove = artistToRemove.substring((artistToRemove.lastIndexOf(";") + 1));
+	var artistToRemove = $(this).siblings(".searchThis").html();
 	console.log(artistToRemove);
 	if(artList.indexOf(artistToRemove) > -1) {
 		artList.splice((artList.indexOf(artistToRemove)),1);
