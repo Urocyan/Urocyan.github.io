@@ -334,7 +334,7 @@ $(document).ready(function(){
 	var enumArtList = function() {
 	$("#alHolder").empty();
 	$.each( artList, function(i, item) {
-		$("<li>").html("<button class='btn btn-danger removeArtist'><span class='glyphicon glyphicon-remove'></span></button>&nbsp;&nbsp;"+item).attr("class","list-group-item").appendTo("#alHolder");
+		$("<li>").html("<button class='btn btn-danger removeArtist'><span class='glyphicon glyphicon-remove'></span></button>&nbsp;&nbsp;"+item).attr("class","list-group-item artListItem").appendTo("#alHolder");
 	});
 	}
 	var startArtList = getCookie('artlist');
@@ -379,7 +379,7 @@ $(document).ready(function(){
 						success: function( data ) {
 								var newArt = data.length;
 								if(newArt > 0) {
-									$(".artListItem").eq(i).addClass("searchItem").html($(".artListItem").eq(i).html() + "<span class='badge artListItem'>"+newArt+"</span>");
+									$(".artListItem").eq(i).addClass("searchItem").html($(".artListItem").eq(i).html() + "<span class='badge'>"+newArt+"</span>");
 								}
 						}	
 					});
