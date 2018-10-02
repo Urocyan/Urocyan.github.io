@@ -348,6 +348,7 @@ $(document).ready(function(){
 				artList = JSON.parse(startArtList);
 				}
 				enumArtList();
+				artWatchReady = false;
 				$.each(artList, function(i, item) {
 					var searchTag = item;
 					if(item.indexOf(" ") > -1) {
@@ -359,7 +360,6 @@ $(document).ready(function(){
 						url: e621API,
 						dataType: "jsonp",
 						success: function( data ) {
-								artWatchReady = false;
 								var newArt = data.length;
 								if(newArt > 0) {
 									$("#alHolder > li").eq(i).html($("#alHolder > li").eq(i).html() + "<span class='badge searchItem artListItem'>"+newArt+"</span>");
@@ -383,13 +383,13 @@ $(document).ready(function(){
 	if(artistToAdd.indexOf(' ') > -1) {
 		if(artList.indexOf(artistToAdd) == -1) {
 			artList.push(artistToAdd);
+			var alString = JSON.stringify(artList);
+			createCookie('artlist',alString,365);
+			checkNewArt();
 			}
 		else {
 			console.log(artistToAdd+" was not added to art list, as it already exists.");
 			}
-		var alString = JSON.stringify(artList);
-		createCookie('artlist',alString,365);
-		enumArtList();
 	}
 	else if(artList.indexOf(artistToAdd) > -1) {
 		alert("Artist has already been added.");
@@ -402,7 +402,7 @@ $(document).ready(function(){
 		artList.push(artistToAdd);
 		var alString = JSON.stringify(artList);
 		createCookie('artlist',alString,365);
-		enumArtList();
+		checkNewArt();
 	}
 	});
 	$("#artistToAdd").focusin(function () {
@@ -1172,7 +1172,7 @@ $(document).on("click",".removeArtist", function() {
 		var artListString = JSON.stringify(artList);
 		createCookie('artlist',artListString,365);
 		console.log(getCookie('artlist'));
-		enumArtList();
+		checkNewArt();
 	}
 });
 $(document).on("click", ".artListItem", function() {
