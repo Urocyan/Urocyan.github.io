@@ -260,6 +260,7 @@ $(document).ready(function(){
 	var enumFavList = function() {
 	if(favList != [] && (favListReady)) {
 	$("#favHolder").empty();
+	var numberChecked = 0;
 	$.each(favList, function(i, item) {
 		var e621API = "https://e621.net/post/index.json?tags=" + "id:" + item;
 		if(favList[i] != null) {
@@ -286,9 +287,10 @@ $(document).ready(function(){
 					});
 			},
 			complete: function() {
-			console.log(i);
+			numberChecked++;
+			console.log(numberChecked);
 			console.log(favList.length);
-				if(i == favList.length - 1) {
+				if(numberChecked == favList.length) {
 				favListReady = true;
 				}
 			}
