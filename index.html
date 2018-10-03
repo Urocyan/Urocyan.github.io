@@ -292,9 +292,6 @@ $(document).ready(function(){
 			}
 		});
 		}
-		else {
-			totalToLoad--;
-		}
 	});
 	favListReady = true;
 	}
@@ -1116,16 +1113,18 @@ $("#myCarousel").on("taphold", function() {
 var mobileISFav = "";
 $("#mobileFavButton").click( function() {
 	if($(".item.active > .carouselResults").attr("alt")) {
-	var itemID = $(".item.active > .carouselResults").attr("alt");
+	var itemID;
+	itemID = $(".item.active > .carouselResults").attr("alt");
 	}
 	else if($(".item.active > .carouselResults").attr("id")) {
-	var itemID = $(".item.active > .carouselResults").attr("id");
+	itemID = $(".item.active > .carouselResults").attr("id");
 	}
 	else if(mobileISFav != "") {
-	var itemID = mobileISFav;
+	itemID = mobileISFav;
 	mobileISFav = "";
 	}
 	console.log(itemID);
+	if(itemID != null) {
 	if(favList.indexOf(itemID) > -1) {
 		alert("Already favorited!");
 	}
@@ -1134,6 +1133,7 @@ $("#mobileFavButton").click( function() {
 		var favString = JSON.stringify(favList);
 		console.log(favString);
 		createCookie('favlist',favString,365);
+	}
 	}
 });
 $("#favListClear").click( function() {
@@ -1224,7 +1224,7 @@ $("#tagsInput").keyup( function(event) {
 	}
 });
 $(document).on("click",".removeArtist", function() {
-	removeArtist($(this).siblings(".searchThis").html());
+	removeArtist($(this).siblings(".searchThis").html().toLowerCase());
 });
 $(document).on("click", ".artListItem", function() {
 		if($(this).attr("class").indexOf("badge") > -1) {
