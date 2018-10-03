@@ -1231,7 +1231,7 @@ $(document).on("click",".watchResultArtist", function() {
 	var artistToWatch = $(this).parent().children("h3").html();
 	if(artistToWatch.indexOf(" ") > -1) {
 		console.log("too many spaces");
-		artistToWatch = artistToWatch.replace(" ","_");
+		artistToWatch = artistToWatch.replace(/ /g,"_");
 	}
 	if(artList.indexOf(artistToWatch) > -1) {
 		if(artList != []) {
