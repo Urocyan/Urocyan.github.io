@@ -1230,7 +1230,8 @@ $(document).on("click", ".artListItem", function() {
 $(document).on("click",".watchResultArtist", function() {
 	var artistToWatch = $(this).parent().children("h3").html();
 	if(artistToWatch.indexOf(" ") > -1) {
-		artistToWatch.replace(" ","_");
+		console.log("too many spaces");
+		artistToWatch = artistToWatch.replace(" ","_");
 	}
 	if(artList.indexOf(artistToWatch) > -1) {
 		if(artList != []) {
