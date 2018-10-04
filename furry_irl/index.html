@@ -22,6 +22,7 @@
 </style>
 <script>
 $(document).ready( function() {
+	$(".panel-body").css({"max-height":(window.innerHeight * 0.7),"overflow":"scroll"});
 	var redditAPIBase = "https://api.reddit.com/r/furry_irl/best.json";
 	var urls = [];
 	function moreIRL() {
@@ -42,7 +43,7 @@ $(document).ready( function() {
 				complete: function() {
 					var entry = Math.floor(Math.random() * urls.length);
 					if(urls[entry]) {
-						$("#irlHolder").html($("<div>").addClass("imgResult").html("<img style='max-height:"+(screen.height * 0.7)+"px;' src='"+urls[entry]+"'>"));
+						$("#irlHolder").html($("<div>").addClass("imgResult").html("<img src='"+urls[entry]+"'>"));
 					}
 				}
 		});
