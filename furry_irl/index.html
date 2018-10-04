@@ -23,7 +23,7 @@
 <script>
 $(document).ready( function() {
 	$(".panel-body").css({"max-height":(window.innerHeight * 0.7),"overflow":"scroll"});
-	var redditAPIBase = "https://api.reddit.com/r/furry_irl/"+$("#postTypes").val()+".json";
+	var redditAPIBase = "https://api.reddit.com/r/furry_irl/"+$("#postTypes").find(":selected").text()+".json";
 	var urls = [];
 	function moreIRL() {
 		$.ajax({
