@@ -12,7 +12,7 @@
 	#bodyCont {
 		width: 100%;
 	}
-	.imgResult > img {
+	.imgResult > img, #irlHolder > video {
 		object-fit: scale-down;
 		max-width: 100%;
 		max-height: 100%;
@@ -45,7 +45,13 @@ $(document).ready( function() {
 				complete: function() {
 					var entry = Math.floor(Math.random() * urls.length);
 					if(urls[entry]) {
+						if(urls[entry].indexOf(".gif") == -1) {
 						$("#irlHolder").html($("<div>").addClass("imgResult").html("<img src='"+urls[entry]+"'>"));
+						}
+						else {
+						urls[entry] = urls[entry].replace("gifv","mp4");
+						$("#irlHolder").html($("<video>").attr({"loop":"","autoplay":""}).addClass("imgResult").html("<source type='video/mp4' src='"+urls[entry]+"'>"));	
+						}
 					}
 				}
 		});
@@ -73,7 +79,6 @@ $(document).ready( function() {
 					<option>hot</option>
 					<option>new</option>
 					<option>top</option>
-					<option>random</option>
 				</select>
 			</div>
 		</div>
