@@ -23,10 +23,11 @@
 <script>
 $(document).ready( function() {
 	$(".panel-body").css({"max-height":(window.innerHeight * 0.7),"overflow":"scroll"});
-	var redditAPIBase = "https://api.reddit.com/r/furry_irl/"+$("#postTypes").find(":selected").text()+".json";
+	var redditAPIBase = "https://api.reddit.com/r/furry_irl/"+$("#postTypes").val()+".json";
 	var urls = [];
 	function moreIRL() {
-		redditAPIBase = "https://api.reddit.com/r/furry_irl/"+$("#postTypes").find(":selected").text()+".json";
+		redditAPIBase = "https://api.reddit.com/r/furry_irl/"+$("#postTypes").val()+".json";
+		console.log(redditAPIBase);
 		$.ajax({
 				type: "GET",
 				url: redditAPIBase,
