@@ -25,6 +25,7 @@ $(document).ready( function() {
 	$(".panel-body").css({"max-height":(window.innerHeight * 0.7),"overflow":"scroll"});
 	var redditAPIBase = "https://api.reddit.com/r/furry_irl/"+$("#postTypes").val()+".json";
 	var urls = [];
+	var SFW = true;
 	function moreIRL() {
 		redditAPIBase = "https://api.reddit.com/r/furry_irl/"+$("#postTypes").val()+".json";
 		console.log(redditAPIBase);
@@ -36,16 +37,27 @@ $(document).ready( function() {
 					var listings = results.data.children.data;
 					urls = [];
 					$.each(results.data.children, function(i, item) {
-						var thisURL = item.data.url;
+						var thisURL;
+						if(SFW == true) {
+							if(item.data.over_18 == false) {
+								thisURL = item.data.url;
+							}
+						}
+						else if(SFW == false) {
+							if(item.data.over_18 == true || item.data.over_18 == false) {
+								thisURL = item.data.url;
+							}
+						}
 						if(thisURL.indexOf(".jpg") > -1 || thisURL.indexOf(".png") > -1 || thisURL.indexOf(".gif") > -1) {
 							urls.push(item.data.url);
+							console.log(item.data.over_18);
 						}
 					});
 				},
 				complete: function() {
 					var entry = Math.floor(Math.random() * urls.length);
 					if(urls[entry]) {
-						if(urls[entry].indexOf(".gif") == -1) {
+						if(urls[entry].indexOf(".gifv") == -1) {
 						$("#irlHolder").html($("<div>").addClass("imgResult").html("<img src='"+urls[entry]+"'>"));
 						}
 						else {
@@ -60,6 +72,16 @@ $(document).ready( function() {
 	$("#morePls").click( function() {
 		moreIRL();
 	});
+	$("#sfwButton").click( function() {
+		if(SFW == true) {
+			$(this).removeClass("btn-success").addClass("btn-danger").html("NSFW");
+			SFW = false;
+		}
+		else {
+			$(this).removeClass("btn-danger").addClass("btn-success").html("SFW");
+			SFW = true;
+		}
+	});
 });	
 </script>
 </head>
@@ -73,13 +95,16 @@ $(document).ready( function() {
 		</div>
 		<div class='panel-footer'>
 			<button class='btn btn-info' id="morePls"><span class="glyphicon glyphicon-refresh"></span></button>
-			<div class="form-group">
+			<div class="input-group">
 				<select class="form-control" id="postTypes">
 					<option active>best</option>
 					<option>hot</option>
 					<option>new</option>
 					<option>top</option>
 				</select>
+				<div class="input-group-btn">
+				<button class="btn btn-success" id="sfwButton">SFW</button>
+				</div>
 			</div>
 		</div>
 	</div>
