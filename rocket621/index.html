@@ -259,6 +259,9 @@ $(document).ready(function(){
 	var favListReady = true;
 	var enumFavList = function() {
 	if(favList != [] && (favListReady)) {
+	if(favList.indexOf(null) > -1) {
+		favList.splice((favList.indexOf(null)),1);
+	}
 	$("#favHolder").empty();
 	var numberChecked = 0;
 	$.each(favList, function(i, item) {
@@ -342,6 +345,11 @@ $(document).ready(function(){
 	}
 	var startArtList = getCookie('artlist');
 	var artWatchReady = true;
+	var newArtTime = $("#newArtTime").val()
+	if(newArtTime.indexOf(" ") > -1) {
+		newArtTime = newArtTime.split(" ");
+		newArtTime = newArtTime[1];
+	}
 	function checkNewArt() {
 		if(artWatchReady == true) {
 		var numChecked = 0;
@@ -359,7 +367,7 @@ $(document).ready(function(){
 					if(item.indexOf(" ") > -1) {
 						searchTag = item.replace(" ","%20");
 					}
-					e621API = "https://e621.net/post/index.json?tags=" + searchTag + "%20date:week";
+					e621API = "https://e621.net/post/index.json?tags=" + searchTag + "%20date:"+newArtTime+"";
 					$.ajax({
 						type: "GET",
 						url: e621API,
@@ -1276,6 +1284,14 @@ $(document).on("click",".watchResultArtist", function() {
 		$(this).addClass("btn-success");
 	}
 });	
+$("#newArtTime").on("change",function() {
+	newArtTime = $("#newArtTime").val()
+	if(newArtTime.indexOf(" ") > -1) {
+		newArtTime = newArtTime.split(" ");
+		newArtTime = newArtTime[1];
+	}
+	checkNewArt();
+});
 });
 
 //Search new art items
@@ -1366,6 +1382,19 @@ $(document).on("click",".watchResultArtist", function() {
 </div>
 </div>
 <div class="tab-pane fade" id="menu1">
+<div class="row">
+<div class="col-lg-12">
+	<div class="input-group">
+		<span class="input-group-addon">Posted:</span>
+		<select class="form-control" id="newArtTime">
+			<option active>this week</option>
+			<option>today</option>
+			<option>yesterday</option>
+			<option>this month</option>
+		</select>
+	</div>
+</div>
+</div>
 <div class="row">
 	<div class="col-lg-12" id="artistList">
 		<div class="panel panel-primary" style="width:100%;">
