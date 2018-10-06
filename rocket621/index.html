@@ -188,6 +188,8 @@
 </head>
 <body>
 <script>
+var favAdded = true;
+var newWatch = true;
 var createCookie = function(name, value, days) {
     var expires;
     if (days) {
@@ -232,6 +234,7 @@ function heartButtonClick(hButton) {
 		console.log(favString);
 		createCookie('favlist',favString,365);
 		hButton.children[0].style.color = "black";
+		
 	}
 	else {
 		favList.push(addToFav);
@@ -241,8 +244,10 @@ function heartButtonClick(hButton) {
 		hButton.children[0].style.color = "red";
 		
 	}
+	favAdded = true;
 }
 $(document).ready(function(){
+	
 	var isArtCheck = false;
 	var displayMode = "Gallery Mode";
 	$("#homePage").css("max-width",window.width);
@@ -259,7 +264,7 @@ $(document).ready(function(){
 	}
 	var favListReady = true;
 	var enumFavList = function() {
-	if(favList != [] && (favListReady)) {
+	if(favList != [] && (favListReady) && (favAdded)) {
 	if(favList.indexOf(null) > -1) {
 		favList.splice((favList.indexOf(null)),1);
 	}
@@ -291,6 +296,7 @@ $(document).ready(function(){
 					});
 			},
 			complete: function() {
+			favAdded = false;
 			numberChecked++;
 			console.log(numberChecked);
 			console.log(favList.length);
@@ -353,7 +359,9 @@ $(document).ready(function(){
 		newArtTime = newArtTime[1];
 	}
 	function checkNewArt() {
-		if(artWatchReady == true) {
+		console.log(newWatch);
+		console.log(favAdded);
+		if((artWatchReady == true) && (newWatch == true)) {
 		var numChecked = 0;
 		var e621API = "https://e621.net/post/index.json?tags=";
 		if((startArtList != "" || artList != "")) {
@@ -363,6 +371,7 @@ $(document).ready(function(){
 					}
 				}
 				enumArtList();
+				
 				artWatchReady = false;
 				$.each(artList, function(i, item) {
 					var searchTag = item;
@@ -384,6 +393,7 @@ $(document).ready(function(){
 							numChecked++;
 							if(numChecked == artList.length) {
 							artWatchReady = true;
+							newWatch = false;
 							}
 						}
 					});
@@ -416,6 +426,7 @@ $(document).ready(function(){
 			artList.push(artistToAdd);
 			var alString = JSON.stringify(artList);
 			createCookie('artlist',alString,365);
+			newWatch = true;
 			checkNewArt();
 		}
 		console.log(artList);
@@ -1171,6 +1182,7 @@ $("#mobileFavButton").click( function() {
 		var favString = JSON.stringify(favList);
 		console.log(favString);
 		createCookie('favlist',favString,365);
+		favAdded = true;
 	}
 	}
 });
@@ -1243,9 +1255,9 @@ $(".favModalClose").click( function() {
 $('.nav-tabs > li').eq(1).click( function() {
 	clearIFBox();
 	clearCarousel();
+	checkNewArt();
 	enumFavList();
 	console.log(favListReady);
-	checkNewArt();
 	console.log(favList);
 });
 if(screen.width < 992) {
@@ -1364,6 +1376,7 @@ $("#importButton").click( function() {
 				if(favList.indexOf(null) > -1) {
 					favList.splice((favList.indexOf(null)),1);
 				}
+				favAdded = true;
 				enumFavList();
 			}
 	});
