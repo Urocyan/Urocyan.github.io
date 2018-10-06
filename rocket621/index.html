@@ -243,6 +243,7 @@ function heartButtonClick(hButton) {
 	}
 }
 $(document).ready(function(){
+	var isArtCheck = false;
 	var displayMode = "Gallery Mode";
 	$("#homePage").css("max-width",window.width);
 	//window.addEventListener ("touchmove", function (event) { event.preventDefault (); }, {passive: false});
@@ -310,6 +311,7 @@ $(document).ready(function(){
 	}
 	pageNum();
 	var clearIFBox = function() {
+		isArtCheck = false;
 		curPage = 1;
 		scrollMetric = 0;
 		$("#IFScrollBox").empty();
@@ -463,9 +465,9 @@ $(document).ready(function(){
 	blacklist = JSON.parse(startBlist);
 	enumBlacklist();
 	}	
-	$("#tagsToBanButton").click( function() {
-	//Adding tags to blacklist
-	var tagToAdd = $("#tagsToBan").val();
+	
+	function addToBL(tag) {
+	var tagToAdd = tag;
 	if(tagToAdd.indexOf(' ') > -1) {
 		var multiTags = tagToAdd.split(" ");
 		$.each(multiTags, function(i, item) {
@@ -485,6 +487,18 @@ $(document).ready(function(){
 		createCookie('blacklist',blString,365);
 		enumBlacklist();
 	}
+	}
+	function removeFromBL(tag) {
+		if(blacklist.indexOf(tag) > -1) {
+			blacklist.splice((blacklist.indexOf(tag)),1);
+			var blString = JSON.stringify(blacklist);
+			createCookie('blacklist',blString,365);
+			enumBlacklist();
+		}
+	}
+	$("#tagsToBanButton").click( function() {
+	//Adding tags to blacklist
+		addToBL($("#tagsToBan").val());
 	});
 	$("#tagsToBan").focusin(function () {
 	if($("#tagsToBan").hasClass("alert-danger")) {
@@ -714,6 +728,7 @@ $(document).ready(function(){
 	$(".carousel-control").css("visibility","visible");
 	}
 	//infinite scroll
+	
 	var ISResultNum = 0;
 	var getResultsIS = function () {
 		ISResultNum = 0;
@@ -743,7 +758,12 @@ $(document).ready(function(){
 		}
 		tags += "&page=" + curPage;
 		tags = tags.replace(/\ /g, '%20');
+		if(isArtCheck == false) {
 		tags += "&limit=10";
+		}
+		else {
+		tags += "&limit=100";
+		}
 		e621API += tags;
 		var amountOfResults = 1;
 		var goodResult = true;
@@ -900,7 +920,11 @@ $(document).ready(function(){
 			}
 		});
 		$(".watchResultArtist").each( function(i, item) {
-			var thisWatch = $(item).parent().children("h3").html()
+			var thisWatch = $(item).parent().children("h3").html();
+			if(thisWatch.indexOf(" ") > -1) {
+				thisWatch = thisWatch.replace(/\ /g,"_");
+			}
+			console.log(thisWatch);
 			if(artList.indexOf(thisWatch.toLowerCase()) > -1) {
 				$(item).removeClass("btn-info");
 				$(item).addClass("btn-success");
@@ -920,6 +944,7 @@ $(document).ready(function(){
 		clearIFBox();
 		getResultsIS();
 		}
+		
 	});
 	$("#clearButton").click(function() {
 		scrollMetric = 0;
@@ -1118,8 +1143,10 @@ $("#myCarousel").swipeleft( function() {
 	$("#myCarousel").carousel('next');
 });
 $("#myCarousel").on("taphold", function() {
+	if(screen.width < 992) {
 	$("#favModal").modal();
 	$("#favModal > .modal-dialog").css({"width":(screen.width),"top":"30%"});
+	}
 });
 var mobileISFav = "";
 $("#mobileFavButton").click( function() {
@@ -1181,7 +1208,7 @@ $("#ifScrollButton").click( function() {
 });
 
 $(window).scroll(function(){
-    if((displayMode == "Infinite Scroll") && ($("#homePage").hasClass("active"))) {
+    if((displayMode == "Infinite Scroll") && ($("#homePage").hasClass("active")) && isArtCheck == false) {
 	// This is then function used to detect if the element is scrolled into view
     function elementScrolled(elem)
     {
@@ -1202,10 +1229,12 @@ $(window).scroll(function(){
 	}
 });
 $(document).on('taphold','.ifResult',function(){
+	if(screen.width < 992) {
 	var itemID = $(this).children().first().attr("alt");
 	mobileISFav = itemID;
 	$("#favModal").modal();
 	$("#favModal > .modal-dialog").css({"width":(screen.width),"top":"30%"});
+	}
 });
 $(".favModalClose").click( function() {
 	mobileISFav = "";
@@ -1217,6 +1246,7 @@ $('.nav-tabs > li').eq(1).click( function() {
 	enumFavList();
 	console.log(favListReady);
 	checkNewArt();
+	console.log(favList);
 });
 if(screen.width < 992) {
 	$('.nav-tabs > li').eq(1).children().eq(0).html("<span class='glyphicon glyphicon-eye-open'></span> / <span class='glyphicon glyphicon-heart'></span>");
@@ -1252,6 +1282,7 @@ $(document).on("click", ".artListItem", function() {
 		}*/
 		clearIFBox();
 		clearCarousel();
+		isArtCheck = true;
 		var artSearch = $(this).siblings(".searchThis").html();
 		console.log(artSearch);
 		$("#tagsInput").val(artSearch + " date:week");
@@ -1291,6 +1322,18 @@ $("#newArtTime").on("change",function() {
 		newArtTime = newArtTime[1];
 	}
 	checkNewArt();
+});
+$(document).on("taphold",".tagAdd", function( event ) {
+	if(event.target != null) {
+		if(blacklist.indexOf(event.target.innerHTML) == -1) {
+			addToBL(event.target.innerHTML);
+			event.target.setAttribute("style","background-color:red;color:white;");
+		}
+		else {
+			removeFromBL(event.target.innerHTML);
+			event.target.removeAttribute("style");
+		}
+	}
 });
 });
 
