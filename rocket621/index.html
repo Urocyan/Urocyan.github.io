@@ -1335,6 +1335,40 @@ $(document).on("taphold",".tagAdd", function( event ) {
 		}
 	}
 });
+$("#importButton").click( function() {
+	if($("#importUsername").val() != "") {
+		var username = $("#importUsername").val();
+		var e621API = "https://e621.net/post/index.json?tags=favorites:" + username;
+		console.log(e621API);
+		$.ajax({
+			type: "GET",
+			dataType: "jsonp",
+			url: e621API,
+			success: function( data ) {
+				$("#loader").css({"display":"block","position":"fixed","top":((window.innerHeight/2)-60)+"px","left":((window.innerWidth/2)-60)+"px","z-index":"99"});
+				$.each(data, function(i, item) {
+					if(item.file_ext.indexOf("swf") == -1) {
+					var addToFav = item.id;
+					if(favList.indexOf(addToFav) == -1) {
+						favList.push(addToFav);
+						var favString = JSON.stringify(favList);
+						console.log(favString);
+						createCookie('favlist',favString,365);
+					}
+					}
+				});
+				
+			},
+			complete: function() {
+				$("#loader").css("display","none");
+				if(favList.indexOf(null) > -1) {
+					favList.splice((favList.indexOf(null)),1);
+				}
+				enumFavList();
+			}
+	});
+	}
+});
 });
 
 //Search new art items
@@ -1468,6 +1502,17 @@ $(document).on("taphold",".tagAdd", function( event ) {
 				<button class="btn btn-primary" id="favButtonRefresh">Refresh</button>
 				<button class="btn btn-danger" id="favListClear">Clear List</button>
 				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-lg-12">
+		<div class="input-group">
+			<span class="input-group-addon">Import Favorites</span>
+			<input type="text" id="importUsername" class="form-control" placeholder="put your e621 username here!" />
+			<div class="input-group-btn">
+				<button class="btn btn-info" id="importButton">Import</button>
 			</div>
 		</div>
 	</div>
