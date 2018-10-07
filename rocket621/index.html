@@ -259,13 +259,13 @@ $(document).ready(function(){
 		$("<li>").attr({
 		"align": "center",
 		"class": "list-group-item"
-		}).html("<a class='favLink' target='_blank' href='"+item+"'><img src='"+item+"' style='max-width:100%;max-height:100%;border:5px solid black;box-sizing:border-box;border-radius:2px;margin-left:auto;margin-right:auto'></img></a><div class='container' width='100%' align='center'><button class='btn removeFavorite'><span class='glyphicon glyphicon-remove'></span></button>").appendTo("#favHolder");
+		}).html("<a class='favLink' target='_blank' href='"+item+"'><img src='"+item+"' style='max-width:100%;max-height:"+window.innerHeight+"px;border:0px solid black;border-radius:5px;box-sizing:border-box;border-radius:2px;margin-left:auto;margin-right:auto'></img></a><div class='container' width='100%' align='center'><button class='btn removeFavorite'><span class='glyphicon glyphicon-remove'></span></button>").appendTo("#favHolder");
 		}
 		else {
 		$("<li>").attr({
 		"align": "center",
 		"class": "list-group-item"
-		}).html("<video controls style='max-width:100%;max-height:100%;border:5px solid black;box-sizing:border-box;border-radius:2px;margin-left:auto;margin-right:auto'><source src='"+item+"' type='video/webm'></video><div class='container' width='100%' align='center'><button class='btn removeFavorite' ><span class='glyphicon glyphicon-remove'></span></button></div>").appendTo("#favHolder");
+		}).html("<video controls style='max-width:100%;max-height:"+window.innerHeight+"px;box-sizing:border:0px solid black;border-radius:5px;margin-left:auto;margin-right:auto'><source src='"+item+"' type='video/webm'></video><div class='container' width='100%' align='center'><button class='btn removeFavorite' ><span class='glyphicon glyphicon-remove'></span></button></div>").appendTo("#favHolder");
 		}
 	});
 	favAdded = false;
@@ -309,7 +309,7 @@ $(document).ready(function(){
 	$("#innerIMG").empty();
 	$("<div>").attr({
 		"class":"item active"
-		}).html("<div class='panel panel-default' style='width:100%; max-height:"+(screen.height * 0.6)+"px;'><div class='panel-heading'><h3>Quick Start Guide</h3></div><div align='center' class='panel-body' style='overflow:scroll;'><ul class='list-group'><li class='list-group-item-success list-group-item'>Updates <span class='glyphicon glyphicon-chevron-right'></span> Loader added; Infinite Scrolling available; tap hold to favorite on mobile. </li><li class='list-group-item' >Type your favorite tags into the \"tags\" box, then click <span class='glyphicon glyphicon-refresh'></span> to search.</li><li class='list-group-item'>Blacklist unwanted tags under \"Blacklist\" in Search Settings.</li><li class='list-group-item'>To get updates when an artist has posted recently, add names to the 'Watched Artists' list under Search Settings.</ul></div></div>").appendTo("#innerIMG");
+		}).html("<div class='panel panel-default qStart' style='width:100%; max-height:"+(screen.height * 0.6)+"px;'><div class='panel-heading'><h3>Quick Start Guide</h3></div><div align='center' class='panel-body' style='overflow:scroll;'><ul class='list-group'><li class='list-group-item-success list-group-item'>Updates <span class='glyphicon glyphicon-chevron-right'></span> Loader added; Infinite Scrolling available; tap hold to favorite on mobile. </li><li class='list-group-item' >Type your favorite tags into the \"tags\" box, then click <span class='glyphicon glyphicon-refresh'></span> to search.</li><li class='list-group-item'>Blacklist unwanted tags under \"Blacklist\" in Search Settings.</li><li class='list-group-item'>To get updates when an artist has posted recently, add names to the 'Watched Artists' list under Search Settings.</ul></div></div>").appendTo("#innerIMG");
 		$(".carousel-control").css("visibility","hidden");
 		
 	}
@@ -1028,7 +1028,7 @@ $("#detectScreenSize").click( function() {
 var isFscreen = false;
 $("#myCarousel").bind('slide.bs.carousel', function (e) {
 	if(isFscreen == true) {
-		if(screen.width < 992) {
+		if(screen.width < 992 && !($(".active").children(".panel").hasClass("qStart"))) {
 			setTimeout(function() {
 			var thisHeight = $(".item.next.left > img").height();
 			var thisWidth = $(".item.next.left > img").width();
@@ -1043,7 +1043,7 @@ $("#myCarousel").bind('slide.bs.carousel', function (e) {
 			if(thisWidth < screen.width) {
 				$(".next").css({"position":"fixed","left":((screen.width - thisWidth)/2)});
 			}
-			}, 100);
+			}, 200);
 		}
 	}
 	});
@@ -1052,6 +1052,20 @@ var doc = window.document;
 $("#fullScreen").click( function() {
 	$(".carouselResults").css({"max-height":(screen.height * 0.75),"max-width":screen.width});
 	$(".panel").css("height",(screen.height)+"px");
+	if(screen.width < 992 && !($(".active").children(".panel").hasClass("qStart"))) {
+		var thisHeight = $(".item.active > img").height();
+		var thisWidth = $(".item.active > img").width();
+		if(thisHeight == null) {
+			thisHeight = $(".item.active > video").height();
+		}
+		if(thisWidth == null) {
+			thisWidth = $(".item.active > video").width();
+		}
+		$(".active").css({"position":"fixed","top":((screen.height - thisHeight)/2)});
+		if(thisWidth < screen.width) {
+			$(".active").css({"position":"fixed","left":((screen.width - thisWidth)/2)});
+		}
+	}
 	$("#myCarousel").css({"height":screen.height,"width":screen.width});
 	$(".panel-footer").hide();
 	isFscreen = true;
@@ -1138,12 +1152,12 @@ $("#myCarousel").swiperight( function() {
 $("#myCarousel").swipeleft( function() {
 	$("#myCarousel").carousel('next');
 });
-$("#myCarousel").on("taphold", function() {
-	if(screen.width < 992) {
+function carouselFav() {
+	if(screen.width < 992 && displayMode == "Gallery Mode" && $("#myCarousel").css("display") == "block" && !($(".active > .panel").hasClass("qStart"))) {
 	$("#favModal").modal();
 	$("#favModal > .modal-dialog").css({"width":(screen.width),"top":"30%"});
 	}
-});
+}
 var mobileISFav = "";
 $("#mobileFavButton").click( function() {
 	var itemID = "";
@@ -1394,6 +1408,29 @@ $(document).on("click",".favButton", function (e) {
 	}
 	console.log(favList);
 	favAdded = true;
+});
+$(document).keyup(function(e) {
+	if(e.which == 37) {
+		$("#myCarousel").carousel('prev');
+	}
+	else if(e.which == 39) {
+		$("#myCarousel").carousel('next');
+	}
+	else if(e.which == 32) {
+		if(pausedShow) {
+			$('#myCarousel').carousel('cycle');
+			pausedShow = false;
+			$("#pauseSlideshow").html("Pause Slideshow <span class='glyphicon glyphicon-pause'></span>");
+		}
+		else {
+			pausedShow = true;
+			$("#myCarousel").carousel('pause');
+			$("#pauseSlideshow").html("Play Slideshow <span class='glyphicon glyphicon-play'></span>");
+		}
+	}
+	else if(e.which == 70) {
+		carouselFav();
+	}
 });
 });
 //Search new art items
