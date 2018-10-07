@@ -359,8 +359,7 @@ $(document).ready(function(){
 		newArtTime = newArtTime[1];
 	}
 	function checkNewArt() {
-		console.log(newWatch);
-		console.log(favAdded);
+		console.log("newWatch " + newWatch);
 		if((artWatchReady == true) && (newWatch == true)) {
 		var numChecked = 0;
 		var e621API = "https://e621.net/post/index.json?tags=";
@@ -1394,8 +1393,8 @@ $("#importButton").click( function() {
 </script>
 <ul class="nav nav-tabs">
   <li class="active"><a data-toggle="tab" class='topTab' href="#homePage">Home</a></li>
-  <li><a data-toggle="tab" class='topTab' href="#menu1">Watches / Favorites</a></li>
-  <li><a data-toggle="tab" class='topTab' href="#menu2">Blacklist</a></li>
+  <li><a data-toggle="tab" class='topTab' href="#menu1">Watches</a></li>
+  <li><a data-toggle="tab" class='topTab' href="#menu2">Favorites</a></li>
   <li><a data-toggle="tab" class='topTab' href="#menu3">Settings</a></li>
 </ul>
 <div class="loader" id="loader"></div>
