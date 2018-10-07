@@ -225,27 +225,6 @@ function removeFav(favID) {
 	console.log(favString);
 	createCookie('favlist',favString,365);
 }
-function heartButtonClick(hButton) {
-	var addToFav = hButton.id.split("_");
-	addToFav = addToFav[1];
-	if(favList.indexOf(addToFav) > -1) {
-		favList.splice((favList.indexOf(addToFav)),1);
-		var favString = JSON.stringify(favList);
-		console.log(favString);
-		createCookie('favlist',favString,365);
-		hButton.children[0].style.color = "black";
-		
-	}
-	else {
-		favList.push(addToFav);
-		var favString = JSON.stringify(favList);
-		console.log(favString);
-		createCookie('favlist',favString,365);
-		hButton.children[0].style.color = "red";
-		
-	}
-	favAdded = true;
-}
 $(document).ready(function(){
 	
 	var isArtCheck = false;
@@ -269,46 +248,40 @@ $(document).ready(function(){
 		favList.splice((favList.indexOf(null)),1);
 	}
 	$("#favHolder").empty();
-	var numberChecked = 0;
-	$.each(favList, function(i, item) {
-		var e621API = "https://e621.net/post/index.json?tags=" + "id:" + item;
-		if(favList[i] != null) {
-		$.ajax({
-			type: "GET",
-			url: e621API,
-			dataType: "jsonp",
-			success: function( data ) {
-					favListReady = false;
-					if(data[0].file_ext.indexOf("webm") == -1) {
-					$("<li>").attr({
-					"align": "center",
-					"class": "list-group-item"
-					}).html("<a class='favLink' target='_blank' href='"+data[0].file_url+"'><img src='"+data[0].sample_url+"' style='max-width:100%;max-height:100%;border:5px solid black;box-sizing:border-box;border-radius:2px;margin-left:auto;margin-right:auto'></img></a><div class='container' width='100%' align='center'><button class='btn removeFavorite' id='"+item.id+"' onclick='removeFav(this);'><span class='glyphicon glyphicon-remove'></span></button>").appendTo("#favHolder");
-					}
-					else {
-					$("<li>").attr({
-					"align": "center",
-					"class": "list-group-item"
-					}).html("<video controls style='max-width:100%;max-height:100%;border:5px solid black;box-sizing:border-box;border-radius:2px;margin-left:auto;margin-right:auto'><source src='"+data[0].file_url+"' type='video/webm'></video><div class='container' width='100%' align='center'><button class='btn removeFavorite' onclick='removeFav(this);' id='"+item.id+"'><span class='glyphicon glyphicon-remove'></span></button></div>").appendTo("#favHolder");
-					}
-					$(".removeFavorite").click( function() {
-						$(this).parent().parent().get(0).remove();
-					});
-			},
-			complete: function() {
-			favAdded = false;
-			numberChecked++;
-			console.log(numberChecked);
-			console.log(favList.length);
-				if(numberChecked == favList.length) {
-				favListReady = true;
-				}
-			}
-		});
+		$.each(favList, function(i, item) {
+		favListReady = false;
+		isBusy = true;
+		if(item.indexOf("webm") == -1) {
+		$("<li>").attr({
+		"align": "center",
+		"class": "list-group-item"
+		}).html("<a class='favLink' target='_blank' href='"+item+"'><img src='"+item+"' style='max-width:100%;max-height:100%;border:5px solid black;box-sizing:border-box;border-radius:2px;margin-left:auto;margin-right:auto'></img></a><div class='container' width='100%' align='center'><button class='btn removeFavorite'><span class='glyphicon glyphicon-remove'></span></button>").appendTo("#favHolder");
+		}
+		else {
+		$("<li>").attr({
+		"align": "center",
+		"class": "list-group-item"
+		}).html("<video controls style='max-width:100%;max-height:100%;border:5px solid black;box-sizing:border-box;border-radius:2px;margin-left:auto;margin-right:auto'><source src='"+item+"' type='video/webm'></video><div class='container' width='100%' align='center'><button class='btn removeFavorite' ><span class='glyphicon glyphicon-remove'></span></button></div>").appendTo("#favHolder");
 		}
 	});
+	favAdded = false;
+	favListReady = true;
 	}
 	}
+	$(document).on("click",".removeFavorite",function(e) {
+		var toDelete = e.target;
+		toDelete = $(toDelete).parents(".list-group-item").children(".favLink").attr("href");
+		if(favList.indexOf(toDelete) > -1) {
+		favList.splice((favList.indexOf(toDelete)),1);
+		var favString = JSON.stringify(favList);
+		console.log(favString);
+		createCookie('favlist',favString,365);
+		favAdded = true;
+		var removeNode = e.target;
+		removeNode = $(removeNode).parents(".list-group-item");
+		removeNode.remove();
+		}
+	});
 	$("#favButtonRefresh").click( function() {
 		enumFavList();
 	});
@@ -602,7 +575,7 @@ $(document).ready(function(){
 				$( "<div>" ).attr({
 				"class": "item",
 				}).html(
-				"<div class='panel panel-default'><div class='panel-heading' align='center'><div class='well'><h3 style='display:inline-block;'>"+artist+"</h3>&nbsp;<button class='btn btn-info watchResultArtist'><span class='glyphicon glyphicon-eye-open'></span></button></div></div><div class='panel-body'><img style='max-height:"+(screen.height * 0.75)+"px;' src='"+item.file_url+"' alt='"+item.artist+"' class='carouselResults'></div><div class='panel-footer' align='center'><div class='btn-group'><button class='btn btn-default'><a href='"+item.source+"' target='_blank'>Source</a></button><button class='btn btn-default favButton' onclick='heartButtonClick(this);' id='favButton_"+item.id+"'>"+item.fav_count+"<span class='glyphicon glyphicon-heart' ></span></button><button class='btn btn-default'>"+item.score+"<span class='glyphicon glyphicon-arrow-up'></span></button></div><button class='btn btn-block' data-toggle='collapse' data-target='#tagsFor_"+item.id+"'>Tags</button><br /><div class='container-fluid collapse' style='max-width: 75%;' id='tagsFor_"+item.id+"'><div class='well alert-info'><div class='btn-group tagButtons' id='resultNum"+i+"'></div></div></div></div></div>")
+				"<div class='panel panel-default'><div class='panel-heading' align='center'><div class='well'><h3 style='display:inline-block;'>"+artist+"</h3>&nbsp;<button class='btn btn-info watchResultArtist'><span class='glyphicon glyphicon-eye-open'></span></button></div></div><div class='panel-body'><img style='max-height:"+(screen.height * 0.75)+"px;' src='"+item.file_url+"' alt='"+item.artist+"' class='carouselResults'></div><div class='panel-footer' align='center'><div class='btn-group'><button class='btn btn-default'><a href='"+item.source+"' target='_blank'>Source</a></button><button class='btn btn-default favButton' id='favButton_"+item.id+"'>"+item.fav_count+"<span class='glyphicon glyphicon-heart' ></span></button><button class='btn btn-default'>"+item.score+"<span class='glyphicon glyphicon-arrow-up'></span></button></div><button class='btn btn-block' data-toggle='collapse' data-target='#tagsFor_"+item.id+"'>Tags</button><br /><div class='container-fluid collapse' style='max-width: 75%;' id='tagsFor_"+item.id+"'><div class='well alert-info'><div class='btn-group tagButtons' id='resultNum"+i+"'></div></div></div></div></div>")
 				.appendTo( "#innerIMG");
 
 				var currentIteration = i;
@@ -650,7 +623,7 @@ $(document).ready(function(){
 				$( "<div>" ).attr({
 				"class": "item",
 				}).html(
-				"<div class='panel panel-default'><div class='panel-heading' align='center'><div class='well'><h3 style='display:inline-block;'>"+artist+"</h3>&nbsp;<button class='btn btn-info watchResultArtist'><span class='glyphicon glyphicon-eye-open'></span></button></div></div><div class='panel-body'><video class='carouselResults' controls style='max-height:"+(screen.height * 0.75)+"px;'><source src='"+item.file_url+"' type='video/webm' /></video></div><div class='panel-footer' align='center'><div class='btn-group'><button class='btn btn-default'><a href='"+item.source+"' target='_blank'>Source</a></button><button class='btn btn-default favButton' onclick='heartButtonClick(this);' id='favButton_"+item.id+"'>"+item.fav_count+"<span class='glyphicon glyphicon-heart heartButton'></span></button><button class='btn btn-default'>"+item.score+"<span class='glyphicon glyphicon-arrow-up'></span></button></div><button class='btn btn-block' data-toggle='collapse' data-target='#tagsFor_"+item.id+"'>Tags</button><br /><div class='container-fluid collapse' style='max-width: 75%;' id='tagsFor_"+item.id+"'><div class='well alert-info'><div class='btn-group tagButtons' id='resultNum"+i+"'></div></div></div></div></div>")
+				"<div class='panel panel-default'><div class='panel-heading' align='center'><div class='well'><h3 style='display:inline-block;'>"+artist+"</h3>&nbsp;<button class='btn btn-info watchResultArtist'><span class='glyphicon glyphicon-eye-open'></span></button></div></div><div class='panel-body'><video class='carouselResults' controls style='max-height:"+(screen.height * 0.75)+"px;'><source src='"+item.file_url+"' type='video/webm' /></video></div><div class='panel-footer' align='center'><div class='btn-group'><button class='btn btn-default'><a href='"+item.source+"' target='_blank'>Source</a></button><button class='btn btn-default favButton' id='favButton_"+item.id+"'>"+item.fav_count+"<span class='glyphicon glyphicon-heart'></span></button><button class='btn btn-default'>"+item.score+"<span class='glyphicon glyphicon-arrow-up'></span></button></div><button class='btn btn-block' data-toggle='collapse' data-target='#tagsFor_"+item.id+"'>Tags</button><br /><div class='container-fluid collapse' style='max-width: 75%;' id='tagsFor_"+item.id+"'><div class='well alert-info'><div class='btn-group tagButtons' id='resultNum"+i+"'></div></div></div></div></div>")
 				.appendTo( "#innerIMG");
 				var currentIteration = i;
 				var tagArray = item.tags.split(" ");
@@ -818,7 +791,7 @@ $(document).ready(function(){
 				$( "<div>" ).attr({
 				"class": "row",
 				}).html(
-				"<div class='col-lg-12 ifResult' style=' left:0;'><div class='panel panel-default' style='max-width:"+screen.width+"px;'><div class='panel-heading' align='center'><div class='well'><h3 style='display:inline-block;'>"+artist+"</h3>&nbsp;<button class='btn btn-info watchResultArtist'><span class='glyphicon glyphicon-eye-open'></span></button></div></div><div class='panel-body'><img style='max-width:100%; max-height:"+window.innerHeight+"px;' src='"+item.file_url+"' alt='"+item.artist+"' class='carouselResults'></div><div class='panel-footer' align='center'><div class='btn-group'><button class='btn btn-default'><a href='"+item.source+"' target='_blank'>Source</a></button><button class='btn btn-default favButton' onclick='heartButtonClick(this);' id='favButton_"+item.id+"'>"+item.fav_count+"<span class='glyphicon glyphicon-heart' ></span></button><button class='btn btn-default'>"+item.score+"<span class='glyphicon glyphicon-arrow-up'></span></button><button class='btn btn-info'><a href='#top' style='text-decoration: none;color:white;'>Top</a></button></div><button class='btn btn-block' data-toggle='collapse' data-target='#tagsFor_"+item.id+"'>Tags</button><br /><div class='container-fluid collapse' style='max-width: 100%;' id='tagsFor_"+item.id+"'><div class='well alert-info'><div class='btn-group tagButtons' id='resultNum"+scrollMetric+"'></div></div></div></div></div></div>")
+				"<div class='col-lg-12 ifResult' style=' left:0;'><div class='panel panel-default' style='max-width:"+screen.width+"px;'><div class='panel-heading' align='center'><div class='well'><h3 style='display:inline-block;'>"+artist+"</h3>&nbsp;<button class='btn btn-info watchResultArtist'><span class='glyphicon glyphicon-eye-open'></span></button></div></div><div class='panel-body'><img style='max-width:100%; max-height:"+window.innerHeight+"px;' src='"+item.file_url+"' alt='"+item.artist+"' class='carouselResults'></div><div class='panel-footer' align='center'><div class='btn-group'><button class='btn btn-default'><a href='"+item.source+"' target='_blank'>Source</a></button><button class='btn btn-default favButton' id='favButton_"+item.id+"'>"+item.fav_count+"<span class='glyphicon glyphicon-heart' ></span></button><button class='btn btn-default'>"+item.score+"<span class='glyphicon glyphicon-arrow-up'></span></button><button class='btn btn-info'><a href='#top' style='text-decoration: none;color:white;'>Top</a></button></div><button class='btn btn-block' data-toggle='collapse' data-target='#tagsFor_"+item.id+"'>Tags</button><br /><div class='container-fluid collapse' style='max-width: 100%;' id='tagsFor_"+item.id+"'><div class='well alert-info'><div class='btn-group tagButtons' id='resultNum"+scrollMetric+"'></div></div></div></div></div></div>")
 				.appendTo( "#IFScrollBox");
 				var currentIteration = i;
 				var tagArray = item.tags.split(" ");
@@ -861,7 +834,7 @@ $(document).ready(function(){
 				$( "<div>" ).attr({
 				"class": "row",
 				}).html(
-				"<div class='col-lg-12 ifResult' style=' left:0;'><div class='panel panel-default' style='max-width:"+screen.width+"px;'><div class='panel-heading' align='center'><div class='well'><h3 style='display:inline-block;'>"+artist+"</h3>&nbsp;<button class='btn btn-info watchResultArtist'><span class='glyphicon glyphicon-eye-open'></span></button></div></div><div class='panel-body'><video class='carouselResults' controls style='max-width:100%; max-height:"+screen.innerHeight+"px;'><source src='"+item.file_url+"' type='video/webm' /></video></div><div class='panel-footer' align='center'><div class='btn-group'><button class='btn btn-default'><a href='"+item.source+"' target='_blank'>Source</a></button><button class='btn btn-default favButton' onclick='heartButtonClick(this);' id='favButton_"+item.id+"'>"+item.fav_count+"<span class='glyphicon glyphicon-heart heartButton'></span></button><button class='btn btn-default'>"+item.score+"<span class='glyphicon glyphicon-arrow-up'></span></button><button class='btn btn-info'><a href='#top' style=' text-decoration: none;color:white;'>Top</a></button></div><button class='btn btn-block' data-toggle='collapse' data-target='#tagsFor_"+item.id+"'>Tags</button><br /><div class='container-fluid collapse' style='max-width: 100%;' id='tagsFor_"+item.id+"'><div class='well alert-info'><div class='btn-group tagButtons' id='resultNum"+scrollMetric+"'></div></div></div></div></div></div>")
+				"<div class='col-lg-12 ifResult' style=' left:0;'><div class='panel panel-default' style='max-width:"+screen.width+"px;'><div class='panel-heading' align='center'><div class='well'><h3 style='display:inline-block;'>"+artist+"</h3>&nbsp;<button class='btn btn-info watchResultArtist'><span class='glyphicon glyphicon-eye-open'></span></button></div></div><div class='panel-body'><video class='carouselResults' controls style='max-width:100%; max-height:"+screen.innerHeight+"px;'><source src='"+item.file_url+"' type='video/webm' /></video></div><div class='panel-footer' align='center'><div class='btn-group'><button class='btn btn-default'><a href='"+item.source+"' target='_blank'>Source</a></button><button class='btn btn-default favButton' id='favButton_"+item.id+"'>"+item.fav_count+"<span class='glyphicon glyphicon-heart'></span></button><button class='btn btn-default'>"+item.score+"<span class='glyphicon glyphicon-arrow-up'></span></button><button class='btn btn-info'><a href='#top' style=' text-decoration: none;color:white;'>Top</a></button></div><button class='btn btn-block' data-toggle='collapse' data-target='#tagsFor_"+item.id+"'>Tags</button><br /><div class='container-fluid collapse' style='max-width: 100%;' id='tagsFor_"+item.id+"'><div class='well alert-info'><div class='btn-group tagButtons' id='resultNum"+scrollMetric+"'></div></div></div></div></div></div>")
 				.appendTo( "#IFScrollBox");
 				var currentIteration = i;
 				var tagArray = item.tags.split(" ");
@@ -1161,19 +1134,16 @@ $("#myCarousel").on("taphold", function() {
 });
 var mobileISFav = "";
 $("#mobileFavButton").click( function() {
-	if($(".item.active > .carouselResults").attr("alt")) {
-	var itemID;
-	itemID = $(".item.active > .carouselResults").attr("alt");
-	}
-	else if($(".item.active > .carouselResults").attr("id")) {
-	itemID = $(".item.active > .carouselResults").attr("id");
+	var itemID = "";
+	if($(".item.active > .carouselResults").attr("src")) {
+	itemID = $(".item.active > .carouselResults").attr("src");
 	}
 	else if(mobileISFav != "") {
 	itemID = mobileISFav;
 	mobileISFav = "";
 	}
 	console.log(itemID);
-	if(itemID != null) {
+	if(itemID != "") {
 	if(favList.indexOf(itemID) > -1) {
 		alert("Already favorited!");
 	}
@@ -1242,7 +1212,7 @@ $(window).scroll(function(){
 });
 $(document).on('taphold','.ifResult',function(){
 	if(screen.width < 992) {
-	var itemID = $(this).children().first().attr("alt");
+	var itemID = $(this).children().first().attr("src");
 	mobileISFav = itemID;
 	$("#favModal").modal();
 	$("#favModal > .modal-dialog").css({"width":(screen.width),"top":"30%"});
@@ -1363,7 +1333,7 @@ $("#importButton").click( function() {
 				$("#loader").css({"display":"block","position":"fixed","top":((window.innerHeight/2)-60)+"px","left":((window.innerWidth/2)-60)+"px","z-index":"99"});
 				$.each(data, function(i, item) {
 					if(item.file_ext.indexOf("swf") == -1) {
-					var addToFav = item.id;
+					var addToFav = item.file_url;
 					if(favList.indexOf(addToFav) == -1) {
 						favList.push(addToFav);
 						var favString = JSON.stringify(favList);
@@ -1385,8 +1355,35 @@ $("#importButton").click( function() {
 	});
 	}
 });
+$(document).on("click",".favButton", function (e) {
+	var thisButton = e.target.parentNode;
+	if($(thisButton).parents(".panel").children(".panel-body").children(".carouselResults").children("source").attr("src")) {
+	thisButton = $(thisButton).parents(".panel").children(".panel-body").children(".carouselResults").children("source").attr("src");
+	}
+	else if($(thisButton).parents(".panel").children(".panel-body").children(".carouselResults").attr("src")) {
+	thisButton = $(thisButton).parents(".panel").children(".panel-body").children(".carouselResults").attr("src");
+	}
+	console.log(thisButton);
+	if(favList.indexOf(thisButton) > -1) {
+		favList.splice((favList.indexOf(thisButton)),1);
+		var favString = JSON.stringify(favList);
+		console.log(favString);
+		createCookie('favlist',favString,365);
+		e.target.parentNode.style.color = "black";
+		
+	}
+	else {
+		favList.push(thisButton);
+		var favString = JSON.stringify(favList);
+		console.log(favString);
+		createCookie('favlist',favString,365);
+		e.target.parentNode.style.color = "red";
+		
+	}
+	console.log(favList);
+	favAdded = true;
 });
-
+});
 //Search new art items
 </script>
 <ul class="nav nav-tabs">
