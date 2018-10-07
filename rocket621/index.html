@@ -341,7 +341,6 @@ $(document).ready(function(){
 	var favListStart = getCookie("favlist");
 	if(favListStart != "") {
 		favList = JSON.parse(favListStart);
-		enumFavList();
 	}
 	//start of artist list
 	var artList = [];
@@ -400,7 +399,6 @@ $(document).ready(function(){
 		}
 		}
 	}
-	checkNewArt();
 	function addToArtlist(artistTag) {
 		var artistToAdd = artistTag.toLowerCase();
 		if(artistToAdd.indexOf(' ') > -1) {
