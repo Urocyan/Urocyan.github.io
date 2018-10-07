@@ -184,6 +184,10 @@
 	.tab-content {
 		overflow-x: hidden;
 	}
+	.affix {
+		z-index: 99;
+		top:0;
+	}
 </style>
 </head>
 <body>
@@ -226,7 +230,7 @@ function removeFav(favID) {
 	createCookie('favlist',favString,365);
 }
 $(document).ready(function(){
-	
+	$("#stickyNav").attr("data-offset-top",($("#stickyNav").offset().top));
 	var isArtCheck = false;
 	var displayMode = "Gallery Mode";
 	$("#homePage").css("max-width",window.width);
@@ -692,10 +696,14 @@ $(document).ready(function(){
 	},
 	complete: function() {
 		$(".favButton").each(function(j, heart) {
-			var currentID = $(heart).attr("id").split("_");
-			currentID = currentID[1];
-			if(favList.indexOf(currentID) > -1) {
-			$(heart).children().first().css("color","red");
+			if($(heart).parents(".panel").children(".panel-body").children(".carouselResults").children("source").attr("src")) {
+				var thisURL = $(heart).parents(".panel").children(".panel-body").children(".carouselResults").children("source").attr("src");
+			}
+			else if($(heart).parents(".panel").children(".panel-body").children(".carouselResults").attr("src")) {
+				var thisURL = $(heart).parents(".panel").children(".panel-body").children(".carouselResults").attr("src");
+			}
+			if(favList.indexOf(thisURL) > -1) {
+			$(heart).css("color","red");
 			}
 		});
 		$(".watchResultArtist").each( function(i, item) {
@@ -897,10 +905,14 @@ $(document).ready(function(){
 	},
 	complete: function() {
 		$(".favButton").each(function(j, heart) {
-			var currentID = $(heart).attr("id").split("_");
-			currentID = currentID[1];
-			if(favList.indexOf(currentID) > -1) {
-			$(heart).children().first().css("color","red");
+			if($(heart).parents(".panel").children(".panel-body").children(".carouselResults").children("source").attr("src")) {
+				var thisURL = $(heart).parents(".panel").children(".panel-body").children(".carouselResults").children("source").attr("src");
+			}
+			else if($(heart).parents(".panel").children(".panel-body").children(".carouselResults").attr("src")) {
+				var thisURL = $(heart).parents(".panel").children(".panel-body").children(".carouselResults").attr("src");
+			}
+			if(favList.indexOf(thisURL) > -1) {
+			$(heart).css("color","red");
 			}
 		});
 		$(".watchResultArtist").each( function(i, item) {
@@ -1386,7 +1398,7 @@ $(document).on("click",".favButton", function (e) {
 });
 //Search new art items
 </script>
-<ul class="nav nav-tabs">
+<ul class="nav nav-tabs" id="top">
   <li class="active"><a data-toggle="tab" class='topTab' href="#homePage">Home</a></li>
   <li><a data-toggle="tab" class='topTab' href="#menu1">Watches</a></li>
   <li><a data-toggle="tab" class='topTab' href="#menu2">Favorites</a></li>
@@ -1401,7 +1413,7 @@ $(document).on("click",".favButton", function (e) {
 		<img src="https://i.imgur.com/afSLl34.png" style="max-height: 90%; max-width: 90%;"></img>
 	</div>
 </div>-->
-<div class="container-fluid" style='width:100%;padding:0;' id="top">
+<div class="container-fluid" data-spy="affix" style='width:100%;padding:0;' id="stickyNav">
 	<div class="input-group">
 		<span class="input-group-addon">Tags</span>
 		<input id="tagsInput" type="text" class="form-control" name="msg" placeholder="Enter Tags Here.">
