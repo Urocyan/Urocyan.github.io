@@ -147,12 +147,6 @@
 	.nav-tabs {
     text-align:center;
 	}
-	.favLink {
-		transition: 1s ease;
-	}
-	.favLink:hover > img {
-		border: 5px solid cyan;
-	}
 	#favModal > .modal-dialog{
 		margin:0;
 		left: 0;
@@ -187,6 +181,9 @@
 	.affix {
 		z-index: 99;
 		top:0;
+	}
+	#myCarousel {
+		display:block;
 	}
 </style>
 </head>
@@ -259,13 +256,13 @@ $(document).ready(function(){
 		$("<li>").attr({
 		"align": "center",
 		"class": "list-group-item"
-		}).html("<a class='favLink' target='_blank' href='"+item+"'><img src='"+item+"' style='max-width:100%;max-height:"+window.innerHeight+"px;border:0px solid black;border-radius:5px;box-sizing:border-box;border-radius:2px;margin-left:auto;margin-right:auto'></img></a><div class='container' width='100%' align='center'><button class='btn removeFavorite'><span class='glyphicon glyphicon-remove'></span></button>").appendTo("#favHolder");
+		}).html("<a target='_blank' href='"+item+"'><img class='favLink' src='"+item+"' style='max-width:100%;max-height:"+window.innerHeight+"px;border:0px solid black;border-radius:5px;box-sizing:border-box;border-radius:2px;margin-left:auto;margin-right:auto'></img></a><div class='container' width='100%' align='center'><button class='btn removeFavorite'><span class='glyphicon glyphicon-remove'></span></button>").appendTo("#favHolder");
 		}
 		else {
 		$("<li>").attr({
 		"align": "center",
 		"class": "list-group-item"
-		}).html("<video controls style='max-width:100%;max-height:"+window.innerHeight+"px;box-sizing:border:0px solid black;border-radius:5px;margin-left:auto;margin-right:auto'><source src='"+item+"' type='video/webm'></video><div class='container' width='100%' align='center'><button class='btn removeFavorite' ><span class='glyphicon glyphicon-remove'></span></button></div>").appendTo("#favHolder");
+		}).html("<video controls style='max-width:100%;max-height:"+window.innerHeight+"px;box-sizing:border:0px solid black;border-radius:5px;margin-left:auto;margin-right:auto'><source class='favLink' src='"+item+"' type='video/webm'></video><div class='container' width='100%' align='center'><button class='btn removeFavorite' ><span class='glyphicon glyphicon-remove'></span></button></div>").appendTo("#favHolder");
 		}
 	});
 	favAdded = false;
@@ -274,7 +271,8 @@ $(document).ready(function(){
 	}
 	$(document).on("click",".removeFavorite",function(e) {
 		var toDelete = e.target;
-		toDelete = $(toDelete).parents(".list-group-item").children(".favLink").attr("href");
+		toDelete = $(toDelete).parents(".list-group-item")
+		toDelete = $(toDelete).find(".favLink").attr("src");
 		if(favList.indexOf(toDelete) > -1) {
 		favList.splice((favList.indexOf(toDelete)),1);
 		var favString = JSON.stringify(favList);
@@ -284,6 +282,9 @@ $(document).ready(function(){
 		var removeNode = e.target;
 		removeNode = $(removeNode).parents(".list-group-item");
 		removeNode.remove();
+		if(favList.length == 0) {
+			$("#favHolder").empty();
+		}
 		}
 	});
 	$("#favButtonRefresh").click( function() {
@@ -1153,16 +1154,23 @@ $("#myCarousel").swipeleft( function() {
 	$("#myCarousel").carousel('next');
 });
 function carouselFav() {
-	if(screen.width < 992 && displayMode == "Gallery Mode" && $("#myCarousel").css("display") == "block" && !($(".active > .panel").hasClass("qStart"))) {
+	if((screen.width < 992) && (displayMode == "Gallery Mode") && ($("#myCarousel").css("display") != "none") && !($(".active > .panel").hasClass("qStart"))) {
 	$("#favModal").modal();
 	$("#favModal > .modal-dialog").css({"width":(screen.width),"top":"30%"});
 	}
 }
+
+$("#myCarousel").on("taphold", function() {
+	carouselFav();
+});
 var mobileISFav = "";
 $("#mobileFavButton").click( function() {
 	var itemID = "";
 	if($(".item.active > .carouselResults").attr("src")) {
 	itemID = $(".item.active > .carouselResults").attr("src");
+	}
+	else if($(".item.active > .carouselResults").children("source").attr("src")) {
+	itemID = $(".item.active > .carouselResults").children("source").attr("src");
 	}
 	else if(mobileISFav != "") {
 	itemID = mobileISFav;
