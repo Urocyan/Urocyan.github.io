@@ -1,0 +1,1761 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+<script src="jquery.mobile.custom.js"></script>
+
+<script src="jquery.mobile.custom.js"></script>
+<style>
+	body {
+		background-color: black;
+		color: white;
+		font-family: Helvetica;
+		overflow-x: hidden;
+	}
+	#toggleUI {
+		background-color: DarkSlateGray;
+		opacity: 0;
+		width: 5%;
+		height: 100%;
+		border: 0px solid white;
+		position: fixed;
+		z-index: 99;
+		transition: all 1s ease;
+		border-radius: 0px 5px 5px 0px;
+		
+	}
+	#toggleUI:hover {
+		opacity: 1;
+	}
+	#sel1 {
+		color: black;
+	}
+	#scoreAmt {
+		color: black;
+	}
+	img.result {
+		height:250px;
+		width: 250px;
+		object-fit: cover;
+	}
+	img.result:hover {
+		height:500px;
+		width:500px;
+		position:absolute;
+		z-index:99;
+	}
+	.middle {
+	position: relative;
+	top: 30%;
+	left:30%;
+	}
+	.carouselResults {
+		max-width: 100%;
+		object-fit: cover;
+		display: block;
+		margin-left: auto;
+		margin-right: auto;
+	}
+	.btn-block {
+		border: 1px solid white;
+	}
+	#toggleButton {
+		width: 100%;
+		background-color: darkturquoise;
+	}
+	#blToggle {
+		background-color: darkturquoise;
+	}
+	#alToggle {
+		background-color: darkturquoise;
+	}
+	.row.no-gutter {
+		margin-left: 0;
+		margin-right: 0;
+	}
+	.row.no-gutter [class*='col-']:not(:first-child),
+	.row.no-gutter [class*='col-']:not(:last-child) {
+		padding-right: 0;
+		padding-left: 0;
+	}
+	#blHolder {
+		color: black;
+		
+	}
+	#paginationRow {
+		width: 100%;
+	}
+	.sourceLink {
+		left: 0;
+		width: 20%;
+		position: absolute;
+		z-index: 99;
+	}
+	.card {
+		color:black;
+	}
+	.carousel-indicators {
+		top:0px;
+		color: turquoise;
+		visibility: hidden;
+	}
+	.carousel-indicators .active{
+    background-color: darkturquoise;
+	}
+	.fullScreen {
+		position: fixed;
+		display: block;
+		z-index: 99;
+		top: 0px;
+		bottom: 0px;
+		left: -15px;
+		right: 0px;
+		background-color: black;
+		margin-left: 0;
+		margin-right: 0;
+	}
+	#fScreenButton {
+		max-width: 10%;
+		margin-left: auto;
+		margin-right: auto;
+		position: fixed;
+		display: block;
+		z-index: 99;
+		bottom: 0;
+		visibility: hidden;
+		opacity: 0.5;
+	}
+	.card-body {
+	max-height: 50%;
+	padding:0;
+	}
+	.searchItem:hover {
+		box-shadow: 0 0 15px cyan;
+	}
+	*[class^="carousel-control"] {
+		visibility: hidden;
+	}
+	#favModal > .modal-dialog{
+		margin:0;
+		left: 0;
+		right: 0;
+		color: black;
+		position: fixed;
+	}
+	.loader {
+    border: 16px solid darkturquoise; /* Light grey */
+    border-top: 16px solid turquoise;
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    animation: spin 2s linear infinite;
+	display: none;
+	}
+
+	@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+	}
+	#galleryPeripherals {
+		display: block;
+	}
+	.tab-content {
+		overflow-x: hidden;
+	}
+	.affix {
+		z-index: 99;
+		top:0;
+	}
+	#myCarousel {
+		display:block;
+		width:100%;
+	}
+	.nav-link > a{
+		max-width: 25%;
+	}
+	.nav-tabs {
+		max-width: 100%;
+	}
+</style>
+</head>
+<body>
+<script>
+var favAdded = true;
+var newWatch = true;
+var createCookie = function(name, value, days) {
+    var expires;
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = "; expires=" + date.toGMTString();
+    }
+    else {
+        expires = "";
+    }
+    document.cookie = name + "=" + value + expires + "; path=/";
+	}
+function getCookie(c_name) {
+if (document.cookie.length > 0) {
+	c_start = document.cookie.indexOf(c_name + "=");
+	if (c_start != -1) {
+		c_start = c_start + c_name.length + 1;
+		c_end = document.cookie.indexOf(";", c_start);
+		if (c_end == -1) {
+			c_end = document.cookie.length;
+		}
+		return unescape(document.cookie.substring(c_start, c_end));
+	}
+}
+return "";
+}
+
+var favList = [];
+function removeFav(favID) {
+	var removeFav = favID.id;
+	favList.splice((favList.indexOf(removeFav)),1);
+	var favString = JSON.stringify(favList);
+	console.log(favString);
+	createCookie('favlist',favString,365);
+}
+$(document).ready(function(){
+	var isArtCheck = false;
+	var displayMode = "Gallery Mode";
+	$("#homePage").css("max-width",window.width);
+	//window.addEventListener ("touchmove", function (event) { event.preventDefault (); }, {passive: false});
+	var curPage = 1;
+	var maxPage = 50;
+	var scrollMetric = 0;
+	function tagButton(tagButton) {
+	var currentTags = $("#tagsInput").val();
+	var text = $(tagButton).text();
+	if($("#tagsInput").val().indexOf(text) == -1) {
+		$("#tagsInput").val(""+ currentTags + " " + text);
+	}
+	}
+	var favListReady = true;
+	var enumFavList = function() {
+	if(favList != [] && (favListReady) && (favAdded)) {
+	if(favList.indexOf(null) > -1) {
+		favList.splice((favList.indexOf(null)),1);
+	}
+	$("#favHolder").empty();
+		$.each(favList, function(i, item) {
+		favListReady = false;
+		isBusy = true;
+		if(item.indexOf("webm") == -1) {
+		$("<li>").attr({
+		"align": "center",
+		"class": "list-group-item"
+		}).html("<a target='_blank' href='"+item+"'><img class='favLink' src='"+item+"' style='max-width:100%;max-height:"+window.innerHeight+"px;border:0px solid black;border-radius:5px;box-sizing:border-box;border-radius:2px;margin-left:auto;margin-right:auto'></img></a><div class='container' width='100%' align='center'><button class='btn removeFavorite'><span class='glyphicon glyphicon-remove'></span></button>").appendTo("#favHolder");
+		}
+		else {
+		$("<li>").attr({
+		"align": "center",
+		"class": "list-group-item"
+		}).html("<video controls style='max-width:100%;max-height:"+window.innerHeight+"px;box-sizing:border:0px solid black;border-radius:5px;margin-left:auto;margin-right:auto'><source class='favLink' src='"+item+"' type='video/webm'></video><div class='container' width='100%' align='center'><button class='btn removeFavorite' ><span class='glyphicon glyphicon-remove'></span></button></div>").appendTo("#favHolder");
+		}
+	});
+	favAdded = false;
+	favListReady = true;
+	}
+	}
+	$(document).on("click",".removeFavorite",function(e) {
+		var toDelete = e.target;
+		toDelete = $(toDelete).parents(".list-group-item")
+		toDelete = $(toDelete).find(".favLink").attr("src");
+		if(favList.indexOf(toDelete) > -1) {
+		favList.splice((favList.indexOf(toDelete)),1);
+		var favString = JSON.stringify(favList);
+		console.log(favString);
+		createCookie('favlist',favString,365);
+		favAdded = true;
+		var removeNode = e.target;
+		removeNode = $(removeNode).parents(".list-group-item");
+		removeNode.remove();
+		if(favList.length == 0) {
+			$("#favHolder").empty();
+		}
+		}
+	});
+	$("#favButtonRefresh").click( function() {
+		enumFavList();
+	});
+	var pageNum = function() {
+	$("#pgNum").html(curPage);
+	}
+	pageNum();
+	var clearIFBox = function() {
+		isArtCheck = false;
+		curPage = 1;
+		scrollMetric = 0;
+		$("#IFScrollBox").empty();
+	}
+	var clearCarousel = function() {
+	$("#indicators").empty();
+	$("<li>").attr({
+		"data-target": "#myCarousel", 
+		"data-slide-to": "0", 
+		"class":"active"
+		}).appendTo("#indicators");
+	$("#innerIMG").empty();
+	$("<div>").attr({
+		"class":"carousel-item active"
+		}).html("<div class='card qStart' style='width:100%; max-height:"+(screen.height * 0.6)+"px;'><div class='card-header'><h3 style='font-size:1rem;'>Quick Start Guide</h4></div><div align='center' class='card-body' style='overflow:scroll;'><ul class='list-group'><li class='list-group-item-success list-group-item'>Updates <span class='glyphicon glyphicon-chevron-right'></span> Loader added; Infinite Scrolling available; tap hold to favorite on mobile. </li><li class='list-group-item' >Type your favorite tags into the \"tags\" box, then click <span class='glyphicon glyphicon-refresh'></span> to search.</li><li class='list-group-item'>Blacklist unwanted tags under \"Blacklist\" in Search Settings.</li><li class='list-group-item'>To get updates when an artist has posted recently, add names to the 'Watched Artists' list under Search Settings.</ul></div></div>").appendTo("#innerIMG");
+		$('*[class^="carousel-control"]').css("visibility","hidden");
+		
+	}
+	clearCarousel();
+	//start of favList retrieval
+	var favListStart = getCookie("favlist");
+	if(favListStart != "") {
+		favList = JSON.parse(favListStart);
+	}
+	//start of artist list
+	var artList = [];
+	var enumArtList = function() {
+	$("#alHolder").empty();
+	$.each( artList, function(i, item) {
+		$("<li>").html("<button class='btn btn-danger removeArtist'><span class='glyphicon glyphicon-remove'></span></button>&nbsp;&nbsp;<span class='searchThis'>"+item+"</span>").attr("class","list-group-item").appendTo("#alHolder");
+	});
+	}
+	var startArtList = getCookie('artlist');
+	var artWatchReady = true;
+	var newArtTime = $("#newArtTime").val()
+	if(newArtTime.indexOf(" ") > -1) {
+		newArtTime = newArtTime.split(" ");
+		newArtTime = newArtTime[1];
+	}
+	function checkNewArt() {
+		console.log("newWatch " + newWatch);
+		if((artWatchReady == true) && (newWatch == true)) {
+		var numChecked = 0;
+		var e621API = "https://e621.net/post/index.json?tags=";
+		if((startArtList != "" || artList != "")) {
+				if(artList == "") {
+					if(startArtList) {
+					artList = JSON.parse(startArtList);
+					}
+				}
+				enumArtList();
+				
+				artWatchReady = false;
+				$.each(artList, function(i, item) {
+					var searchTag = item;
+					if(item.indexOf(" ") > -1) {
+						searchTag = item.replace(" ","%20");
+					}
+					e621API = "https://e621.net/post/index.json?tags=" + searchTag + "%20date:"+newArtTime+"";
+					$.ajax({
+						type: "GET",
+						url: e621API,
+						dataType: "jsonp",
+						success: function( data ) {
+								var newArt = data.length;
+								if(newArt > 0) {
+									$("#alHolder > li").eq(i).html($("#alHolder > li").eq(i).html() + "<span class='badge searchItem artListItem'>"+newArt+"</span>");
+								}
+						},
+						complete: function() {
+							numChecked++;
+							if(numChecked == artList.length) {
+							artWatchReady = true;
+							newWatch = false;
+							}
+						}
+					});
+				});
+		}
+		}
+	}
+	function addToArtlist(artistTag) {
+		var artistToAdd = artistTag.toLowerCase();
+		if(artistToAdd.indexOf(' ') > -1) {
+			if(artList.indexOf(artistToAdd) == -1) {
+				artList.push(artistToAdd);
+				var alString = JSON.stringify(artList);
+				createCookie('artlist',alString,365);
+				newWatch = true;
+				checkNewArt();
+				}
+			else {
+				console.log(artistToAdd+" was not added to art list, as it already exists.");
+				}
+		}
+		else if(artList.indexOf(artistToAdd) > -1) {
+			alert("Artist/Tag has already been added.");
+			$("#artistToAdd").addClass("alert alert-danger");
+		}
+		else if(artistToAdd == "") {
+			alert("Please enter something first.");
+		}
+		else {
+			artList.push(artistToAdd);
+			var alString = JSON.stringify(artList);
+			createCookie('artlist',alString,365);
+			newWatch = true;
+			checkNewArt();
+		}
+		console.log(artList);
+	}
+	$("#artistAddButton").click( function() {
+		addToArtlist($("#artistToAdd").val());
+		$("#artistToAdd").val("");
+	});
+	$("#artistToAdd").focusin(function () {
+	if($("#artistToAdd").hasClass("alert-danger")) {
+		$("#artistToAdd").removeClass("alert");
+		$("#artistToAdd").removeClass("alert-danger");
+	}
+	});
+	$("#clearAL").click( function() {
+	artList = [];
+	$("#alHolder").empty();
+	createCookie('artlist',"",365);
+	});
+	function removeArtist(artistToDrop) {
+		var artistToRemove = artistToDrop.toLowerCase();
+		console.log(artistToRemove);
+		if(artList.indexOf(artistToRemove) > -1) {
+			artList.splice((artList.indexOf(artistToRemove)),1);
+			var artListString = JSON.stringify(artList);
+			createCookie('artlist',artListString,365);
+			console.log(artList);
+			if(artList.length > 0) {
+			newWatch = true;
+			checkNewArt();
+			}
+			else {
+			$("#alHolder").empty();
+			}
+		}
+		
+	}
+	//end of artist list
+	//start of blacklist
+	var blacklist = [];
+	var enumBlacklist = function() {
+	$("#blHolder").empty();
+	$.each( blacklist, function(i, item) {
+		$("<li>").html(item).attr("class","list-group-item").appendTo("#blHolder");
+	});
+	}
+	var startBlist = getCookie('blacklist');
+	if(startBlist != "") {
+	blacklist = JSON.parse(startBlist);
+	enumBlacklist();
+	}	
+	
+	function addToBL(tag) {
+	var tagToAdd = tag;
+	if(tagToAdd.indexOf(' ') > -1) {
+		var multiTags = tagToAdd.split(" ");
+		$.each(multiTags, function(i, item) {
+			blacklist.push(item);
+		});
+		var blString = JSON.stringify(blacklist);
+		createCookie('blacklist',blString,365);
+		enumBlacklist();
+	}
+	else if(blacklist.indexOf(tagToAdd) > -1) {
+		alert("This tag has already been added");
+		$("#tagsToBan").addClass("alert alert-danger");
+	}
+	else {
+		blacklist.push(tagToAdd);
+		var blString = JSON.stringify(blacklist);
+		createCookie('blacklist',blString,365);
+		enumBlacklist();
+	}
+	}
+	function removeFromBL(tag) {
+		if(blacklist.indexOf(tag) > -1) {
+			blacklist.splice((blacklist.indexOf(tag)),1);
+			var blString = JSON.stringify(blacklist);
+			createCookie('blacklist',blString,365);
+			enumBlacklist();
+		}
+	}
+	$("#tagsToBanButton").click( function() {
+	//Adding tags to blacklist
+		addToBL($("#tagsToBan").val());
+	});
+	$("#tagsToBan").focusin(function () {
+	if($("#tagsToBan").hasClass("alert-danger")) {
+		$("#tagsToBan").removeClass("alert");
+		$("#tagsToBan").removeClass("alert-danger");
+	}
+	});
+	$("#clearBL").click( function() {
+	blacklist = [];
+	$("#blHolder").empty();
+	createCookie('blacklist',"",365);
+	});
+	//end of blacklist
+	$('[data-toggle="tooltip"]').tooltip();
+	var pausedShow = true;
+	var container = $(".container");
+	var getResults = function () {
+		var e621API = "https://e621.net/post/index.json?tags=";
+		var tags = $("#tagsInput").val();
+		if($("#scoreAmt").val() > 0) {
+			tags += " score:" + $("#scoreAmt").val();
+		}
+		if($("#ratioParam1").val() != 0 && $("#ratioParam2").val() != 0) {
+			var ratio = $("#ratioParam1").val() / $("#ratioParam2").val();
+			if (ratio < 1) {
+				ratio = ratio.toPrecision(2);
+			}
+			else {
+				ratio = ratio.toPrecision(3);
+			}
+			tags += " ratio:" + ratio;
+		}
+		if($("#sortBy").val() == "Score Descending") {
+			tags += " order:score";
+		}
+		else if($("#sortBy").val() == "Score Ascending") {
+			tags += " order:score_asc";
+		}
+		if($("#postDate").val() != "null") {
+			tags += " date:" + $("#postDate").val();
+		}
+		tags += "&page=" + curPage;
+		tags = tags.replace(/\ /g, '%20');
+		tags += "&limit=" + $("#limitNum").val();
+		e621API += tags;
+		var amountOfResults = 1;
+		var goodResult = true;
+		console.log(e621API);
+		$("#loader").css({"display":"block","position":"fixed","top":((window.innerHeight/2)-60)+"px","left":((window.innerWidth/2)-60)+"px","z-index":"99"});
+		$.ajax({
+			type: "GET",
+			url: e621API,
+			dataType: "jsonp",
+			success: function( data ) {
+		$.each( data, function( i, item ) {
+			goodResult = true;
+			if(blacklist.length > 0) {
+			$.each( blacklist, function(j, bltag) {
+			if(item.tags.indexOf(bltag) > -1) {
+				goodResult = false;
+				}
+			});
+			}
+		if(screen.width >= 992) {
+			if(!(item.file_ext.indexOf("swf") > -1) && !(item.file_ext.indexOf("webm") > -1) && goodResult) {
+				var artist = item.artist[0];
+				var artistFormat = [];
+				if(artist) {
+				if(artist.indexOf('_') != -1) {
+					artistFormat = artist.split("_");
+					artist = "";
+					$.each(artistFormat, function(i, item) {
+						var currWord = "";
+						currWord = item.charAt(0).toUpperCase() + item.slice(1);
+						if(i + 1 != artistFormat.length) {
+						artist += currWord+ " ";
+						}
+						else {
+						artist += currWord;
+						}
+					});
+				}
+				else {
+					artist = artist.charAt(0).toUpperCase() + artist.slice(1);
+				}
+				}
+				else {
+					artist = "unknown";
+				}
+				$( "<div>" ).attr({
+				"class": "carousel-item",
+				}).html(
+				"<div class='panel panel-default'><div class='panel-heading' align='center'><div class='well'><h3 style='display:inline-block;'>"+artist+"</h3>&nbsp;<button class='btn btn-info watchResultArtist'><span class='glyphicon glyphicon-eye-open'></span></button></div></div><div class='panel-body'><img style='max-height:"+(screen.height * 0.75)+"px;' src='"+item.file_url+"' alt='"+item.artist+"' class='carouselResults'></div><div class='panel-footer' align='center'><div class='btn-group'><button class='btn btn-default'><a href='"+item.source+"' target='_blank'>Source</a></button><button class='btn btn-default favButton' id='favButton_"+item.id+"'>"+item.fav_count+"<span class='glyphicon glyphicon-heart' ></span></button><button class='btn btn-default'>"+item.score+"<span class='glyphicon glyphicon-arrow-up'></span></button></div><button class='btn btn-block' data-toggle='collapse' data-target='#tagsFor_"+item.id+"'>Tags</button><br /><div class='container-fluid collapse' style='max-width: 75%;' id='tagsFor_"+item.id+"'><div class='well alert-info'><div class='btn-group tagButtons' id='resultNum"+i+"'></div></div></div></div></div>")
+				.appendTo( "#innerIMG");
+
+				var currentIteration = i;
+				var tagArray = item.tags.split(" ");
+				$.each(tagArray, function(i, tag) {
+					console.log(tag);
+					$("<button>").attr({
+					"class": "btn btn-default tagAdd"
+					}).html(tag).appendTo("#resultNum"+currentIteration+"");
+				});
+				$(".tagAdd").click( function() {
+					tagButton(this);
+				});
+				$("<li>").attr({
+				"data-target": "#myCarousel",
+				"data-slide-to": amountOfResults + 1,
+				}).appendTo("#indicators");
+				amountOfResults++;
+				$('[data-toggle="tooltip"]').tooltip();
+				$('[data-toggle="popover"]').popover();
+				if ( i === 100 ) {
+				return false;
+				}
+			}
+			else if((item.file_ext.indexOf("webm") > -1) && (item.file_ext.indexOf("swf") == -1) && goodResult) {
+				var artist = item.artist[0];
+				var artistFormat = [];
+				if(artist.indexOf('_') != -1) {
+					artistFormat = artist.split("_");
+					artist = "";
+					$.each(artistFormat, function(i, item) {
+						var currWord = "";
+						currWord = item.charAt(0).toUpperCase() + item.slice(1);
+						if(i + 1 != artistFormat.length) {
+						artist += currWord+ " ";
+						}
+						else {
+						artist += currWord;
+						}
+					});
+				}
+				else {
+					artist = artist.charAt(0).toUpperCase() + artist.slice(1);
+				}
+				$( "<div>" ).attr({
+				"class": "carousel-item",
+				}).html(
+				"<div class='panel panel-default'><div class='panel-heading' align='center'><div class='well'><h3 style='display:inline-block;'>"+artist+"</h3>&nbsp;<button class='btn btn-info watchResultArtist'><span class='glyphicon glyphicon-eye-open'></span></button></div></div><div class='panel-body'><video class='carouselResults' controls style='max-height:"+(screen.height * 0.75)+"px;'><source src='"+item.file_url+"' type='video/webm' /></video></div><div class='panel-footer' align='center'><div class='btn-group'><button class='btn btn-default'><a href='"+item.source+"' target='_blank'>Source</a></button><button class='btn btn-default favButton' id='favButton_"+item.id+"'>"+item.fav_count+"<span class='glyphicon glyphicon-heart'></span></button><button class='btn btn-default'>"+item.score+"<span class='glyphicon glyphicon-arrow-up'></span></button></div><button class='btn btn-block' data-toggle='collapse' data-target='#tagsFor_"+item.id+"'>Tags</button><br /><div class='container-fluid collapse' style='max-width: 75%;' id='tagsFor_"+item.id+"'><div class='well alert-info'><div class='btn-group tagButtons' id='resultNum"+i+"'></div></div></div></div></div>")
+				.appendTo( "#innerIMG");
+				var currentIteration = i;
+				var tagArray = item.tags.split(" ");
+				$.each(tagArray, function(i, tag) {
+					console.log(tag);
+					$("<button>").attr({
+					"class": "btn btn-default tagAdd"
+					}).html(tag).appendTo("#resultNum"+currentIteration+"");
+				});
+				$(".tagAdd").click( function() {
+					tagButton(this);
+				});
+				$("<li>").attr({
+				"data-target": "#myCarousel",
+				"data-slide-to": amountOfResults + 1,
+				}).appendTo("#indicators");
+				amountOfResults++;
+				if ( i === 100 ) {
+				return false;
+				}
+			}
+		}
+		else {
+			if((item.file_ext.indexOf("swf") == -1) && (item.file_ext.indexOf("webm") == -1) && goodResult) {
+				$( "<div>" ).attr({
+				"class": "carousel-item",
+				}).html(
+				"<img style='max-height:"+(window.innerHeight-(window.innerHeight*0.25))+"px;' src='"+item.file_url+"' alt='"+item.id+"' class='carouselResults' />")
+				.appendTo( "#innerIMG");
+				$("<li>").attr({
+				"data-target": "#myCarousel",
+				"data-slide-to": amountOfResults + 1,
+				}).appendTo("#indicators");
+				amountOfResults++;
+				$('[data-toggle="tooltip"]').tooltip();
+				$('[data-toggle="popover"]').popover();
+				if ( i === 100 ) {
+				return false;
+				}
+			}
+			else if((item.file_ext.indexOf("webm") > -1) && (item.file_ext.indexOf("swf") == -1) && goodResult) {
+				$( "<div>" ).attr({
+				"class": "carousel-item",
+				}).html(
+				"<video class='carouselResults' id='"+item.id+"' controls style='max-height:"+(window.innerHeight-(window.innerHeight*0.25))+"px;'><source src='"+item.file_url+"' type='video/webm' /></video>")
+				.appendTo( "#innerIMG");
+				$("<li>").attr({
+				"data-target": "#myCarousel",
+				"data-slide-to": amountOfResults + 1,
+				}).appendTo("#indicators");
+				amountOfResults++;
+				if ( i === 100 ) {
+				return false;
+				}
+			}
+		}
+		if(amountOfResults > 0) {
+			$("#resultButton").removeClass("btn-primary").addClass("btn-success");
+		}
+		$(".span").click( function() {
+			if($(this).hasClass("glyphicon-heart")) {
+				console.log("heart!");
+			}
+		});
+		});
+	},
+	complete: function() {
+		$(".favButton").each(function(j, heart) {
+			if($(heart).parents(".panel").children(".panel-body").children(".carouselResults").children("source").attr("src")) {
+				var thisURL = $(heart).parents(".panel").children(".panel-body").children(".carouselResults").children("source").attr("src");
+			}
+			else if($(heart).parents(".panel").children(".panel-body").children(".carouselResults").attr("src")) {
+				var thisURL = $(heart).parents(".panel").children(".panel-body").children(".carouselResults").attr("src");
+			}
+			if(favList.indexOf(thisURL) > -1) {
+			$(heart).css("color","red");
+			}
+		});
+		$(".watchResultArtist").each( function(i, item) {
+			var thisWatch = $(item).parent().children("h3").html()
+			if(artList.indexOf(thisWatch.toLowerCase()) > -1) {
+				$(item).removeClass("btn-info");
+				$(item).addClass("btn-success");
+			}
+		});
+		$("#loader").css("display","none");
+	}
+	});
+	$("#myCarousel").carousel('pause');
+	$('*[class^="carousel-control"]').css("visibility","visible");
+	}
+	//infinite scroll
+	
+	var ISResultNum = 0;
+	var getResultsIS = function () {
+		ISResultNum = 0;
+		var e621API = "https://e621.net/post/index.json?tags=";
+		var tags = $("#tagsInput").val();
+		if($("#scoreAmt").val() > 0) {
+			tags += " score:" + $("#scoreAmt").val();
+		}
+		if($("#ratioParam1").val() != 0 && $("#ratioParam2").val() != 0) {
+			var ratio = $("#ratioParam1").val() / $("#ratioParam2").val();
+			if (ratio < 1) {
+				ratio = ratio.toPrecision(2);
+			}
+			else {
+				ratio = ratio.toPrecision(3);
+			}
+			tags += " ratio:" + ratio;
+		}
+		if($("#sortBy").val() == "Score Descending") {
+			tags += " order:score";
+		}
+		else if($("#sortBy").val() == "Score Ascending") {
+			tags += " order:score_asc";
+		}
+		if($("#postDate").val() != "null") {
+			tags += " date:" + $("#postDate").val();
+		}
+		tags += "&page=" + curPage;
+		tags = tags.replace(/\ /g, '%20');
+		if(isArtCheck == false) {
+		tags += "&limit=10";
+		}
+		else {
+		tags += "&limit=100";
+		}
+		e621API += tags;
+		var amountOfResults = 1;
+		var goodResult = true;
+		console.log(e621API);
+		$("#loader").css({"display":"block","position":"fixed","top":((window.innerHeight/2)-60)+"px","left":((window.innerWidth/2)-60)+"px","z-index":"99"});
+		$.ajax({
+			type: "GET",
+			url: e621API,
+			dataType: "jsonp",
+			success: function( data ) {
+		$.each( data, function( i, item ) {
+			goodResult = true;
+			if(blacklist.length > 0) {
+			$.each( blacklist, function(j, bltag) {
+			if(item.tags.indexOf(bltag) > -1) {
+				goodResult = false;
+				}
+			});
+			}
+		if(screen.width >= 992) {
+			if(!(item.file_ext.indexOf("swf") > -1) && !(item.file_ext.indexOf("webm") > -1) && goodResult) {
+				var artist = item.artist[0];
+				var artistFormat = [];
+				if(artist.indexOf('_') != -1) {
+					artistFormat = artist.split("_");
+					artist = "";
+					$.each(artistFormat, function(i, item) {
+						var currWord = "";
+						currWord = item.charAt(0).toUpperCase() + item.slice(1);
+						if(i + 1 != artistFormat.length) {
+						artist += currWord+ " ";
+						}
+						else {
+						artist += currWord;
+						}
+					});
+				}
+				else {
+					artist = artist.charAt(0).toUpperCase() + artist.slice(1);
+				}
+				$( "<div>" ).attr({
+				"class": "row",
+				}).html(
+				"<div class='col-lg-12 ifResult' style=' left:0;'><div class='panel panel-default' style='max-width:"+screen.width+"px;'><div class='panel-heading' align='center'><div class='well'><h3 style='display:inline-block;'>"+artist+"</h3>&nbsp;<button class='btn btn-info watchResultArtist'><span class='glyphicon glyphicon-eye-open'></span></button></div></div><div class='panel-body'><img style='max-width:100%; max-height:"+window.innerHeight+"px;' src='"+item.file_url+"' alt='"+item.artist+"' class='carouselResults'></div><div class='panel-footer' align='center'><div class='btn-group'><button class='btn btn-default'><a href='"+item.source+"' target='_blank'>Source</a></button><button class='btn btn-default favButton' id='favButton_"+item.id+"'>"+item.fav_count+"<span class='glyphicon glyphicon-heart' ></span></button><button class='btn btn-default'>"+item.score+"<span class='glyphicon glyphicon-arrow-up'></span></button><button class='btn btn-info'><a href='#top' style='text-decoration: none;color:white;'>Top</a></button></div><button class='btn btn-block' data-toggle='collapse' data-target='#tagsFor_"+item.id+"'>Tags</button><br /><div class='container-fluid collapse' style='max-width: 100%;' id='tagsFor_"+item.id+"'><div class='well alert-info'><div class='btn-group tagButtons' id='resultNum"+scrollMetric+"'></div></div></div></div></div></div>")
+				.appendTo( "#IFScrollBox");
+				var currentIteration = i;
+				var tagArray = item.tags.split(" ");
+				$.each(tagArray, function(i, tag) {
+					console.log(tag);
+					$("<button>").attr({
+					"class": "btn btn-default tagAdd"
+					}).html(tag).appendTo("#resultNum"+scrollMetric+"");
+				});
+				$(".tagAdd").click( function() {
+					tagButton(this);
+				});
+				amountOfResults++;
+				ISResultNum++;
+				scrollMetric++;
+				if ( i === 100 ) {
+				return false;
+				}
+			}
+			else if((item.file_ext.indexOf("webm") > -1) && (item.file_ext.indexOf("swf") == -1) && goodResult) {
+				var artist = item.artist[0];
+				var artistFormat = [];
+				if(artist.indexOf('_') != -1) {
+					artistFormat = artist.split("_");
+					artist = "";
+					$.each(artistFormat, function(i, item) {
+						var currWord = "";
+						currWord = item.charAt(0).toUpperCase() + item.slice(1);
+						if(i + 1 != artistFormat.length) {
+						artist += currWord+ " ";
+						}
+						else {
+						artist += currWord;
+						}
+					});
+				}
+				else {
+					artist = artist.charAt(0).toUpperCase() + artist.slice(1);
+				}
+				$( "<div>" ).attr({
+				"class": "row",
+				}).html(
+				"<div class='col-lg-12 ifResult' style=' left:0;'><div class='panel panel-default' style='max-width:"+screen.width+"px;'><div class='panel-heading' align='center'><div class='well'><h3 style='display:inline-block;'>"+artist+"</h3>&nbsp;<button class='btn btn-info watchResultArtist'><span class='glyphicon glyphicon-eye-open'></span></button></div></div><div class='panel-body'><video class='carouselResults' controls style='max-width:100%; max-height:"+screen.innerHeight+"px;'><source src='"+item.file_url+"' type='video/webm' /></video></div><div class='panel-footer' align='center'><div class='btn-group'><button class='btn btn-default'><a href='"+item.source+"' target='_blank'>Source</a></button><button class='btn btn-default favButton' id='favButton_"+item.id+"'>"+item.fav_count+"<span class='glyphicon glyphicon-heart'></span></button><button class='btn btn-default'>"+item.score+"<span class='glyphicon glyphicon-arrow-up'></span></button><button class='btn btn-info'><a href='#top' style=' text-decoration: none;color:white;'>Top</a></button></div><button class='btn btn-block' data-toggle='collapse' data-target='#tagsFor_"+item.id+"'>Tags</button><br /><div class='container-fluid collapse' style='max-width: 100%;' id='tagsFor_"+item.id+"'><div class='well alert-info'><div class='btn-group tagButtons' id='resultNum"+scrollMetric+"'></div></div></div></div></div></div>")
+				.appendTo( "#IFScrollBox");
+				var currentIteration = i;
+				var tagArray = item.tags.split(" ");
+				$.each(tagArray, function(i, tag) {
+					console.log(tag);
+					$("<button>").attr({
+					"class": "btn btn-default tagAdd"
+					}).html(tag).appendTo("#resultNum"+scrollMetric+"");
+				});
+				$(".tagAdd").click( function() {
+					tagButton(this);
+				});
+				amountOfResults++;
+				ISResultNum++;
+				scrollMetric++;
+				if ( i === 100 ) {
+				return false;
+				}
+			}
+		}
+		else {
+			if((item.file_ext.indexOf("swf") == -1) && (item.file_ext.indexOf("webm") == -1) && goodResult) {
+				$( "<div>" ).attr({
+				"class": "ifResult",
+				}).html(
+				"<img style='max-height:"+(window.innerHeight)+"px; margin-top:20px; margin-bottom:20px;' src='"+item.file_url+"' alt='"+item.id+"' class='carouselResults' />")
+				.appendTo( "#IFScrollBox");
+				amountOfResults++;
+				ISResultNum++;
+				scrollMetric++;
+				console.log(scrollMetric);
+				if ( i === 100 ) {
+				return false;
+				}
+			}
+			else if((item.file_ext.indexOf("webm") > -1) && (item.file_ext.indexOf("swf") == -1) && goodResult) {
+				$( "<div>" ).attr({
+				"class": "ifResult",
+				}).html(
+				"<video class='carouselResults' id='"+item.id+"' controls style='max-height:"+(window.innerHeight)+"px;margin-top:20px; margin-bottom:20px;'><source src='"+item.file_url+"' type='video/webm' /></video>")
+				.appendTo( "#IFScrollBox");
+				amountOfResults++;
+				ISResultNum++;
+				scrollMetric++;
+				console.log(scrollMetric);
+				if ( i === 100 ) {
+				return false;
+				}
+			}
+		}
+		if(amountOfResults > 0) {
+			$("#resultButton").removeClass("btn-primary").addClass("btn-success");
+		}
+		$(".span").click( function() {
+			if($(this).hasClass("glyphicon-heart")) {
+				console.log("heart!");
+			}
+		});
+		});
+	},
+	complete: function() {
+		$(".favButton").each(function(j, heart) {
+			if($(heart).parents(".panel").children(".panel-body").children(".carouselResults").children("source").attr("src")) {
+				var thisURL = $(heart).parents(".panel").children(".panel-body").children(".carouselResults").children("source").attr("src");
+			}
+			else if($(heart).parents(".panel").children(".panel-body").children(".carouselResults").attr("src")) {
+				var thisURL = $(heart).parents(".panel").children(".panel-body").children(".carouselResults").attr("src");
+			}
+			if(favList.indexOf(thisURL) > -1) {
+			$(heart).css("color","red");
+			}
+		});
+		$(".watchResultArtist").each( function(i, item) {
+			var thisWatch = $(item).parent().children("h3").html();
+			if(thisWatch.indexOf(" ") > -1) {
+				thisWatch = thisWatch.replace(/\ /g,"_");
+			}
+			console.log(thisWatch);
+			if(artList.indexOf(thisWatch.toLowerCase()) > -1) {
+				$(item).removeClass("btn-info");
+				$(item).addClass("btn-success");
+			}
+		});
+		$("#loader").css("display","none");
+	}
+	});
+	}
+	//end infinite scroll
+	$("#resultButton").click(function() {
+		if(displayMode == "Gallery Mode") {
+		clearCarousel();
+		getResults();
+		}
+		else if(displayMode == "Infinite Scroll") {
+		clearIFBox();
+		getResultsIS();
+		}
+		
+	});
+	$("#clearButton").click(function() {
+		scrollMetric = 0;
+		clearCarousel();
+		clearIFBox();
+		$("#tagsInput").val("");
+		$("#resultButton").removeClass("btn-success").addClass("btn-primary");
+		if(displayMode == "Gallery Mode") {
+			$("#gModeButton").attr("class","btn btn-info disabled");
+			$("#ifScrollButton").attr("class","btn btn-info active");
+			if($("#myCarousel").css("display") == "none") {
+			$("#myCarousel").css("display","block");
+			}
+		}
+		else if(displayMode == "Infinite Scroll") {
+			$("#gModeButton").attr("class","btn btn-info active");
+			$("#ifScrollButton").attr("class","btn btn-info disabled");
+			if($("#myCarousel").css("display") == "block") {
+			$("#myCarousel").css("display","none");
+			}
+		}
+	});
+$("#toggleButton").click(function() {
+	$("#advancedSettings").slideToggle(400);
+});
+$("#advancedSettings").on("hide.bs.collapse", function() {
+		$("#slideArrow").attr("class", "glyphicon glyphicon-chevron-down");
+});
+$("#advancedSettings").on("show.bs.collapse", function() {
+		$("#slideArrow").attr("class", "glyphicon glyphicon-chevron-up");
+});
+$("#UIButton").click( function() {
+		$("#mainUI").slideToggle();
+});
+$("#paginationToggle").click( function() {
+	if(this.checked) {
+		$(".carousel-indicators").css("visibility","visible");
+	}
+	else {
+		$(".carousel-indicators").css("visibility","hidden");
+	}
+});
+$("#pauseSlideshow").click( function() {
+	if(pausedShow == false) {
+		$('#myCarousel').carousel('pause');
+		pausedShow = true;
+		$("#pauseSlideshow").html("Play Slideshow");
+	}
+	else if(pausedShow == true) {
+		$('#myCarousel').carousel('cycle');
+		pausedShow = false;
+		$("#pauseSlideshow").html("Pause Slideshow");
+	}
+});
+$("#blToggle").click(function() {
+	$("#blacklist").slideToggle(400);
+});
+$("#pgBwd").click( function() {
+	if(curPage > 1) {
+		curPage -= 1;
+	}
+	else if(curPage == 1) {
+		curPage = maxPage;
+	}
+	pageNum();
+	clearCarousel();
+	getResults();
+});
+$("#pgFwd").click( function() {
+	if(curPage < maxPage) {
+		curPage += 1;
+	}
+	else if(curPage == maxPage) {
+		curPage = 1;
+	}
+	pageNum();
+	clearCarousel();
+	getResults();
+});
+$("#detectScreenSize").click( function() {
+	$("#ratioParam1").val(screen.width);
+	$("#ratioParam2").val(screen.height);
+});
+
+var isFscreen = false;
+$("#myCarousel").bind('slide.bs.carousel', function (e) {
+	if(isFscreen == true) {
+		if(screen.width < 992 && !($(".active").children(".panel").hasClass("qStart"))) {
+			setTimeout(function() {
+			var thisHeight = $(".carousel-item.next.left > img").height();
+			var thisWidth = $(".carousel-item.next.left > img").width();
+			if(thisHeight == null) {
+				thisHeight = $(".carousel-item.next.left > video").height();
+			}
+			if(thisWidth == null) {
+				thisWidth = $(".carousel-item.next.left > video").width();
+			}
+			console.log(thisHeight);
+			$(".next").css({"position":"fixed","top":((screen.height - thisHeight)/2)});
+			if(thisWidth < screen.width) {
+				$(".next").css({"position":"fixed","left":((screen.width - thisWidth)/2)});
+			}
+			}, 200);
+		}
+	}
+	});
+var el = $("#myCarousel");
+var doc = window.document;
+$("#fullScreen").click( function() {
+	$(".carouselResults").css({"max-height":(screen.height * 0.75),"max-width":screen.width});
+	$(".panel").css("height",(screen.height)+"px");
+	if(screen.width < 992 && !($(".active").children(".panel").hasClass("qStart"))) {
+		var thisHeight = $(".carousel-item.active > img").height();
+		var thisWidth = $(".carousel-item.active > img").width();
+		if(thisHeight == null) {
+			thisHeight = $(".carousel-item.active > video").height();
+		}
+		if(thisWidth == null) {
+			thisWidth = $(".carousel-item.active > video").width();
+		}
+		$(".active").css({"position":"fixed","top":((screen.height - thisHeight)/2)});
+		if(thisWidth < screen.width) {
+			$(".active").css({"position":"fixed","left":((screen.width - thisWidth)/2)});
+		}
+	}
+	$("#myCarousel").css({"height":screen.height,"width":screen.width});
+	$(".panel-footer").hide();
+	isFscreen = true;
+	if (document.getElementById("myCarousel").requestFullscreen) {
+		document.getElementById("myCarousel").requestFullscreen();
+	} else if (document.getElementById("myCarousel").webkitRequestFullscreen) {
+		document.getElementById("myCarousel").webkitRequestFullscreen();
+	} else if (document.getElementById("myCarousel").mozRequestFullScreen) {
+		document.getElementById("myCarousel").mozRequestFullScreen();
+	} else if (document.getElementById("myCarousel").msRequestFullscreen) {
+		document.getElementById("myCarousel").msRequestFullscreen();
+	}
+	else {
+		alert("fullscreen not supported!");
+	}
+});
+if (document.addEventListener)
+{
+    document.addEventListener('webkitfullscreenchange', exitHandler, false);
+    document.addEventListener('mozfullscreenchange', exitHandler, false);
+    document.addEventListener('fullscreenchange', exitHandler, false);
+    document.addEventListener('MSFullscreenChange', exitHandler, false);
+}
+
+function exitHandler()
+{
+    if (document.webkitFullscreenEnabled) {
+		if(!document.webkitIsFullScreen)
+		{
+			$("#myCarousel").css({"height":"auto","width":"auto"});
+			$(".panel-footer").show();
+			$(".panel").removeAttr("style");
+			if(screen.width < 992) {
+			$(".carousel-item").removeAttr("style");
+			$(".next").removeAttr("style");
+			}
+			console.log("exit");
+			isFscreen = false;
+		}
+	}
+	else if(document.mozFullScreenEnabled) {
+		if(!document.mozFullScreen) {
+			$("#myCarousel").css({"height":"auto","width":"auto"});
+			$(".panel-footer").show();
+			$(".panel").removeAttr("style");
+			if(screen.width < 992) {
+			$(".carousel-item").removeAttr("style");
+			$(".next").removeAttr("style");
+			}
+			console.log("exit");
+			isFscreen = false;
+		}
+	}
+	else if(document.msFullscreenEnabled) {
+		if(!document.fullscreen) {
+			$("#myCarousel").css({"height":"auto","width":"auto"});
+			$(".panel-footer").show();
+			$(".panel").removeAttr("style");
+			if(screen.width < 992) {
+			$(".carousel-item").removeAttr("style");
+			$(".next").removeAttr("style");
+			}
+			console.log("exit");
+			isFscreen = false;
+		}
+	}
+	else if(Document.fullscreenEnabled) {
+		if(!document.fullscreen) {
+			$("#myCarousel").css({"height":"auto","width":"auto"});
+			$(".panel-footer").show();
+			$(".panel").removeAttr("style");
+			if(screen.width < 992) {
+			$(".carousel-item").removeAttr("style");
+			$(".next").removeAttr("style");
+			}
+			console.log("exit");
+			isFscreen = false;
+		}
+	}
+}
+$("#myCarousel").swiperight( function() {
+	$("#myCarousel").carousel('prev');
+});
+$("#myCarousel").swipeleft( function() {
+	$("#myCarousel").carousel('next');
+});
+function carouselFav() {
+	if((screen.width < 992) && (displayMode == "Gallery Mode") && ($("#myCarousel").css("display") != "none") && !($(".active > .panel").hasClass("qStart"))) {
+	$("#favModal").modal();
+	$("#favModal > .modal-dialog").css({"width":(screen.width)});
+	}
+}
+
+$("#myCarousel").on("taphold", function() {
+	carouselFav();
+});
+var mobileISFav = "";
+$("#mobileFavButton").click( function() {
+	var itemID = "";
+	if($(".carousel-item.active > .carouselResults").attr("src")) {
+	itemID = $(".carousel-item.active > .carouselResults").attr("src");
+	}
+	else if($(".carousel-item.active > .carouselResults").children("source").attr("src")) {
+	itemID = $(".carousel-item.active > .carouselResults").children("source").attr("src");
+	}
+	else if(mobileISFav != "") {
+	itemID = mobileISFav;
+	mobileISFav = "";
+	}
+	console.log(itemID);
+	if(itemID != "") {
+	if(favList.indexOf(itemID) > -1) {
+		alert("Already favorited!");
+	}
+	else {
+		favList.push(itemID);
+		var favString = JSON.stringify(favList);
+		console.log(favString);
+		createCookie('favlist',favString,365);
+		favAdded = true;
+	}
+	}
+});
+$("#favListClear").click( function() {
+	favList = [];
+	createCookie('favlist',favList,365);
+	$("#favHolder").empty();
+});
+var displayMode = "Gallery Mode";
+$("#gModeButton").click( function() {
+	displayMode = $(this).text();
+	console.log(displayMode);
+	$(this).attr("class","btn disabled");
+	$("#ifScrollButton").attr("class","btn btn-info active");
+	if($("#myCarousel").css("display") == "none") {
+		$("#myCarousel").css("display","block");
+	}
+	if($("#carouselPeripherals").css("display") == "none") {
+		$("#carouselPeripherals").css("display","block");
+	}
+	clearIFBox();
+});
+$("#ifScrollButton").click( function() {
+	displayMode = $(this).text();
+	console.log(displayMode);
+	$(this).attr("class","btn disabled");
+	$("#gModeButton").attr("class","btn btn-info active");
+	if($("#myCarousel").css("display") == "block") {
+		$("#myCarousel").css("display","none");
+	}
+	if($("#carouselPeripherals").css("display") == "block") {
+		$("#carouselPeripherals").css("display","none");
+	}
+	clearCarousel();
+});
+
+$(window).scroll(function(){
+    if((displayMode == "Infinite Scroll") && ($("#homePage").hasClass("active")) && isArtCheck == false) {
+	// This is then function used to detect if the element is scrolled into view
+    function elementScrolled(elem)
+    {
+        var docViewTop = $(window).scrollTop();
+        var docViewBottom = docViewTop + $(window).height();
+        var elemTop = $(elem).offset().top;
+        return ((elemTop <= docViewBottom) && (elemTop >= docViewTop));
+    }
+     
+    // This is where we use the function to detect if ".box2" is scrolled into view, and when it is add the class ".animated" to the <p> child element
+	if(elementScrolled($(".ifResult").eq((scrollMetric - 1)))) {
+		if(ISResultNum > 0) {
+			ISResultNum = 0;
+			curPage++;
+			getResultsIS();
+		}    
+    }
+	}
+});
+$(document).on('taphold','.ifResult',function(){
+	if(screen.width < 992) {
+	var itemID = $(this).children().first().attr("src");
+	mobileISFav = itemID;
+	$("#favModal").modal();
+	$("#favModal > .modal-dialog").css({"width":(screen.width),"top":"30%"});
+	}
+});
+$(".favModalClose").click( function() {
+	mobileISFav = "";
+	console.log(mobileISFav);
+});
+$('.nav-tabs > li').eq(1).click( function() {
+	clearIFBox();
+	clearCarousel();
+	checkNewArt();
+});
+$('.nav-tabs > li').eq(2).click( function() {
+	clearIFBox();
+	clearCarousel();
+	enumFavList();
+});
+if(screen.width < 992) {
+	$('.nav-tabs > li').eq(1).children().eq(0).html("<span class='glyphicon glyphicon-eye-open'></span>");
+	$('.nav-tabs > li').eq(3).children().eq(0).html("<span class='glyphicon glyphicon-cog'></span>");
+	$('.nav-tabs > li').eq(2).children().eq(0).html("<span class='glyphicon glyphicon-heart'></span>");
+}
+$("#tagsInput").keyup( function(event) {
+	if(event.which === 13) {
+		if(displayMode == "Gallery Mode") {
+		clearCarousel();
+		getResults();
+		}
+		else if(displayMode == "Infinite Scroll") {
+		clearIFBox();
+		getResultsIS();
+		}
+	}
+});
+$(document).on("click",".removeArtist", function() {
+	removeArtist($(this).siblings(".searchThis").html().toLowerCase());
+});
+$(document).on("click", ".artListItem", function() {
+		if($(this).attr("class").indexOf("badge") > -1) {
+		$('.nav-tabs a:first').tab('show');
+		/**displayMode = "Gallery Mode";
+		$("#gModeButton").attr("class","btn disabled");
+		$("#ifScrollButton").attr("class","btn btn-info active");
+		if($("#myCarousel").css("display") == "none") {
+		$("#myCarousel").css("display","block");
+		}
+		if($("#carouselPeripherals").css("display") == "none") {
+		$("#carouselPeripherals").css("display","block");
+		}*/
+		clearIFBox();
+		clearCarousel();
+		isArtCheck = true;
+		var artSearch = $(this).siblings(".searchThis").html();
+		console.log(artSearch);
+		$("#tagsInput").val(artSearch + " date:week");
+		if(displayMode == "Gallery Mode") {
+			getResults();
+		}
+		else if(displayMode == "Infinite Scroll") {
+			getResultsIS();
+		}
+		$("#tagsInput").val("");
+		}
+});
+$(document).on("click",".watchResultArtist", function() {
+	var artistToWatch = $(this).parent().children("h3").html();
+	if(artistToWatch.indexOf(" ") > -1) {
+		console.log("too many spaces");
+		artistToWatch = artistToWatch.replace(/ /g,"_");
+	}
+	if(artList.indexOf(artistToWatch) > -1) {
+		if(artList != []) {
+			removeArtist(artistToWatch);
+			$(this).removeClass("btn-success");
+			$(this).addClass("btn-info");
+			
+		}
+	}
+	else if(artList.indexOf(artistToWatch) == -1) {
+		addToArtlist(artistToWatch);
+		$(this).removeClass("btn-info");
+		$(this).addClass("btn-success");
+	}
+});	
+$("#newArtTime").on("change",function() {
+	newArtTime = $("#newArtTime").val()
+	if(newArtTime.indexOf(" ") > -1) {
+		newArtTime = newArtTime.split(" ");
+		newArtTime = newArtTime[1];
+	}
+	newWatch = true;
+	checkNewArt();
+});
+$(document).on("taphold",".tagAdd", function( event ) {
+	if(event.target != null) {
+		if(blacklist.indexOf(event.target.innerHTML) == -1) {
+			addToBL(event.target.innerHTML);
+			event.target.setAttribute("style","background-color:red;color:white;");
+		}
+		else {
+			removeFromBL(event.target.innerHTML);
+			event.target.removeAttribute("style");
+		}
+	}
+});
+$("#importButton").click( function() {
+	if($("#importUsername").val() != "") {
+		var username = $("#importUsername").val();
+		var e621API = "https://e621.net/post/index.json?tags=favorites:" + username;
+		console.log(e621API);
+		$.ajax({
+			type: "GET",
+			dataType: "jsonp",
+			url: e621API,
+			success: function( data ) {
+				$("#loader").css({"display":"block","position":"fixed","top":((window.innerHeight/2)-60)+"px","left":((window.innerWidth/2)-60)+"px","z-index":"99"});
+				$.each(data, function(i, item) {
+					if(item.file_ext.indexOf("swf") == -1) {
+					var addToFav = item.file_url;
+					if(favList.indexOf(addToFav) == -1) {
+						favList.push(addToFav);
+						var favString = JSON.stringify(favList);
+						console.log(favString);
+						createCookie('favlist',favString,365);
+					}
+					}
+				});
+				
+			},
+			complete: function() {
+				$("#loader").css("display","none");
+				if(favList.indexOf(null) > -1) {
+					favList.splice((favList.indexOf(null)),1);
+				}
+				favAdded = true;
+				enumFavList();
+			}
+	});
+	}
+});
+$(document).on("click",".favButton", function (e) {
+	var thisButton = e.target.parentNode;
+	if($(thisButton).parents(".panel").children(".panel-body").children(".carouselResults").children("source").attr("src")) {
+	thisButton = $(thisButton).parents(".panel").children(".panel-body").children(".carouselResults").children("source").attr("src");
+	}
+	else if($(thisButton).parents(".panel").children(".panel-body").children(".carouselResults").attr("src")) {
+	thisButton = $(thisButton).parents(".panel").children(".panel-body").children(".carouselResults").attr("src");
+	}
+	console.log(thisButton);
+	if(favList.indexOf(thisButton) > -1) {
+		favList.splice((favList.indexOf(thisButton)),1);
+		var favString = JSON.stringify(favList);
+		console.log(favString);
+		createCookie('favlist',favString,365);
+		e.target.parentNode.style.color = "black";
+		
+	}
+	else {
+		favList.push(thisButton);
+		var favString = JSON.stringify(favList);
+		console.log(favString);
+		createCookie('favlist',favString,365);
+		e.target.parentNode.style.color = "red";
+		
+	}
+	console.log(favList);
+	favAdded = true;
+});
+$(document).keyup(function(e) {
+	if(e.which == 37) {
+		$("#myCarousel").carousel('prev');
+	}
+	else if(e.which == 39) {
+		$("#myCarousel").carousel('next');
+	}
+	else if(e.which == 32) {
+		if(pausedShow) {
+			$('#myCarousel').carousel('cycle');
+			pausedShow = false;
+			$("#pauseSlideshow").html("Pause Slideshow");
+		}
+		else {
+			pausedShow = true;
+			$("#myCarousel").carousel('pause');
+			$("#pauseSlideshow").html("Play Slideshow");
+		}
+	}
+	else if(e.which == 70) {
+		carouselFav();
+	}
+});
+function logIn() {
+var username = $("#loginUsername").val();
+var password = $("#loginPass").val();
+$.ajax({
+	type: "GET",
+	url: "https://e621.net/user/login.json?name="+username+"&password="+password,
+	dataType: "jsonp",
+	success: function( data ) {
+		var success = false;
+		if(data.name) {
+			alert("Welcome, "+data.name+"!");
+		}
+		else {
+			alert("Login Failed.");
+		}
+	}
+});
+}
+$("#loginModalButton").click( function() {
+	$("#loginModal").modal();
+});$("#loginSubmit").click( function() {
+	logIn();
+});
+});
+//Search new art items
+</script>
+<ul class="nav nav-tabs nav-justified" id="top">
+  <li class="nav-item"><a data-toggle="tab" class='nav-link' href="#homePage">Home</a></li>
+  <li class="nav-item"><a data-toggle="tab" class='nav-link active' href="#menu1">Watches</a></li>
+  <li class="nav-item"><a data-toggle="tab" class='nav-link' href="#menu2">Favorites</a></li>
+  <li class="nav-item"><a data-toggle="tab" class='nav-link' href="#menu3">Settings</a></li>
+</ul>
+<div class="loader" id="loader"></div>
+<div class="tab-content">
+<div id="homePage" class="tab-pane active container">
+
+<!--<div class="container">
+	<div class="jumbotron colorTheme" style="background-color: darkturquoise; color: white; text-align: center;">
+		<img src="https://i.imgur.com/afSLl34.png" style="max-height: 90%; max-width: 90%;"></img>
+	</div>
+</div>-->
+	<div class="input-group input-group-sm">
+		<span class="input-group-prepend"><span class="input-group-text">Tags</span></span>
+		<input id="tagsInput" type="text" class="form-control" name="msg" placeholder="Enter Tags Here.">
+		<div class="input-group-append">
+		<button class="btn btn-primary btn-sm" id="resultButton">Go</button>
+		</div>
+		<div class="input-group-append">
+		<button class="btn btn-danger btn-sm" id="clearButton">Clear</span></button>
+		</div>
+	</div>
+<div class="row">
+<div class = "col-md-12">
+<div class="IMGcontainer container">
+</div>
+</div>
+</div>
+	<div class="row">
+	<div class = "col-lg-12" style="padding:0;" align="center" id="fScreen" >
+		<div id="myCarousel" class="carousel slide" data-ride="carousel">
+		  <!-- Indicators -->
+		  <ul class="carousel-indicators" id="indicators">
+			<li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+		  </ul>
+		
+		  <!-- Wrapper for slides -->
+		  <div class="carousel-inner" id="innerIMG">
+			<div class="carousel-item active">
+			</div>
+		  </div>
+
+		  <!-- Left and right controls -->
+		  
+		<a class="carousel-control-prev" href="#myCarousel" data-slide="prev">
+			<span class="carousel-control-prev-icon"></span>
+		</a>
+		<a class="carousel-control-next" href="#myCarousel" data-slide="next">
+			<span class="carousel-control-next-icon"></span>
+		</a>
+		</div>
+	</div>
+	</div>
+	<div class="row">
+	<div class="container-fluid" id="IFScrollBox">
+	
+	</div>
+	</div>
+<div id="carouselPeripherals" style="text-align:center;">
+<div class="container-fluid">
+<div class="btn-group">
+<button class="btn btn-primary" id="fullScreen" data-toggle="tooltip">Fullscreen</button>
+<button id="pauseSlideshow" class="btn btn-primary barButton">Play Slideshow</span></button>
+</div>
+</div>
+<div class="row" align="center">
+	<div class="input-group">
+	<div class="col-lg-12" >
+	<div class="input-group-btn">
+	<button class="btn btn-primary" id="pgBwd"><span class="glyphicon glyphicon-chevron-left"></span></button>
+	</div>
+	<div class="input-group-addon">Page <span id="pgNum"></span></div>
+	<div class="input-group-btn">
+	<button class="btn btn-primary" id="pgFwd"><span class="glyphicon glyphicon-chevron-right"></span></button>
+	</div>
+	</div>
+	</div>
+</div>
+</div>
+</div>
+<div class="tab-pane container" id="menu1">
+<div class="row">
+<div class="col-lg-12">
+	<div class="input-group">
+		<span class="input-group-addon">Posted:</span>
+		<select class="form-control" id="newArtTime">
+			<option active>this week</option>
+			<option>today</option>
+			<option>yesterday</option>
+			<option>this month</option>
+		</select>
+	</div>
+</div>
+</div>
+<div class="row">
+	<div class="col-lg-12" id="artistList">
+		<div class="card" style="width:100%;">
+		<div class="input-group">
+		<span class="input-group-addon">Tag/Artist</span><input data-toggle="tooltip" class="form-control" id="artistToAdd" /><div class="input-group-btn"><button class="btn btn-primary" id="artistAddButton">Add To List</button>
+		<button class="btn btn-danger" id="clearAL">Clear List</button>
+		</div>
+		</div>
+		<div class="card-body">
+		<ul id="alHolder" class="list-group">
+		</ul>
+		</div>
+		</div>
+	</div>
+</div>
+</div>
+<div class="tab-pane container" id="menu2">
+<div class="row">
+	<div class="col-lg-12">
+		<div class="card">
+			<div class="card-header" align="center">
+			<h3>Favorites</h3>
+			</div>
+			<div class="card-body">
+			<ul class="list-group" id="favHolder">
+			</ul>
+			</div>
+			<div class="card-footer">
+				<div class="button-group">
+				<button class="btn btn-primary" id="favButtonRefresh">Refresh</button>
+				<button class="btn btn-danger" id="favListClear">Clear List</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-lg-12">
+		<div class="input-group">
+			<span class="input-group-addon">Import Favorites</span>
+			<input type="text" id="importUsername" class="form-control" placeholder="put your e621 username here!" />
+			<div class="input-group-btn">
+				<button class="btn btn-info" id="importButton">Import</button>
+			</div>
+		</div>
+	</div>
+</div>
+</div>
+<div class="tab-pane container" id="menu3">
+<div class="row">
+<div class="col-lg-12" id="advancedSettings">
+	<div class="card" style="width:100%; padding: 0px;">
+	<div class="card-header" align="center"><h3>Search Settings</h3>
+	</div>
+	<div class="card-body">
+		<div class="container-fluid">
+		<div class="row">
+		<div class="form-check col-lg-12">
+		<label class="form-check-label">
+		<input type="checkbox" class="form-check-input" value="" id="paginationToggle">Show Gallery Pagination
+		</label>
+		</div>
+		</div>
+		</div>
+	<div class="row no-gutter">
+		<div class="col-lg-6 padding-0">
+		<div class="input-group">
+				<span class="input-group-addon">Max Results Per Page</span>
+				<input id="limitNum" type="number" class="form-control" name="msg" placeholder="Max results per page." value="75">
+		</div>
+		</div>
+		<div class="col-lg-6 padding-0">
+		<div class="input-group">
+				<span class="input-group-addon">Sort By</span>
+				<select class="form-control" id="sortBy">
+					<option>Score Descending</option>
+					<option>Score Ascending</option>
+				</select>
+		</div>
+		</div>
+		<div class="col-lg-6">
+		<div class="input-group">
+			<span class="input-group-addon">Score</span>
+			<select class="form-control" id="sel1" >
+				<option>></option>
+				<option><</option>
+				<option>>=</option>
+				<option><=</option>
+				<option>=</option>
+			</select>
+		<input class="form-control" type="number" id = "scoreAmt" min="0" max="100000" value="0" />
+		</div>
+		</div>
+		<div class="col-lg-6">
+		<div class="input-group">
+			<span class="input-group-addon">Date Posted</span>
+			<select class="form-control" id="postDate">
+				<option>null</option>
+				<option>today</option>
+				<option>yesterday</option>
+				<option>week</option>
+				<option>month</option>
+				<option>year</option>
+			</select>
+		</div>
+		</div>
+		<div class="col-lg-6">
+		<div class="input-group">
+			<span class="input-group-addon">Ratio</span><input type="number" class="form-control" id="ratioParam1" /><span class="input-group-addon">:</span><input type="number" id="ratioParam2" class="form-control" />
+			<div class="input-group-btn">
+			<button class="btn btn-primary" id="detectScreenSize">Wallpaper</button>
+			</div>
+		</div>
+		</div>
+	</div>
+	</div>
+	</div>
+</div>
+</div>
+<div class="row">
+	<div class="col-lg-12" style="padding:0;margin:0;text-align:center;" id="blacklist">
+	<div class="card">
+	<div class="card-header">
+		<h3>Blacklist</h3>
+	</div>
+	<div class="card-body">
+	<div class="input-group">
+	<span class="input-group-addon">Tags</span><input class="form-control" id="tagsToBan" /><div class="input-group-btn"><button class="btn btn-primary" id="tagsToBanButton">Add To List</button>
+	<button class="btn btn-danger" id="clearBL">Clear List</button>
+	</div>
+	</div>
+	<ul id="blHolder" class="list-group">
+	</ul>
+	</div>
+	</div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-lg-12">
+	<div class="input-group" style="width:100%;">
+		<div class="input-group-append">
+		<span class="input-group-text">Display Option:</span>
+			<button class="btn disabled" id="gModeButton" style="width:50%;">Gallery Mode</button>
+			<button class="btn btn-info" id="ifScrollButton" style="width:50%;">Infinite Scroll</button>
+		</div>
+	</div>
+	</div>
+</div>
+<div class="row">
+<button class="btn btn-primary" style="margin-top:20px; width:100%;" id="loginModalButton">Login</button>
+</div>
+</div>
+</div>
+<div id="favModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close favModalClose" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title" id="favModalTitle">Favorite this result?</h4>
+      </div>
+      <div class="modal-body">
+        <p>Add this result to your favorites? It'll be viewable under the "artist list" tab.</p>
+		<div class="btn-group" style="width:100%;">
+			<button class="btn btn-success" data-dismiss="modal" id="mobileFavButton" style="width:50%;">Yes</button>
+			<button class="btn btn-danger favModalClose" data-dismiss="modal" style="width:50%;">No</button>
+		</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<div id="loginModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content" style="color:black;">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h2 class="modal-title">Sign in to view/add favorites.</h4>
+      </div>
+      <div class="modal-body">
+        <p class="bg-danger">Warning: first make sure this page is hosted on Urocyan.github.io. I am not responsible for compromised accounts and/or passwords.</p>
+			<div class="input-group">
+				<span class="input-group-addon">Username</span><input class="form-control" type="text" id="loginUsername" />
+			</div>
+			<div class="input-group">
+				<span class="input-group-addon">Password</span><input class="form-control" type="password" id="loginPass" />
+			</div>
+			<button class="btn btn-success btn-block" id="loginSubmit">Login</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>
+

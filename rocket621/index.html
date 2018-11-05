@@ -6,8 +6,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
 <script src="jquery.mobile.custom.js"></script>
 <style>
 	body {
@@ -185,6 +186,39 @@
 	#myCarousel {
 		display:block;
 	}
+	#IFScrollBoxCol {
+		display: flex;
+		flex-wrap: wrap;
+		padding: 0 4px;
+	}
+
+/* Create four equal columns that sits next to each other */
+[id^=IFScrollBoxColInner] {
+  flex: 25%;
+  max-width: 25%;
+  padding: 0 4px;
+}
+
+[id^=IFScrollBoxColInner] img, [id^=IFScrollBoxColInner] video {
+  margin-top: 8px;
+  vertical-align: middle;
+}
+
+/* Responsive layout - makes a two column-layout instead of four columns */
+@media screen and (max-width: 800px) {
+  [id^=IFScrollBoxColInner] {
+    flex: 50%;
+    max-width: 50%;
+  }
+}
+
+/* Responsive layout - makes the two columns stack on top of each other instead of next to each other */
+@media screen and (max-width: 600px) {
+  [id^=IFScrollBoxColInner] {
+    flex: 100%;
+    max-width: 100%;
+  }
+}
 </style>
 </head>
 <body>
@@ -299,6 +333,7 @@ $(document).ready(function(){
 		curPage = 1;
 		scrollMetric = 0;
 		$("#IFScrollBox").empty();
+		$("<div>").attr("id","IFScrollBoxCol").html("<div id='IFScrollBoxColInner0'></div><div id='IFScrollBoxColInner1'></div><div id='IFScrollBoxColInner2'></div><div id='IFScrollBoxColInner3'></div>").appendTo("#IFScrollBox");
 	}
 	var clearCarousel = function() {
 	$("#indicators").empty();
@@ -752,7 +787,7 @@ $(document).ready(function(){
 		tags += "&page=" + curPage;
 		tags = tags.replace(/\ /g, '%20');
 		if(isArtCheck == false) {
-		tags += "&limit=10";
+		tags += "&limit=25";
 		}
 		else {
 		tags += "&limit=100";
@@ -776,101 +811,12 @@ $(document).ready(function(){
 				}
 			});
 			}
-		if(screen.width >= 992) {
-			if(!(item.file_ext.indexOf("swf") > -1) && !(item.file_ext.indexOf("webm") > -1) && goodResult) {
-				var artist = item.artist[0];
-				var artistFormat = [];
-				if(artist.indexOf('_') != -1) {
-					artistFormat = artist.split("_");
-					artist = "";
-					$.each(artistFormat, function(i, item) {
-						var currWord = "";
-						currWord = item.charAt(0).toUpperCase() + item.slice(1);
-						if(i + 1 != artistFormat.length) {
-						artist += currWord+ " ";
-						}
-						else {
-						artist += currWord;
-						}
-					});
-				}
-				else {
-					artist = artist.charAt(0).toUpperCase() + artist.slice(1);
-				}
-				$( "<div>" ).attr({
-				"class": "row",
-				}).html(
-				"<div class='col-lg-12 ifResult' style=' left:0;'><div class='panel panel-default' style='max-width:"+screen.width+"px;'><div class='panel-heading' align='center'><div class='well'><h3 style='display:inline-block;'>"+artist+"</h3>&nbsp;<button class='btn btn-info watchResultArtist'><span class='glyphicon glyphicon-eye-open'></span></button></div></div><div class='panel-body'><img style='max-width:100%; max-height:"+window.innerHeight+"px;' src='"+item.file_url+"' alt='"+item.artist+"' class='carouselResults'></div><div class='panel-footer' align='center'><div class='btn-group'><button class='btn btn-default'><a href='"+item.source+"' target='_blank'>Source</a></button><button class='btn btn-default favButton' id='favButton_"+item.id+"'>"+item.fav_count+"<span class='glyphicon glyphicon-heart' ></span></button><button class='btn btn-default'>"+item.score+"<span class='glyphicon glyphicon-arrow-up'></span></button><button class='btn btn-info'><a href='#top' style='text-decoration: none;color:white;'>Top</a></button></div><button class='btn btn-block' data-toggle='collapse' data-target='#tagsFor_"+item.id+"'>Tags</button><br /><div class='container-fluid collapse' style='max-width: 100%;' id='tagsFor_"+item.id+"'><div class='well alert-info'><div class='btn-group tagButtons' id='resultNum"+scrollMetric+"'></div></div></div></div></div></div>")
-				.appendTo( "#IFScrollBox");
-				var currentIteration = i;
-				var tagArray = item.tags.split(" ");
-				$.each(tagArray, function(i, tag) {
-					console.log(tag);
-					$("<button>").attr({
-					"class": "btn btn-default tagAdd"
-					}).html(tag).appendTo("#resultNum"+scrollMetric+"");
-				});
-				$(".tagAdd").click( function() {
-					tagButton(this);
-				});
-				amountOfResults++;
-				ISResultNum++;
-				scrollMetric++;
-				if ( i === 100 ) {
-				return false;
-				}
-			}
-			else if((item.file_ext.indexOf("webm") > -1) && (item.file_ext.indexOf("swf") == -1) && goodResult) {
-				var artist = item.artist[0];
-				var artistFormat = [];
-				if(artist.indexOf('_') != -1) {
-					artistFormat = artist.split("_");
-					artist = "";
-					$.each(artistFormat, function(i, item) {
-						var currWord = "";
-						currWord = item.charAt(0).toUpperCase() + item.slice(1);
-						if(i + 1 != artistFormat.length) {
-						artist += currWord+ " ";
-						}
-						else {
-						artist += currWord;
-						}
-					});
-				}
-				else {
-					artist = artist.charAt(0).toUpperCase() + artist.slice(1);
-				}
-				$( "<div>" ).attr({
-				"class": "row",
-				}).html(
-				"<div class='col-lg-12 ifResult' style=' left:0;'><div class='panel panel-default' style='max-width:"+screen.width+"px;'><div class='panel-heading' align='center'><div class='well'><h3 style='display:inline-block;'>"+artist+"</h3>&nbsp;<button class='btn btn-info watchResultArtist'><span class='glyphicon glyphicon-eye-open'></span></button></div></div><div class='panel-body'><video class='carouselResults' controls style='max-width:100%; max-height:"+screen.innerHeight+"px;'><source src='"+item.file_url+"' type='video/webm' /></video></div><div class='panel-footer' align='center'><div class='btn-group'><button class='btn btn-default'><a href='"+item.source+"' target='_blank'>Source</a></button><button class='btn btn-default favButton' id='favButton_"+item.id+"'>"+item.fav_count+"<span class='glyphicon glyphicon-heart'></span></button><button class='btn btn-default'>"+item.score+"<span class='glyphicon glyphicon-arrow-up'></span></button><button class='btn btn-info'><a href='#top' style=' text-decoration: none;color:white;'>Top</a></button></div><button class='btn btn-block' data-toggle='collapse' data-target='#tagsFor_"+item.id+"'>Tags</button><br /><div class='container-fluid collapse' style='max-width: 100%;' id='tagsFor_"+item.id+"'><div class='well alert-info'><div class='btn-group tagButtons' id='resultNum"+scrollMetric+"'></div></div></div></div></div></div>")
-				.appendTo( "#IFScrollBox");
-				var currentIteration = i;
-				var tagArray = item.tags.split(" ");
-				$.each(tagArray, function(i, tag) {
-					console.log(tag);
-					$("<button>").attr({
-					"class": "btn btn-default tagAdd"
-					}).html(tag).appendTo("#resultNum"+scrollMetric+"");
-				});
-				$(".tagAdd").click( function() {
-					tagButton(this);
-				});
-				amountOfResults++;
-				ISResultNum++;
-				scrollMetric++;
-				if ( i === 100 ) {
-				return false;
-				}
-			}
-		}
-		else {
 			if((item.file_ext.indexOf("swf") == -1) && (item.file_ext.indexOf("webm") == -1) && goodResult) {
 				$( "<div>" ).attr({
 				"class": "ifResult",
 				}).html(
-				"<img style='max-height:"+(window.innerHeight)+"px; margin-top:20px; margin-bottom:20px;' src='"+item.file_url+"' alt='"+item.id+"' class='carouselResults' />")
-				.appendTo( "#IFScrollBox");
+				"<a href='"+item.file_url+"' target='_blank'><img style='width:100%;' src='"+item.file_url+"' alt='"+item.id+"' class='carouselResults' /></a>")
+				.appendTo("#IFScrollBoxColInner"+(Math.floor(scrollMetric % 4)));
 				amountOfResults++;
 				ISResultNum++;
 				scrollMetric++;
@@ -883,8 +829,8 @@ $(document).ready(function(){
 				$( "<div>" ).attr({
 				"class": "ifResult",
 				}).html(
-				"<video class='carouselResults' id='"+item.id+"' controls style='max-height:"+(window.innerHeight)+"px;margin-top:20px; margin-bottom:20px;'><source src='"+item.file_url+"' type='video/webm' /></video>")
-				.appendTo( "#IFScrollBox");
+				"<video class='carouselResults' id='"+item.id+"' controls style='width:100%;'><source src='"+item.file_url+"' type='video/webm' /></video>")
+				.appendTo("#IFScrollBoxColInner"+(Math.floor(scrollMetric % 4)));
 				amountOfResults++;
 				ISResultNum++;
 				scrollMetric++;
@@ -893,7 +839,6 @@ $(document).ready(function(){
 				return false;
 				}
 			}
-		}
 		if(amountOfResults > 0) {
 			$("#resultButton").removeClass("btn-primary").addClass("btn-success");
 		}
@@ -1156,7 +1101,7 @@ $("#myCarousel").swipeleft( function() {
 function carouselFav() {
 	if((screen.width < 992) && (displayMode == "Gallery Mode") && ($("#myCarousel").css("display") != "none") && !($(".active > .panel").hasClass("qStart"))) {
 	$("#favModal").modal();
-	$("#favModal > .modal-dialog").css({"width":(screen.width),"top":"30%"});
+	$("#favModal > .modal-dialog").css({"width":(screen.width)});
 	}
 }
 
@@ -1440,14 +1385,37 @@ $(document).keyup(function(e) {
 		carouselFav();
 	}
 });
+function logIn() {
+var username = $("#loginUsername").val();
+var password = $("#loginPass").val();
+$.ajax({
+	type: "GET",
+	url: "https://e621.net/user/login.json?name="+username+"&password="+password,
+	dataType: "jsonp",
+	success: function( data ) {
+		var success = false;
+		if(data.name) {
+			alert("Welcome, "+data.name+"!");
+		}
+		else {
+			alert("Login Failed.");
+		}
+	}
+});
+}
+$("#loginModalButton").click( function() {
+	$("#loginModal").modal();
+});$("#loginSubmit").click( function() {
+	logIn();
+});
 });
 //Search new art items
 </script>
 <ul class="nav nav-tabs" id="top">
   <li class="active"><a data-toggle="tab" class='topTab' href="#homePage">Home</a></li>
-  <li><a data-toggle="tab" class='topTab' href="#menu1">Watches</a></li>
-  <li><a data-toggle="tab" class='topTab' href="#menu2">Favorites</a></li>
-  <li><a data-toggle="tab" class='topTab' href="#menu3">Settings</a></li>
+  <li class="nav-item"><a data-toggle="tab" class='topTab' href="#menu1">Watches</a></li>
+  <li class="nav-item"><a data-toggle="tab" class='topTab' href="#menu2">Favorites</a></li>
+  <li class="nav-item"><a data-toggle="tab" class='topTab' href="#menu3">Settings</a></li>
 </ul>
 <div class="loader" id="loader"></div>
 <div class="tab-content">
@@ -1503,7 +1471,16 @@ $(document).keyup(function(e) {
 	</div>
 	<div class="row">
 	<div class="container-fluid" id="IFScrollBox">
-	
+		<div id="IFScrollBoxCol">
+			<div id="IFScrollBoxColInner0">
+			</div>
+			<div id="IFScrollBoxColInner1">
+			</div>
+			<div id="IFScrollBoxColInner2">
+			</div>
+			<div id="IFScrollBoxColInner3">
+			</div>
+		</div>
 	</div>
 	</div>
 <div id="carouselPeripherals">
@@ -1690,6 +1667,9 @@ $(document).keyup(function(e) {
 	</div>
 	</div>
 </div>
+<div class="row">
+<button class="btn btn-primary" style="margin-top:20px; width:100%;" id="loginModalButton">Login</button>
+</div>
 </div>
 </div>
 <div id="favModal" class="modal fade" role="dialog">
@@ -1707,6 +1687,29 @@ $(document).keyup(function(e) {
 			<button class="btn btn-success" data-dismiss="modal" id="mobileFavButton" style="width:50%;">Yes</button>
 			<button class="btn btn-danger favModalClose" data-dismiss="modal" style="width:50%;">No</button>
 		</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<div id="loginModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content" style="color:black;">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h2 class="modal-title">Sign in to view/add favorites.</h4>
+      </div>
+      <div class="modal-body">
+        <p class="bg-danger">Warning: first make sure this page is hosted on Urocyan.github.io. I am not responsible for compromised accounts and/or passwords.</p>
+			<div class="input-group">
+				<span class="input-group-addon">Username</span><input class="form-control" type="text" id="loginUsername" />
+			</div>
+			<div class="input-group">
+				<span class="input-group-addon">Password</span><input class="form-control" type="password" id="loginPass" />
+			</div>
+			<button class="btn btn-success btn-block" id="loginSubmit">Login</button>
       </div>
     </div>
 
