@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Simple Map</title>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://code.jquery.com/ui/1.11.4/themes/ui-darkness/jquery-ui.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+        .holder {
+            width:100%;
+            height:100%;
+            position: absolute;
+            background-position:center center;
+            background-size:cover;
+            background-attachment:fixed;
+            opacity: 0;
+        }
+
+        @keyframes fadeIn {
+            from {opacity: 0;filter:grayscale(100%);}
+            to {opacity: 1;filter:none;}
+        }
+        @keyframes fadeOut {
+            from {opacity: 1;filter:none;}
+            to {opacity: 0;filter:grayscale(100%);}
+        }
+        
+    </style>
+    <script>
+        $(document).ready(async () => {
+            var connectionUrl = "https://xboxapi.com/v2/2535470416194176/screenshots";
+            var screenshots = [];
+            var galleryIndex = 0;
+
+            function fadeElement(index) {
+                let lastIndex = index - 1;
+                if(index == 0) {
+                    lastIndex = $(".holder").length - 1;
+                }
+                $(".holder").eq(index).css("animation","fadeIn 2s ease forwards");
+                $(".holder").eq(lastIndex).css("animation","fadeOut 2s ease forwards");
+            }
+
+            var changeElements = function() {
+                galleryIndex++;
+                if(galleryIndex > $(".holder").length - 1) {
+                    galleryIndex = 0;
+                }
+                fadeElement(galleryIndex);
+                console.log(galleryIndex);
+            }
+
+            await $.ajax({
+                method:'GET',
+                headers: {
+                    "X-Auth": "555086fdfa659ff958073d2f483933e5808d5878",
+                    "Content-Type": "application/json"
+                },
+                url: connectionUrl,
+                dataType:'json',
+                success: function(data) {
+                    for(let i = 0; i < 20; i++) {
+                        let element = data[i];
+                        screenshots.push(element.screenshotUris[0].uri);
+                        console.log(element);
+                        $("<div>").attr({"class":"holder"}).css({"background-image":"url('"+screenshots[i]+"')"}).appendTo("body");
+                        if(i == 0) {
+                            $(".holder").eq(1).css("opacity","1");
+                        }
+                    }
+                    setInterval(changeElements,60000);
+                }
+            });
+            
+        });
+    </script>
+  </head>
+    <body>
+    </body>
+</html>
