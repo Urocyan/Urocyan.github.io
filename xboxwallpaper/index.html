@@ -68,7 +68,7 @@
                         console.log(element);
                         $("<div>").attr({"class":"holder"}).css({"background-image":"url('"+screenshots[i]+"')"}).appendTo("body");
                         if(i == 0) {
-                            $(".holder").eq(1).css("opacity","1");
+                            $(".holder").eq(0).css("opacity","1");
                         }
                     }
                     setInterval(changeElements,60000);
